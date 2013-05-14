@@ -63,28 +63,24 @@ class block_caboodle extends block_base {
         return $this->content;
     }
 
-    // my moodle can only have SITEID and it's redundant here, so take it away
+
     public function applicable_formats() {
         return array('all' => false,
-                     'site' => true,
-                     'site-index' => true,
-                     'course-view' => true, 
-                     'course-view-social' => false,
-                     'mod' => true, 
-                     'mod-quiz' => false);
+                     'course-view' => true
+                    );
     }
 
     public function instance_allow_multiple() {
-          return true;
+          return false;
     }
 
-    function has_config() {return true;}
+    function has_config() { return true; }
 
     public function cron() {
-            mtrace( "Hey, my cron script is running" );
-             
+            mtrace("block_caboodle cron");
+
                  // do something
-                  
-                      return true;
+
+        return true;
     }
 }

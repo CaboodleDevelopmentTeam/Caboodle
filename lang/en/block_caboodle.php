@@ -25,17 +25,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['blockstring'] = 'Block string';
-$string['descconfig'] = 'Description of the config section';
-$string['descfoo'] = 'Config description';
-$string['headerconfig'] = 'Config section header';
-$string['labelfoo'] = 'Config label';
+$string['pluginname'] = 'Caboodle';
+//$string['blockstring'] = 'Block string';
+// Configuration section strings
+//$string['headerconfig'] = 'Config section header';
+//$string['descconfig'] = 'Description of the config section';
+$string['label_results'] = 'Amount of search results to save';
+$string['desc_results'] = 'Search results being saved in block instance cache per resource';
+// End of configuration section strings
+
 $string['caboodle:addinstance'] = 'Add a caboodle block';
 $string['caboodle:myaddinstance'] = 'Add a caboodle block to my moodle';
-$string['pluginname'] = 'caboodle';
+
 $string['resources'] = 'Resources';
+$string['no_resources'] = 'No resources configured';
 $string['search'] = 'Search';
 $string['student_search'] = 'Student search enabled';
+$string['student_search_help'] = 'If student search is enabled, students are allowed to perform search through added resources results';
 $string['search_items_displayed'] = 'Number of search items displayed';
+$string['search_items_displayed_help'] = 'Number of search items displayed in block';
 $string['blacklist'] = 'Blacklist';
+$string['blacklist_help'] = 'Blacklisted URLs one per line';
 $string['search_results'] = "Search results";
