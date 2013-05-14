@@ -60,9 +60,35 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->config->text;
         }
 
+        $this->content->text .= $this->get_search_form();
+
         return $this->content;
     }
 
+    public function get_search_form() {
+        global $CFG, $OUTPUT;
+
+        $strsearch  = get_string('search');
+        $strgo      = get_string('go');
+        $advancedsearch = get_string('advancedsearch', 'block_caboodle');
+        $yourownsearch = get_string('yourownsearch', 'block_caboodle');
+
+
+        $text  = '<div class="searchform">';
+        $text .= '<p>' . $yourownsearch . '</p>';
+        $text .= '<form action="'.$CFG->wwwroot.'/blocks/caboodle/search.php" style="display:inline"><fieldset class="invisiblefieldset">';
+        $text .= '<legend class="accesshide">'.$strsearch.'</legend>';
+        $text .= '<input name="courseid" type="hidden" value="'.$this->page->course->id.'" />';  // course
+        $text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>'.
+                 '<input id="searchform_search" name="search" type="text" size="12" />';
+        $text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
+        $text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?courseid='.$this->page->course->id.'">'.$advancedsearch.'</a>';
+        $text .= $OUTPUT->help_icon('search');
+        $text .= '</fieldset></form></div>';
+
+
+        return $text;
+    }
 
     public function applicable_formats() {
         return array('all' => false,
