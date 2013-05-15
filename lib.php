@@ -66,5 +66,11 @@ class caboodle {
         return $results;
     } // get_results
 
+    public function get_all_expired_results($expire_after) {
+        global $DB;
+
+
+
+    }
 
 } // class

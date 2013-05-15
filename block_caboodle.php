@@ -70,7 +70,7 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->get_search_form();
         }
 
-        //echo "<pre>"; var_dump($this->instance); echo "</pre>";
+        echo "<pre>"; var_dump($this->instance); echo "</pre>";
 
         $search_str = $this->config->search;
 
@@ -160,8 +160,13 @@ class block_caboodle extends block_base {
     public function cron() {
             mtrace("block_caboodle cron");
 
-                 // do something
+            // get configuration options
+            $numresults = get_config('caboodle', 'numresults');
+            $removeafter = get_config('caboodle', 'removeafter');
 
-        return true;
+            $caboodle = new caboodle();
+            $expired_items = $caboodle->get_all_expired_results($removeafter);
+
+        return false;
     }
 }
