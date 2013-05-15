@@ -21,8 +21,9 @@
     <TABLE NAME="caboodle_search_results" COMMENT="Cache for search results" PREVIOUS="caboodle_resources">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="resourceid"/>
-        <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of resource" PREVIOUS="id" NEXT="searchstr"/>
-        <FIELD NAME="searchstr" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Search string" PREVIOUS="resourceid" NEXT="results"/>
+        <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of resource" PREVIOUS="id" NEXT="instance"/>
+        <FIELD NAME="instance" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Block instance id" PREVIOUS="resourceid" NEXT="searchstr"/>
+        <FIELD NAME="searchstr" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Search string" PREVIOUS="instance" NEXT="results"/>
         <FIELD NAME="results" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="All results (default max = 10)" PREVIOUS="searchstr" NEXT="timestamp"/>
         <FIELD NAME="timestamp" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Time at which search has been performed" PREVIOUS="results"/>
       </FIELDS>
@@ -30,7 +31,8 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="resourceid" UNIQUE="false" FIELDS="resourceid"/>
+        <INDEX NAME="resourceid" UNIQUE="false" FIELDS="resourceid" NEXT="instance"/>
+        <INDEX NAME="instance" UNIQUE="false" FIELDS="instance" PREVIOUS="resourceid"/>
       </INDEXES>
     </TABLE>
   </TABLES>

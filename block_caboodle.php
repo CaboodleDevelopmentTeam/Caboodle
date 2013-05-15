@@ -70,7 +70,7 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->get_search_form();
         }
 
-        echo "<pre>"; var_dump($this->config); echo "</pre>";
+        //echo "<pre>"; var_dump($this->instance); echo "</pre>";
 
         $search_str = $this->config->search;
 
@@ -81,12 +81,12 @@ class block_caboodle extends block_base {
 
             $this->content->text .= '<h3>Search on "<i>' . $search_str . '</i>"</h3>';
 
-            foreach ($resources as $resid => $resource) {
-                if ($this->config->resource[$resid] == 1) {
+            foreach ($resources as $resourceid => $resource) {
+                if ($this->config->resource[$resourceid] == 1) {
 
                     $this->content->text .= "<h4>" . $resource->name . "</h4>";
 
-                    $results = caboodle::get_results($resid);
+                    $results = caboodle::get_results($resourceid, $this->instance->id);
 
                     $this->content->text .= '<ul style="list-style-type: none;">';
 

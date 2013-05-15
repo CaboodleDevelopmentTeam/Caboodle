@@ -50,17 +50,18 @@ class caboodle {
         return $resources;
     } // get_resources
 
-    public static function get_results($resid) {
+    public static function get_results($resourceid, $instanceid) {
         global $DB;
 
 //        $valid_timestamp = 0;
 //
 //        // get all results matching $resid
 //        $sql = "SELECT searchstr, results FROM {caboodle_search_results} WHERE " .
-//               "$resid = " . $resid . " " .
+//               "$resid = '" . $resid . "' " .
+//               "AND instance = '" . $instanceid . "' " .
 //               "AND timestamp > " . $valid_timestamp;
 
-        $results = $DB->get_records('caboodle_search_results', array('resourceid' => $resid));
+        $results = $DB->get_records('caboodle_search_results', array('resourceid' => $resid, 'instance' => $instanceid));
 
         return $results;
     } // get_results
