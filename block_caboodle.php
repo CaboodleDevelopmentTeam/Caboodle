@@ -88,14 +88,14 @@ class block_caboodle extends block_base {
 
                     $results = caboodle::get_results($resid);
 
-                    $this->content->text .= "<ul>";
+                    $this->content->text .= '<ul style="list-style-type: none;">';
 
                     if (!empty($results)) {
 
                         foreach($results as $r => $result) {
                             $this->content->text .= "<li>";
 
-                            $this->content->text .= "Result";
+                            $this->content->text .= "Results go here";
 
                             $this->content->text .= "</li>";
                         }

@@ -33,3 +33,9 @@ $settings->add(new admin_setting_configtext('caboodle/numresults',
                                             PARAM_INT
                                             ));
 
+$settings->add(new admin_setting_configtext('caboodle/removeafter',
+                                            get_string('label_removecache', 'block_caboodle'),
+                                            get_string('desc_removecache', 'block_caboodle'),
+                                            43200, // default vaule 43200 seconds = 12h
+                                            PARAM_INT
+                                            ));

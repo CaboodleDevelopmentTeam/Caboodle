@@ -32,6 +32,9 @@ $string['pluginname'] = 'Caboodle';
 //$string['descconfig'] = 'Description of the config section';
 $string['label_results'] = 'Amount of search results to save';
 $string['desc_results'] = 'Search results being saved in block instance cache per resource';
+$string['label_removecache'] = 'Clear cache after (seconds):';
+$string['desc_removecache'] = 'This setting determines how often results cache will be purged and new search performed. Don\'t set it to less than 1h since it can cause high load on your server.
+    Default value: 12h = 43200 seconds';
 // End of configuration section strings
 
 $string['caboodle:addinstance'] = 'Add a caboodle block';
