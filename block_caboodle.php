@@ -70,7 +70,7 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->get_search_form();
         }
 
-        echo "<pre>"; var_dump($this->instance); echo "</pre>";
+        //echo "<pre>"; var_dump($this->instance); echo "</pre>";
 
         $search_str = $this->config->search;
 
