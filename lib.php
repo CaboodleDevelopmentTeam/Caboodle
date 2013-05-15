@@ -25,10 +25,45 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-function get_resources() {
-    global $DB;
 
-    $resources = $DB->get_records('caboodle_resources', array(), null, 'id,name');
+/**
+ *
+ *
+ */
+class caboodle {
 
-    return $resources;
-}
+    public function __construct() {
+        return true;
+    }
+
+    /**
+     * Get all resources
+     *
+     * @global resource $DB
+     * @return array
+     */
+    public static function get_resources() {
+        global $DB;
+
+        $resources = $DB->get_records('caboodle_resources', array());
+
+        return $resources;
+    } // get_resources
+
+    public static function get_results($resid) {
+        global $DB;
+
+//        $valid_timestamp = 0;
+//
+//        // get all results matching $resid
+//        $sql = "SELECT searchstr, results FROM {caboodle_search_results} WHERE " .
+//               "$resid = " . $resid . " " .
+//               "AND timestamp > " . $valid_timestamp;
+
+        $results = $DB->get_records('caboodle_search_results', array('resourceid' => $resid));
+
+        return $results;
+    } // get_results
+
+
+} // class

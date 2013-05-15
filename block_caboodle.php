@@ -21,6 +21,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// get local lib
+require_once($CFG->dirroot . '/blocks/caboodle/lib.php');
+
+
 class block_caboodle extends block_base {
 
     function init() {
@@ -66,10 +70,50 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->get_search_form();
         }
 
-        // get all resources
-        
-
         echo "<pre>"; var_dump($this->config); echo "</pre>";
+
+        $search_str = $this->config->search;
+
+        if (!empty($search_str)) {
+
+            // get all resources
+            $resources = caboodle::get_resources();
+
+            $this->content->text .= '<h3>Search on "<i>' . $search_str . '</i>"</h3>';
+
+            foreach ($resources as $resid => $resource) {
+                if ($this->config->resource[$resid] == 1) {
+
+                    $this->content->text .= "<h4>" . $resource->name . "</h4>";
+
+                    $results = caboodle::get_results($resid);
+
+                    $this->content->text .= "<ul>";
+
+                    if (!empty($results)) {
+
+                        foreach($results as $r => $result) {
+                            $this->content->text .= "<li>";
+
+                            $this->content->text .= "Result";
+
+                            $this->content->text .= "</li>";
+                        }
+
+                    } else {
+                        // no results
+                        $this->content->text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                    }
+
+                    $this->content->text .= "</ul>";
+
+                } // if
+            } // foreach
+
+        } else {
+            // no search string
+            $this->content->text .= '<h3>'. get_string('nosearchstring', 'block_caboodle') . '</h3>';
+        }
 
         $this->content->text .= "</div>";
         return $this->content;

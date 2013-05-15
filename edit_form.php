@@ -2,7 +2,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once('lib.php');
+require_once($CFG->dirroot . '/blocks/caboodle/lib.php');
 
 class block_caboodle_edit_form extends block_edit_form
 {
@@ -21,7 +21,7 @@ class block_caboodle_edit_form extends block_edit_form
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
         //$repositories = $this->get_resources();
-        $repositories = get_resources();
+        $repositories = caboodle::get_resources();
 
         if (empty($repositories)) {
 
@@ -33,7 +33,8 @@ class block_caboodle_edit_form extends block_edit_form
 
            $DB->insert_record('caboodle_resources', $record);
 
-           $repositories = $this->get_resources();
+           //$repositories = $this->get_resources();
+           $repositories = caboodle::get_resources();
         }
 
 
@@ -93,20 +94,6 @@ class block_caboodle_edit_form extends block_edit_form
             } // if
         } // foreach
 
-    }
-
-    /**
-     * Get all resources
-     *
-     * @global resource $DB
-     * @return array
-     */
-    public function get_resources() {
-        global $DB;
-
-        $resources = $DB->get_records('caboodle_resources', array(), null, 'id,name');
-
-        return $resources;
     }
 
 }
