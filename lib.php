@@ -25,3 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+function get_resources() {
+    global $DB;
+
+    $resources = $DB->get_records('caboodle_resources', array(), null, 'id,name');
+
+    return $resources;
+}

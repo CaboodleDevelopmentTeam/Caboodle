@@ -2,14 +2,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once('lib.php');
 
 class block_caboodle_edit_form extends block_edit_form
 {
 
-    protected function specific_definition($mform)
-    {
+    protected function specific_definition($mform) {
 
-        global $OUTPUT;
+        global $OUTPUT, $CFG;
 
         // Section header title according to language file.
         // $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
@@ -20,13 +20,14 @@ class block_caboodle_edit_form extends block_edit_form
 
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
-        $repositories = $this->get_resources();
+        //$repositories = $this->get_resources();
+        $repositories = get_resources();
 
         if (empty($repositories)) {
 
            global $DB;
            $record = new stdClass();
-           $record->type = 0; // type SRU interface from Jisc MediaHub
+           $record->type = 1; // type SRU interface from Jisc MediaHub
            $record->name = "Jisc MediaHub (SRU interface)";
            $record->url = "http://m2m.edina.ac.uk/sru/mediahub";
 
@@ -40,18 +41,17 @@ class block_caboodle_edit_form extends block_edit_form
             $mform->addElement('advcheckbox', "config_resource[$k]", $repository->name);
             $mform->setType("config_resource[$k]", PARAM_BOOL);
             //$mform->addHelpButton("resource_$k", 'resource', 'block_caboodle');
-
         }
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
 
-        $choices = array(get_string('yes'), get_string('no'));
-        $default = 1;
+        $choices = array(get_string('no'), get_string('yes'));
+        $default = 0;
         $mform->addElement('select', 'config_student_search', get_string('student_search', 'block_caboodle'), $choices);
-        //$mform->setDefault('config_student_search', $default);
+        $mform->setDefault('config_student_search', $default);
         $mform->setType('config_student_search', PARAM_BOOL);
-        //$mform->addHelpButton('config_student_search', 'student_search', 'block_caboodle');
+        $mform->addHelpButton('config_student_search', 'student_search', 'block_caboodle');
 
         $choices = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5);
         $default = 3;
@@ -68,10 +68,12 @@ class block_caboodle_edit_form extends block_edit_form
 
         foreach ($repositories as $k => $repository) {
 
-            $mform->addElement('html', '', "<div><h2>".$repository->name."</h2>");
+            // if resource enabled, display it:
+            if ($this->block->config->resource[$k] == 1) {
+                $mform->addElement('html', "<div><h2>".$repository->name."</h2>");
 
-            // if found search results, display it:
-            if (true) {
+                // check if resource has any search results
+                if (false) {
 
 //                <ul style=\"list-style-type: none;\">
 //                  <li>$cross search result 1 http://...</li>
@@ -80,19 +82,21 @@ class block_caboodle_edit_form extends block_edit_form
 //                  <li>$cross search result 4 http://...</li>
 //                </ul>
 
-            } else {
-                // nothing found
-                $mform->addElement('html', '', '<ul style="list-style-type: none;">');
-                $mform->addElement('html', '', '<li>Nothing found</li>');
-                $mform->addElement('html', '', '</ul>');
-            }
+                } else {
+                    // nothing found
+                    $mform->addElement('html', '<ul style="list-style-type: none;">');
+                    $mform->addElement('html', '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>');
+                    $mform->addElement('html', '</ul>');
+                }
 
-            $mform->addElement('html', '', "</div>");
-        }
+                $mform->addElement('html', "</div>");
+            } // if
+        } // foreach
 
     }
 
     /**
+     * Get all resources
      *
      * @global resource $DB
      * @return array

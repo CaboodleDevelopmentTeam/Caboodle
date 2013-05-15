@@ -50,3 +50,4 @@ $string['blacklist_help'] = 'Blacklisted URLs one per line';
 $string['search_results'] = 'Search results';
 $string['advancedsearch'] = 'Advanced search';
 $string['yourownsearch'] = 'Conduct your own search:';
+$string['nothing_found'] = 'Nothing found';

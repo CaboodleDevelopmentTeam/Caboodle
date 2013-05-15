@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/caboodle/db" VERSION="20130514" COMMENT="XMLDB file for Caboodle"
+<XMLDB PATH="blocks/caboodle/db" VERSION="20130515" COMMENT="XMLDB file for Caboodle"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="caboodle_resources" COMMENT="Caboodle resources">
+    <TABLE NAME="caboodle_resources" COMMENT="Caboodle resources" NEXT="caboodle_search_results">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Primary key." NEXT="type"/>
         <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Type of resource" PREVIOUS="id" NEXT="name"/>
@@ -16,6 +16,21 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="type" UNIQUE="false" FIELDS="type"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="caboodle_search_results" COMMENT="Cache for search results" PREVIOUS="caboodle_resources">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="resourceid"/>
+        <FIELD NAME="resourceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of resource" PREVIOUS="id" NEXT="searchstr"/>
+        <FIELD NAME="searchstr" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Search string" PREVIOUS="resourceid" NEXT="results"/>
+        <FIELD NAME="results" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="All results (default max = 10)" PREVIOUS="searchstr" NEXT="timestamp"/>
+        <FIELD NAME="timestamp" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Time at which search has been performed" PREVIOUS="results"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="resourceid" UNIQUE="false" FIELDS="resourceid"/>
       </INDEXES>
     </TABLE>
   </TABLES>

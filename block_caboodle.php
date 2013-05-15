@@ -60,10 +60,18 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->config->text;
         }
 
-        $this->content->text .= $this->get_search_form();
+        $this->content->text .= "<div>";
+
+        if ($this->config->student_search) {
+            $this->content->text .= $this->get_search_form();
+        }
+
+        // get all resources
+        
 
         echo "<pre>"; var_dump($this->config); echo "</pre>";
 
+        $this->content->text .= "</div>";
         return $this->content;
     }
 
