@@ -9,7 +9,7 @@ require_once('lib.php');
 
 // we reqire at least course id
 //$courseid = required_param('course', PARAM_INT);
-$courseid = required_param('courseid', PARAM_INT);
+$courseid = required_param('id', PARAM_INT);
 
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 

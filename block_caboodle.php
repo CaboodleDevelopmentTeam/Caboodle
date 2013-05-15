@@ -62,6 +62,8 @@ class block_caboodle extends block_base {
 
         $this->content->text .= $this->get_search_form();
 
+        echo "<pre>"; var_dump($this->config); echo "</pre>";
+
         return $this->content;
     }
 
@@ -76,14 +78,15 @@ class block_caboodle extends block_base {
 
         $text  = '<div class="searchform">';
         $text .= '<p>' . $yourownsearch . '</p>';
-        $text .= '<form action="'.$CFG->wwwroot.'/blocks/caboodle/search.php" style="display:inline"><fieldset class="invisiblefieldset">';
+        $text .= '<form action="?" style="display:inline"><fieldset class="invisiblefieldset">';
         $text .= '<legend class="accesshide">'.$strsearch.'</legend>';
-        $text .= '<input name="courseid" type="hidden" value="'.$this->page->course->id.'" />';  // course
+        $text .= '<input name="id" type="hidden" value="'.$this->page->course->id.'" />';  // course
         $text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>'.
-                 '<input id="searchform_search" name="search" type="text" size="12" />';
+                 '<input id="searchform_search" name="caboodlesearch" type="text" size="12" />';
         $text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
-        $text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?courseid='.$this->page->course->id.'">'.$advancedsearch.'</a>';
-        $text .= $OUTPUT->help_icon('search');
+        // advanced search
+//        $text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
+//        $text .= $OUTPUT->help_icon('search');
         $text .= '</fieldset></form></div>';
 
 
