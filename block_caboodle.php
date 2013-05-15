@@ -152,7 +152,7 @@ class block_caboodle extends block_base {
     }
 
     public function instance_allow_multiple() {
-          return false;
+          return true;
     }
 
     function has_config() { return true; }
