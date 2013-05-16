@@ -57,11 +57,11 @@ class caboodle {
 //
 //        // get all results matching $resid
 //        $sql = "SELECT searchstr, results FROM {caboodle_search_results} WHERE " .
-//               "$resid = '" . $resid . "' " .
+//               "resourceid = '" . $resourceid . "' " .
 //               "AND instance = '" . $instanceid . "' " .
 //               "AND timestamp > " . $valid_timestamp;
 
-        $results = $DB->get_records('caboodle_search_results', array('resourceid' => $resid, 'instance' => $instanceid));
+        $results = $DB->get_records('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid));
 
         return $results;
     } // get_results
@@ -69,8 +69,15 @@ class caboodle {
     public function get_all_expired_results($expire_after) {
         global $DB;
 
+        $timestamp = time() - $expire_after;
 
+        $sql = "SELECT id,searchstr,results,timestamp FROM {caboodle_search_results} WHERE
+            `timestamp` > " . $timestamp;
 
+        $results = $DB->get_records_sql($sql);
+
+        return $results;
     }
+
 
 } // class

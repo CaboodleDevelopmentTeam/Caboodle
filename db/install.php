@@ -18,6 +18,7 @@ function xmldb_block_caboodle_install() {
                             )
                         );
 
+    // add all resource types to db
     foreach ($caboodle_resource_types as $repo_name => $repo_class) {
         $record = new stdClass();
         $record->typename = $repo_name;
@@ -27,6 +28,7 @@ function xmldb_block_caboodle_install() {
         unset($record);
     }
 
+    // add all resources to db
     foreach ($caboodle_resources as $repo_id => $repo_data) {
 
         $record = new stdClass();

@@ -26,7 +26,6 @@ class block_caboodle_edit_form extends block_edit_form
         foreach ($repositories as $k => $repository) {
             $mform->addElement('advcheckbox', "config_resource[$k]", $repository->name);
             $mform->setType("config_resource[$k]", PARAM_BOOL);
-            //$mform->addHelpButton("resource_$k", 'resource', 'block_caboodle');
         }
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));

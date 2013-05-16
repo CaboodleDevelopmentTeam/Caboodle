@@ -167,6 +167,8 @@ class block_caboodle extends block_base {
             $caboodle = new caboodle();
             $expired_items = $caboodle->get_all_expired_results($removeafter);
 
+            
+
         return false;
     }
 }

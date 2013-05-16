@@ -26,10 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Caboodle';
-//$string['blockstring'] = 'Block string';
 // Configuration section strings
-//$string['headerconfig'] = 'Config section header';
-//$string['descconfig'] = 'Description of the config section';
 $string['label_results'] = 'Amount of search results to save';
 $string['desc_results'] = 'Search results being saved in block instance cache per resource';
 $string['label_removecache'] = 'Clear cache after (seconds):';
