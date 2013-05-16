@@ -23,21 +23,6 @@ class block_caboodle_edit_form extends block_edit_form
         //$repositories = $this->get_resources();
         $repositories = caboodle::get_resources();
 
-        if (empty($repositories)) {
-
-           global $DB;
-           $record = new stdClass();
-           $record->type = 1; // type SRU interface from Jisc MediaHub
-           $record->name = "Jisc MediaHub (SRU interface)";
-           $record->url = "http://m2m.edina.ac.uk/sru/mediahub";
-
-           $DB->insert_record('caboodle_resources', $record);
-
-           //$repositories = $this->get_resources();
-           $repositories = caboodle::get_resources();
-        }
-
-
         foreach ($repositories as $k => $repository) {
             $mform->addElement('advcheckbox', "config_resource[$k]", $repository->name);
             $mform->setType("config_resource[$k]", PARAM_BOOL);
