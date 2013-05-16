@@ -149,28 +149,56 @@ class block_caboodle extends block_base {
     }
 
     public function instance_allow_multiple() {
-          return true;
+        return true;
     }
 
     function has_config() { return true; }
 
     public function cron() {
-            mtrace("block_caboodle cron");
+        global $DB;
+        mtrace("block_caboodle cron");
 
-            // get configuration options
-            $numresults = get_config('caboodle', 'numresults');
-            $removeafter = get_config('caboodle', 'removeafter');
+        // get configuration options
+        $numresults = get_config('caboodle', 'numresults');
+        $removeafter = get_config('caboodle', 'removeafter');
 
-            $caboodle = new caboodle();
-            mtrace('Clean expired items...');
-            $expired_items = $caboodle->get_all_expired_results($removeafter);
+        $caboodle = new caboodle();
 
+        mtrace('Perform search...');
+        $instances = $caboodle->get_all_block_instances();
 
-            mtrace('Perform search...');
-            $instances = $caboodle->get_all_block_instances();
+        $timestamp = time() - $removeafter; // timestamp when records are still "valid"
 
-            
+        foreach ($instances as $instranceid => $instance) {
+            foreach ($instance->configdata->resource as $resourceid => $resource_enabled) {
+
+                //$search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instranceid));
+
+                mtrace("Processing resource $resourceid");
+                // resource needs to be enabled
+                if ($resource_enabled) {
+                    mtrace("Resource enabled");
+                    // we'll proceed only when there is a search query
+                    //var_dump($instance->configdata);
+                    if(!empty($instance->configdata->search)) {
+                        mtrace("Search query: " . $instance->configdata->search);
+
+                        $sql = "SELECT rt.typeclass, r.type FROM {caboodle_resources} r, {caboodle_resource_types} rt
+                                WHERE r.id = $resourceid
+                                AND r.type = rt.id";
+
+                        $resdata = $DB->get_record_sql($sql);
+                        var_dump($resdata);
+
+                    } // if
+
+                } // if
+            }// foreach
+        } // foreach
+
+        mtrace('Clean expired items...');
+        $expired_items = $caboodle->get_all_expired_results($removeafter);
 
         return false;
-    }
+    } // cron
 }

@@ -72,12 +72,13 @@ class caboodle {
         $timestamp = time() - $expire_after;
 
         $sql = "SELECT id,searchstr,results,timestamp FROM {caboodle_search_results} WHERE
-            `timestamp` > " . $timestamp;
+            `timestamp` < " . $timestamp;
 
         $results = $DB->get_records_sql($sql);
 
         return $results;
     }
+
 
     public function get_all_block_instances() {
         global $DB;
