@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
+ * Component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
  *
  * @package   caboodle
  * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
@@ -28,5 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 require_once(dirname(__FILE__) . 'locallib.php');
 
 class caboodle_sru_interface extends caboodle_api {
-    
+
+    public function search($query) {
+        return array();
+    }
+
 }

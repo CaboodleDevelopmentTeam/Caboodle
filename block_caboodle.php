@@ -14,10 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * caboodle block caps.
- *
- */
+
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -165,7 +162,12 @@ class block_caboodle extends block_base {
             $removeafter = get_config('caboodle', 'removeafter');
 
             $caboodle = new caboodle();
+            mtrace('Clean expired items...');
             $expired_items = $caboodle->get_all_expired_results($removeafter);
+
+
+            mtrace('Perform search...');
+            $instances = $caboodle->get_all_block_instances();
 
             
 

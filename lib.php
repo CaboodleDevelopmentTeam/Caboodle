@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
+ * Component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
  *
  * @package   caboodle
  * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
@@ -79,5 +79,23 @@ class caboodle {
         return $results;
     }
 
+    public function get_all_block_instances() {
+        global $DB;
+
+        $instances = $DB->get_records('block_instances', array('blockname' => 'caboodle'), 'id,configdata');
+
+        foreach($instances as $id => $data) {
+            $instances[$id]->configdata = $this->decode_config($data->configdata);
+        }
+
+        return $instances;
+    }
+
+    public function decode_config($configdata) {
+
+        $configdata = unserialize(base64_decode($configdata));
+
+        return $configdata;
+    }
 
 } // class

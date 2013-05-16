@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
+ * Component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
  *
  * @package   caboodle
  * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
@@ -43,7 +43,7 @@ abstract class caboodle_api implements caboodle_api_interface {
     }
 
     public function search($query) {
-        return true;
+        return array();
     }
 
 } // abstract

@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
+ * Component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
  *
  * @package   caboodle
  * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
@@ -27,6 +27,41 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__) . 'locallib.php');
 
+/**
+ * Class caboodle_default returns static query results for testing purposes
+ * It may be extended to use real API in the future
+ */
 class caboodle_default extends caboodle_api {
-    
+
+    /**
+     * This method returns static search result
+     *
+     * @param type $query
+     * @return array
+     */
+    public function search($query) {
+
+        $ret = array(
+            0 => array(
+                'title' => 'Title 1',
+                'url'   => 'http://localhost'
+            ),
+            1 => array(
+                'title' => 'Title 2',
+                'url'   => 'http://localhost'
+            ),
+            2 => array(
+                'title' => 'Title 3',
+                'url'   => 'http://localhost'
+            ),
+            3 => array(
+                'title' => 'Title 4',
+                'url'   => 'http://localhost'
+            )
+        );
+
+
+        return $ret;
+    }
+
 }
