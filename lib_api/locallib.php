@@ -96,8 +96,15 @@ abstract class caboodle_api implements caboodle_api_interface {
         throw new moodle_exception('search_api not implemented');
     }
 
+    
+    public function is_expired() {
+        global $DB;
 
-     private function decode_results($results) {
+
+    }
+
+
+    private function decode_results($results) {
 
         $results = unserialize(base64_decode($results));
 

@@ -88,7 +88,7 @@ class caboodle_sru_interface extends caboodle_api {
 
     protected function clean_query_string($query) {
 
-        $query = urlencode(htmlentities(strip_tags($query)));
+        $query = rawurlencode(htmlentities(strip_tags($query)));
 
         return $query;
     }
