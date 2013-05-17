@@ -35,9 +35,11 @@ class caboodle_sru_interface extends caboodle_api {
 
     protected function search_api($query) {
 
+        $query = $this->clean_query_string($query);
+
         $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
                 $query . '&maximumRecords=' . $this->_numresults;
-        //var_dump($url);
+        var_dump($url);
         $curl = curl_init($url);
 
         $options = array(
@@ -82,6 +84,13 @@ class caboodle_sru_interface extends caboodle_api {
 
 
         return $ret;
+    }
+
+    protected function clean_query_string($query) {
+
+        $query = urlencode(htmlentities(strip_tags($query)));
+
+        return $query;
     }
 
 }

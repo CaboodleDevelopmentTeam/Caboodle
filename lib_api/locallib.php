@@ -84,8 +84,6 @@ abstract class caboodle_api implements caboodle_api_interface {
             $this->_searchstr = $query;
         }
 
-        $query = $this->clean_query_string($query);
-
         $results = $this->search_api($query);
 
         // update search data
@@ -134,13 +132,6 @@ abstract class caboodle_api implements caboodle_api_interface {
         //var_dump($record);
 
         return true;
-    }
-
-    protected function clean_query_string($query) {
-
-        $query = htmlspecialchars($query,  ENT_COMPAT | ENT_HTML401, 'UTF-8');
-
-        return $query;
     }
 
 } // abstract
