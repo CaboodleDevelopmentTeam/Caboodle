@@ -25,13 +25,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__) . 'locallib.php');
+require_once(dirname(__FILE__) . '/locallib.php');
 
 /**
  * Class caboodle_default returns static query results for testing purposes
  * It may be extended to use real API in the future
  */
 class caboodle_default extends caboodle_api {
+
+    public function __construct($resourceid, $instanceid, $numresults = 20) {
+        parent::__construct($resourceid, $instanceid, $numresults);
+    }
 
     /**
      * This method returns static search result

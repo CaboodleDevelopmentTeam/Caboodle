@@ -33,17 +33,66 @@ abstract class caboodle_api implements caboodle_api_interface {
     public $name;
     public $url;
 
-    public function __construct($resourceid) {
+    protected $_searchid;
+    protected $_searchdata;
+    protected $_numresults;
+    protected $_transfer_timeout = 5000; // 5000ms == 5 seconds
+
+    /**
+     * __construct
+     *
+     * @global resource $DB
+     * @param int  $resourceid - id of resource from caboodle_resources table
+     * @param int  $instanceid - id of block instance from blocks table
+     * @param int  $numresults - maximum number of results to save, defaults 20
+     */
+    public function __construct($resourceid, $instanceid, $numresults = 20) {
         global $DB;
 
         $resource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
 
         $this->name = $resource->name;
         $this->url = $resource->url;
+        $this->_numresults = $numresults;
+
+        if ($search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
+
+            $this->_searchid = $search_data->id;
+            $this->_searchdata = $this->decode_results($search_data->results);
+
+        } else {
+
+            $this->_searchid = 0;
+            $this->_searchdata = null;
+
+        }
+
+    } // __construct
+
+     private function decode_results($results) {
+
+        $results = unserialize(base64_decode($results));
+
+        return $results;
     }
 
-    public function search($query) {
-        return array();
+    private function encode_results($results) {
+
+        $results = base64_encode(serialize($results));
+
+        return $results;
+    }
+
+    protected function save_results($results) {
+
+        return true;
+    }
+
+    protected function clean_query_string($query) {
+
+        $query = htmlspecialchars($query,  ENT_COMPAT | ENT_HTML401, 'UTF-8');
+
+        return $query;
     }
 
 } // abstract

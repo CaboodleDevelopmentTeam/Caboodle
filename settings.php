@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 $settings->add(new admin_setting_configtext('caboodle/numresults',
                                             get_string('label_results', 'block_caboodle'),
                                             get_string('desc_results', 'block_caboodle'),
-                                            10, // default vaule
+                                            20, // default vaule
                                             PARAM_INT
                                             ));
 

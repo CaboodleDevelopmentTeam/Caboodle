@@ -25,12 +25,63 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__) . 'locallib.php');
+require_once(dirname(__FILE__) . '/locallib.php');
 
 class caboodle_sru_interface extends caboodle_api {
 
+    public function __construct($resourceid, $instanceid, $numresults = 20) {
+        parent::__construct($resourceid, $instanceid, $numresults);
+    }
+
     public function search($query) {
-        return array();
+
+        $query = $this->clean_query_string($query);
+
+        $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
+                $query . '&maximumRecords=' . $this->_numresults;
+        //var_dump($url);
+        $curl = curl_init($url);
+
+        $options = array(
+            CURLOPT_CONNECTTIMEOUT_MS => $this->_transfer_timeout,  // set default connection timeout
+            CURLOPT_TIMEOUT_MS => $this->_transfer_timeout,         // set default transfer timeout
+            CURLOPT_RETURNTRANSFER => true,                         // return all data from connection
+            CURLOPT_FAILONERROR => true,                            // pay attention to http errors
+            CURLOPT_VERBOSE    => true                              // show verbose output to stderr
+        );
+
+        curl_setopt_array($curl, $options);
+
+        if($xmldata = curl_exec($curl)) {
+            $xmldata = $this->parse_data($xmldata);
+        } else return false;
+
+        return $xmldata;
+    }
+
+    private function parse_data($data) {
+
+        $xml = new DOMDocument();
+        $xml->loadXML($data);
+
+        $mhubNS = "http://m2m.edina.ac.uk/ns/mediahub";
+        $dcNS = "http://purl.org/dc/elements/1.1/";
+
+        $count = 0;
+
+        foreach ($xml->getElementsByTagNameNS($mhubNS, 'record') as $element) {
+
+//            mtrace('Title: ' . $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent);
+//            mtrace('URL: ' . $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent);
+
+            $ret[$count]['title'] = $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent;
+            $ret[$count]['url'] = $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent;
+
+            $count++;
+        }
+
+
+        return $ret;
     }
 
 }

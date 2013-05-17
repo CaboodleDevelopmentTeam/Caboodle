@@ -169,26 +169,47 @@ class block_caboodle extends block_base {
 
         $timestamp = time() - $removeafter; // timestamp when records are still "valid"
 
-        foreach ($instances as $instranceid => $instance) {
+        foreach ($instances as $instanceid => $instance) {
             foreach ($instance->configdata->resource as $resourceid => $resource_enabled) {
 
-                //$search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instranceid));
-
-                mtrace("Processing resource $resourceid");
+                mtrace("Processing resource $resourceid ...");
                 // resource needs to be enabled
                 if ($resource_enabled) {
-                    mtrace("Resource enabled");
+                    mtrace("\tResource $resourceid is enabled!");
                     // we'll proceed only when there is a search query
                     //var_dump($instance->configdata);
                     if(!empty($instance->configdata->search)) {
-                        mtrace("Search query: " . $instance->configdata->search);
+                        mtrace("\tSearch query: " . $instance->configdata->search);
 
                         $sql = "SELECT rt.typeclass, r.type FROM {caboodle_resources} r, {caboodle_resource_types} rt
                                 WHERE r.id = $resourceid
                                 AND r.type = rt.id";
 
                         $resdata = $DB->get_record_sql($sql);
-                        var_dump($resdata);
+
+                        $api_class_file = dirname(__FILE__) . '/lib_api/' .$resdata->typeclass . ".php";
+                        $api_class = $resdata->typeclass;
+
+                        if (file_exists($api_class_file) && is_readable($api_class_file)) {
+                            mtrace("\tExecuting API class: " . $resdata->typeclass);
+                            require_once($api_class_file);
+
+                            $api = new $api_class($resourceid, $instanceid, $numresults);
+                            mtrace("\tExecuting search");
+                            $search_result = $api->search($instance->configdata->search);
+
+                            
+
+                            mtrace("\tDone searching");
+
+
+
+                        } else {
+                            mtrace("\tError: API class does not exist or not readable: " . $api_class_file);
+
+                        }
+
+                        //var_dump($resdata);
 
                     } // if
 
