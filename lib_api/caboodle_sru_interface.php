@@ -33,9 +33,7 @@ class caboodle_sru_interface extends caboodle_api {
         parent::__construct($resourceid, $instanceid, $numresults);
     }
 
-    public function search($query) {
-
-        $query = $this->clean_query_string($query);
+    protected function search_api($query) {
 
         $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
                 $query . '&maximumRecords=' . $this->_numresults;
@@ -53,7 +51,9 @@ class caboodle_sru_interface extends caboodle_api {
         curl_setopt_array($curl, $options);
 
         if($xmldata = curl_exec($curl)) {
+            //var_dump($xmldata);
             $xmldata = $this->parse_data($xmldata);
+
         } else return false;
 
         return $xmldata;

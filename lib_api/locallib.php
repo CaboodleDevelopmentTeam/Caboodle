@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 interface caboodle_api_interface {
-    public function search($query); // execute search and return N results
+    public function search($query);         // execute search and return N results
 }
 
 abstract class caboodle_api implements caboodle_api_interface {
@@ -34,9 +34,13 @@ abstract class caboodle_api implements caboodle_api_interface {
     public $url;
 
     protected $_searchid;
+    protected $_searchstr;
     protected $_searchdata;
     protected $_numresults;
     protected $_transfer_timeout = 5000; // 5000ms == 5 seconds
+
+    private $resourceid;
+    private $instanceid;
 
     /**
      * __construct
@@ -49,6 +53,9 @@ abstract class caboodle_api implements caboodle_api_interface {
     public function __construct($resourceid, $instanceid, $numresults = 20) {
         global $DB;
 
+        $this->resourceid = $resourceid;
+        $this->instanceid = $instanceid;
+
         $resource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
 
         $this->name = $resource->name;
@@ -58,6 +65,7 @@ abstract class caboodle_api implements caboodle_api_interface {
         if ($search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
 
             $this->_searchid = $search_data->id;
+            $this->_searchstr = $search_data->searchstr;
             $this->_searchdata = $this->decode_results($search_data->results);
 
         } else {
@@ -68,6 +76,28 @@ abstract class caboodle_api implements caboodle_api_interface {
         }
 
     } // __construct
+
+    public function search($query) {
+
+        // check if anything changed
+        if (strcmp($this->_searchstr, $query) != 0) {
+            $this->_searchstr = $query;
+        }
+
+        $query = $this->clean_query_string($query);
+
+        $results = $this->search_api($query);
+
+        // update search data
+        if ($results) $this->_searchdata = $results;
+
+        return $results;
+    }
+
+    protected function search_api($query) {
+        throw new moodle_exception('search_api not implemented');
+    }
+
 
      private function decode_results($results) {
 
@@ -83,7 +113,25 @@ abstract class caboodle_api implements caboodle_api_interface {
         return $results;
     }
 
-    protected function save_results($results) {
+    public function save_results() {
+        global $DB;
+
+        $record = new stdClass();
+        $record->resourceid = $this->resourceid;
+        $record->instance = $this->instanceid;
+        $record->searchstr = $this->_searchstr;
+        $record->results = $this->encode_results($this->_searchdata);
+        $record->timestamp = time();
+
+        if ($this->_searchid > 0) {
+            $record->id = $this->_searchid;
+
+            $DB->update_record('caboodle_search_results', $record);
+        } else {
+            $this->_searchid = $DB->insert_record('caboodle_search_results', $record);
+        }
+
+        //var_dump($record);
 
         return true;
     }

@@ -74,6 +74,7 @@ class block_caboodle extends block_base {
         if (!empty($search_str)) {
 
             // get all resources
+            $caboodle = new caboodle();
             $resources = caboodle::get_resources();
 
             $this->content->text .= '<h3>Search on "<i>' . $search_str . '</i>"</h3>';
@@ -83,16 +84,16 @@ class block_caboodle extends block_base {
 
                     $this->content->text .= "<h4>" . $resource->name . "</h4>";
 
-                    $results = caboodle::get_results($resourceid, $this->instance->id);
+                    $results = $caboodle->get_results($resourceid, $this->instance->id);
 
-                    $this->content->text .= '<ul style="list-style-type: none;">';
+                    $this->content->text .= '<ul>';
 
                     if (!empty($results)) {
 
                         foreach($results as $r => $result) {
-                            $this->content->text .= "<li>";
+                            $this->content->text .= '<li style="margin: 3px 0;">';
 
-                            $this->content->text .= "Results go here";
+                            $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
 
                             $this->content->text .= "</li>";
                         }
@@ -196,9 +197,16 @@ class block_caboodle extends block_base {
 
                             $api = new $api_class($resourceid, $instanceid, $numresults);
                             mtrace("\tExecuting search");
-                            $search_result = $api->search($instance->configdata->search);
+                            if ($search_result = $api->search($instance->configdata->search)) {
 
-                            
+                                $api->save_results();
+
+                            } else {
+                                mtrace("Error: curl failed");
+                                var_dump($search_result);
+                            }
+
+
 
                             mtrace("\tDone searching");
 

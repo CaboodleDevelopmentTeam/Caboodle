@@ -50,7 +50,7 @@ class caboodle {
         return $resources;
     } // get_resources
 
-    public static function get_results($resourceid, $instanceid) {
+    public function get_results($resourceid, $instanceid) {
         global $DB;
 
 //        $valid_timestamp = 0;
@@ -61,9 +61,11 @@ class caboodle {
 //               "AND instance = '" . $instanceid . "' " .
 //               "AND timestamp > " . $valid_timestamp;
 
-        $results = $DB->get_records('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid));
+        $results = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid));
 
-        return $results;
+        $ret = $this->decode_search_results($results->results);
+
+        return $ret;
     } // get_results
 
     public function get_all_expired_results($expire_after) {
@@ -92,11 +94,16 @@ class caboodle {
         return $instances;
     }
 
-    public function decode_config($configdata) {
+    private function decode_config($configdata) {
 
         $configdata = unserialize(base64_decode($configdata));
 
         return $configdata;
     }
+
+    private function decode_search_results($results) {
+        return $this->decode_config($results);
+    }
+
 
 } // class
