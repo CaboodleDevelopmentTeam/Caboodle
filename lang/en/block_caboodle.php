@@ -50,6 +50,7 @@ $string['blacklist_help'] = 'Blacklisted URLs one per line';
 $string['search_results'] = 'Search results';
 $string['advancedsearch'] = 'Advanced search';
 $string['yourownsearch'] = 'Conduct your own search:';
+$string['search_on'] = '<h3>Search on "<i>{$a}</i>"</h3>';
 $string['user_search_on'] = '<h3>User search on "<i>{$a}</i>"</h3>';
 $string['nosearchstring'] = 'No search string provided!';
 $string['nothing_found'] = 'Nothing found';

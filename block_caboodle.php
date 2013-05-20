@@ -82,7 +82,7 @@ class block_caboodle extends block_base {
             $caboodle = new caboodle();
             $resources = caboodle::get_resources();
 
-            $this->content->text .= '<h3>Search on "<i>' . $search_str . '</i>"</h3>';
+            $this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
 
             foreach ($resources as $resourceid => $resource) {
                 if ($this->config->resource[$resourceid] == 1) {
@@ -95,13 +95,15 @@ class block_caboodle extends block_base {
 
                     if (!empty($results)) {
 
-                        foreach($results as $r => $result) {
-                            $this->content->text .= '<li style="margin: 3px 0;">';
+                        for ($i = 0; $i < $this->config->search_items_displayed; $i++) {
 
-                            $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
+                            if (isset($results[$i])) {
+                                $this->content->text .= '<li style="margin: 3px 0;">';
+                                $this->content->text .= '<a href="' . $results[$i]['url']  .'">' . $results[$i]['title'] . '</a>';
+                                $this->content->text .= "</li>";
+                            }
 
-                            $this->content->text .= "</li>";
-                        }
+                        } // for
 
                     } else {
                         // no results
@@ -286,11 +288,7 @@ class block_caboodle extends block_base {
                                 var_dump($search_result);
                             }
 
-
-
                             mtrace("\tDone searching");
-
-
 
                         } else {
                             mtrace("\tError: API class does not exist or not readable: " . $api_class_file);
@@ -305,8 +303,8 @@ class block_caboodle extends block_base {
             }// foreach
         } // foreach
 
-        mtrace('Clean expired items...');
-        $expired_items = $caboodle->get_all_expired_results($removeafter);
+//        mtrace('Clean expired items...');
+//        $expired_items = $caboodle->get_all_expired_results($removeafter);
 
         return false;
     } // cron
