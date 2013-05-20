@@ -8,11 +8,11 @@ class block_caboodle_edit_form extends block_edit_form
 {
 
     protected function specific_definition($mform) {
+        global $OUTPUT, $PAGE, $CFG;
 
-        global $OUTPUT, $CFG;
 
-        // Section header title according to language file.
-        // $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
+//        $PAGE->requires->yui_module('moodle-course-formatchooser', 'M.course.init_formatchooser',
+//                array(array('formid' => $mform->getAttribute('id'))));
 
         // A sample string variable with a default value.
         $mform->setDefault('config_text', 'default value');
