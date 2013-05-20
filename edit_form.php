@@ -51,6 +51,8 @@ class block_caboodle_edit_form extends block_edit_form
         $mform->addElement('header', 'general', get_string('search_results', 'block_caboodle'));
         $cross = $OUTPUT->pix_icon('i/cross_red_small','blacklist');
 
+        $caboodle = new caboodle();
+
         foreach ($repositories as $k => $repository) {
 
             // if resource enabled, display it:
@@ -58,14 +60,22 @@ class block_caboodle_edit_form extends block_edit_form
                 $mform->addElement('html', "<div><h2>".$repository->name."</h2>");
 
                 // check if resource has any search results
-                if (false) {
+                $results = $caboodle->get_results($k, $this->block->instance->id);
 
-//                <ul style=\"list-style-type: none;\">
+                if (!empty($results)) {
+
+                    $mform->addElement('html', '<ul style="list-style-type: none;">');
+
+                    foreach($results as $result_id => $result_data) {
+
+                        $mform->addElement('html', '<li style="margin: 3px 0;">');
+                        $mform->addElement('html', '<a href="' . $result_data['url']  .'">' . $result_data['title'] .'</a>' . ' (' . $result_data['url'] . ')' );
+                        $mform->addElement('html', '</li>');
 //                  <li>$cross search result 1 http://...</li>
-//                  <li>$cross search result 2 http://...</li>
-//                  <li>$cross search result 3 http://...</li>
-//                  <li>$cross search result 4 http://...</li>
-//                </ul>
+
+                    }
+
+                    $mform->addElement('html', '</ul>');
 
                 } else {
                     // nothing found
