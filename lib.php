@@ -42,7 +42,7 @@ class caboodle {
      * @global resource $DB
      * @return array
      */
-    public static function get_resources() {
+    public function get_resources() {
         global $DB;
 
         $resources = $DB->get_records('caboodle_resources', array());
@@ -67,6 +67,14 @@ class caboodle {
 
         return $ret;
     } // get_results
+
+    public function get_search_string($resourceid, $instanceid) {
+        global $DB;
+
+        $results = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid));
+
+        return $results->searchstr;
+    }
 
     public function get_all_expired_results($expire_after) {
         global $DB;

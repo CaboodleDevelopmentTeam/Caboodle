@@ -80,7 +80,7 @@ class block_caboodle extends block_base {
 
             // get all resources
             $caboodle = new caboodle();
-            $resources = caboodle::get_resources();
+            $resources = $caboodle->get_resources();
 
             $this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
 
@@ -94,16 +94,25 @@ class block_caboodle extends block_base {
                     $this->content->text .= '<ul>';
 
                     if (!empty($results)) {
+                        // get search string saved in DB
+                        $old_search_str = $caboodle->get_search_string($resourceid, $this->instance->id);
 
-                        for ($i = 0; $i < $this->config->search_items_displayed; $i++) {
+                        // check if searc string in DB has ben updated with the one in configuration
+                        if (strcmp($search_str, $old_search_str) == 0) {
 
-                            if (isset($results[$i])) {
-                                $this->content->text .= '<li style="margin: 3px 0;">';
-                                $this->content->text .= '<a href="' . $results[$i]['url']  .'">' . $results[$i]['title'] . '</a>';
-                                $this->content->text .= "</li>";
-                            }
+                            for ($i = 0; $i < $this->config->search_items_displayed; $i++) {
 
-                        } // for
+                                if (isset($results[$i])) {
+                                    $this->content->text .= '<li style="margin: 3px 0;">';
+                                    $this->content->text .= '<a href="' . $results[$i]['url']  .'">' . $results[$i]['title'] . '</a>';
+                                    $this->content->text .= "</li>";
+                                }
+
+                            } // for
+
+                        } else {
+                            $this->content->text .= '<li style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
+                        }
 
                     } else {
                         // no results

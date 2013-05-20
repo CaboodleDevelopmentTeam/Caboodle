@@ -49,6 +49,7 @@ $string['blacklist'] = 'Blacklist';
 $string['blacklist_help'] = 'Blacklisted URLs one per line';
 $string['search_results'] = 'Search results';
 $string['advancedsearch'] = 'Advanced search';
+$string['search_not_performed'] = 'Search not yet performed. It\'ll be updated soon.';
 $string['yourownsearch'] = 'Conduct your own search:';
 $string['search_on'] = '<h3>Search on "<i>{$a}</i>"</h3>';
 $string['user_search_on'] = '<h3>User search on "<i>{$a}</i>"</h3>';
