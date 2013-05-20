@@ -39,7 +39,7 @@ class caboodle_sru_interface extends caboodle_api {
 
         $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
                 $query . '&maximumRecords=' . $this->_numresults;
-        var_dump($url);
+        //var_dump($url);
         $curl = curl_init($url);
 
         $options = array(

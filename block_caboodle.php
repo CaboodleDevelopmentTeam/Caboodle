@@ -53,13 +53,12 @@ class block_caboodle extends block_base {
         if (empty($currentcontext)) {
             return $this->content;
         }
-        if ($this->page->course->id == SITEID) {
-            $this->context->text .= "site context";
-        }
-
-        if (! empty($this->config->text)) {
-            $this->content->text .= $this->config->text;
-        }
+//        if ($this->page->course->id == SITEID) {
+//            $this->context->text .= "site context";
+//        }
+//        if (! empty($this->config->text)) {
+//            $this->content->text .= $this->config->text;
+//        }
 
         $this->content->text .= "<div>";
 
@@ -67,7 +66,13 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->get_search_form();
         }
 
-        //echo "<pre>"; var_dump($this->instance); echo "</pre>";
+        // show user search (if any)
+        if (!empty($_SESSION['caboodle_usersearch_str']) || (! is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
+            $this->content->text .= $this->get_user_search();
+            //echo "<pre>"; var_dump($this->config); echo "</pre>";
+        }
+
+        //echo "<pre>"; var_dump($_SESSION); echo "</pre>";
 
         $search_str = $this->config->search;
 
@@ -115,6 +120,81 @@ class block_caboodle extends block_base {
 
         $this->content->text .= "</div>";
         return $this->content;
+    }
+
+    public function get_user_search() {
+        global $DB;
+
+        if(!isset($_SESSION['caboodle_usersearch_str'])) {
+
+            $_SESSION['caboodle_usersearch_str'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+
+        } else if (strcmp($_SESSION['caboodle_usersearch_str'], optional_param('caboodlesearch', NULL, PARAM_ALPHANUM)) != 0) {
+
+            $_SESSION['caboodle_usersearch_str'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+            unset($_SESSION['caboodle_usersearch_result']);
+
+        }
+
+
+        $search_str = $_SESSION['caboodle_usersearch_str'];
+
+            // get all resources
+            $caboodle = new caboodle();
+            $resources = caboodle::get_resources();
+
+            //$this->content->text .= '<h3>User search on "<i>' . $search_str . '</i>"</h3>';
+            $this->content->text .= get_string('user_search_on', 'block_caboodle', $search_str);
+
+            foreach ($resources as $resourceid => $resource) {
+                if ($this->config->resource[$resourceid] == 1) {
+
+                    $this->content->text .= "<h4>" . $resource->name . "</h4>";
+
+                    if (empty($_SESSION['caboodle_usersearch_result'])) {
+
+                        $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
+                                WHERE r.type = rt.id
+                                AND r.id = ". $resourceid;
+                        $resource_data = $DB->get_record_sql($sql);
+
+                        $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
+                        $api_class = $resource_data->typeclass;
+
+                        require_once($api_class_file);
+
+                        $api = new $api_class($resourceid, $this->instance->id, $this->config->search_items_displayed);
+
+                        $results = $api->search($search_str);
+                        $_SESSION['caboodle_usersearch_result'] = $results;
+
+                    } else {
+                        $results = $_SESSION['caboodle_usersearch_result'];
+                    }
+
+
+                    $this->content->text .= '<ul>';
+
+                    if (!empty($results)) {
+
+                        foreach($results as $r => $result) {
+                            $this->content->text .= '<li style="margin: 3px 0;">';
+
+                            $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
+
+                            $this->content->text .= "</li>";
+                        }
+
+                    } else {
+                        // no results
+                        $this->content->text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                    }
+
+                    $this->content->text .= "</ul>";
+
+                } // if
+            } // foreach
+
     }
 
     public function get_search_form() {
