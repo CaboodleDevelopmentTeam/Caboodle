@@ -4,15 +4,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/caboodle/lib.php');
 
-class block_caboodle_edit_form extends block_edit_form
-{
+class block_caboodle_edit_form extends block_edit_form {
 
     protected function specific_definition($mform) {
         global $OUTPUT, $PAGE, $CFG;
 
-
-//        $PAGE->requires->yui_module('moodle-course-formatchooser', 'M.course.init_formatchooser',
-//                array(array('formid' => $mform->getAttribute('id'))));
+        // add js which do automatic blacklisting
+        $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
 
         // A sample string variable with a default value.
         $mform->setDefault('config_text', 'default value');
@@ -20,8 +18,8 @@ class block_caboodle_edit_form extends block_edit_form
 
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
-        //$repositories = $this->get_resources();
-        $repositories = caboodle::get_resources();
+        $caboodle = new caboodle();
+        $repositories = $caboodle->get_resources();
 
         foreach ($repositories as $k => $repository) {
             $mform->addElement('advcheckbox', "config_resource[$k]", $repository->name);
