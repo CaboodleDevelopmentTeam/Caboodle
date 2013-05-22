@@ -60,12 +60,6 @@ class block_caboodle extends block_base {
         if (empty($currentcontext)) {
             return $this->content;
         }
-//        if ($this->page->course->id == SITEID) {
-//            $this->context->text .= "site context";
-//        }
-//        if (! empty($this->config->text)) {
-//            $this->content->text .= $this->config->text;
-//        }
 
         $this->content->text .= "<div>";
 
@@ -107,15 +101,21 @@ class block_caboodle extends block_base {
                         // check if searc string in DB has ben updated with the one in configuration
                         if (strcmp($search_str, $old_search_str) == 0) {
 
-                            for ($i = 0; $i < $this->config->search_items_displayed; $i++) {
+                            // get and filter blacklist urls
+                            $blacklist = $this->get_blacklist();
+                            $count = 0;
 
-                                if (isset($results[$i])) {
+                            // display list of elements
+                            foreach ($results as $rid => $rdata) {
+
+                                if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
                                     $this->content->text .= '<li style="margin: 3px 0;">';
-                                    $this->content->text .= '<a href="' . $results[$i]['url']  .'">' . $results[$i]['title'] . '</a>';
+                                    $this->content->text .= '<a href="' . $rdata['url']  .'">' . $rdata['title'] . '</a>';
                                     $this->content->text .= "</li>";
-                                }
+                                    $count++;
+                                } // if
 
-                            } // for
+                            } // foreach
 
                         } else {
                             $this->content->text .= '<li style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
@@ -138,6 +138,17 @@ class block_caboodle extends block_base {
 
         $this->content->text .= "</div>";
         return $this->content;
+    }
+
+    public function get_blacklist() {
+
+        $blacklist = explode("\n", $this->config->blacklist);
+
+        foreach ($blacklist as $index => $url) {
+            $blacklist[$index] = rtrim($url);
+        }
+
+        return $blacklist;
     }
 
     public function get_user_search() {

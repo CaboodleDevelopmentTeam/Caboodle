@@ -83,16 +83,30 @@ class block_caboodle_edit_form extends block_edit_form {
                 // check if resource has any search results
                 $results = $caboodle->get_results($k, $this->block->instance->id);
 
+                $blacklist = explode("\n", $this->block->config->blacklist);
+
+                foreach ($blacklist as $index => $url) {
+                    $blacklist[$index] = rtrim($url);
+                }
+
+                //echo "<pre>"; var_dump($blacklist); echo "</pre>";
+
+
                 if (!empty($results)) {
 
                     $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
 
                     foreach($results as $result_id => $result_data) {
 
-                        $mform->addElement('html', '<li class="caboodle_blacklister_item" style="margin: 3px 0;">' . $cross . '&nbsp;');
-                        $mform->addElement('html', '<a href="' . $result_data['url']  .'">' . $result_data['title'] .'</a>' . ' (' . $result_data['url'] . ')' );
-                        $mform->addElement('html', '</li>');
-//                  <li>$cross search result 1 http://...</li>
+                        // filter out blacklisted urls
+                        if (!in_array($result_data['url'], $blacklist)) {
+
+                            $mform->addElement('html', '<li class="caboodle_blacklister_item" style="margin: 3px 0;">' . $cross . '&nbsp;');
+                            $mform->addElement('html', '<a href="' . $result_data['url']  .'">' . $result_data['title'] .'</a>' . ' (' . $result_data['url'] . ')' );
+                            $mform->addElement('html', '</li>');
+
+                        }
+
 
                     }
 
