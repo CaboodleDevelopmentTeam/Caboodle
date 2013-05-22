@@ -29,19 +29,33 @@ require_once(dirname(__FILE__) . '/locallib.php');
 
 class caboodle_sru_interface extends caboodle_api {
 
+    /**
+     * __construct
+     *
+     * @param type $resourceid
+     * @param type $instanceid
+     * @param type $numresults
+     */
     public function __construct($resourceid, $instanceid, $numresults = 20) {
         parent::__construct($resourceid, $instanceid, $numresults);
     }
 
+    /**
+     * Execute api-specific search
+     *
+     * @param type $query
+     * @return boolean
+     */
     protected function search_api($query) {
 
         $query = $this->clean_query_string($query);
 
         $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
                 $query . '&maximumRecords=' . $this->_numresults;
-        //var_dump($url);
+
         $curl = curl_init($url);
 
+        // set curl options
         $options = array(
             CURLOPT_CONNECTTIMEOUT_MS => $this->_transfer_timeout,  // set default connection timeout
             CURLOPT_TIMEOUT_MS => $this->_transfer_timeout,         // set default transfer timeout
@@ -53,7 +67,7 @@ class caboodle_sru_interface extends caboodle_api {
         curl_setopt_array($curl, $options);
 
         if($xmldata = curl_exec($curl)) {
-            //var_dump($xmldata);
+
             $xmldata = $this->parse_data($xmldata);
 
         } else return false;
@@ -61,6 +75,12 @@ class caboodle_sru_interface extends caboodle_api {
         return $xmldata;
     }
 
+    /**
+     * Parse XML to array and extracts only required data
+     *
+     * @param type $data
+     * @return array
+     */
     private function parse_data($data) {
 
         $xml = new DOMDocument();
@@ -82,10 +102,16 @@ class caboodle_sru_interface extends caboodle_api {
             $count++;
         }
 
-
         return $ret;
     }
 
+    /**
+     * Strip html and php tags, convert all applicable characters to html entities
+     * url encodes string (eg. space becomes %20)
+     *
+     * @param type $query
+     * @return type
+     */
     protected function clean_query_string($query) {
 
         $query = rawurlencode(htmlentities(strip_tags($query)));
@@ -93,4 +119,4 @@ class caboodle_sru_interface extends caboodle_api {
         return $query;
     }
 
-}
+} // caboodle_sru_interface

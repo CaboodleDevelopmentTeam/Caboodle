@@ -50,16 +50,16 @@ class caboodle {
         return $resources;
     } // get_resources
 
+    /**
+     * Retrieve and decode search results from db
+     *
+     * @global resource $DB
+     * @param type $resourceid
+     * @param type $instanceid
+     * @return array
+     */
     public function get_results($resourceid, $instanceid) {
         global $DB;
-
-//        $valid_timestamp = 0;
-//
-//        // get all results matching $resid
-//        $sql = "SELECT searchstr, results FROM {caboodle_search_results} WHERE " .
-//               "resourceid = '" . $resourceid . "' " .
-//               "AND instance = '" . $instanceid . "' " .
-//               "AND timestamp > " . $valid_timestamp;
 
         $results = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid));
 
@@ -68,6 +68,14 @@ class caboodle {
         return $ret;
     } // get_results
 
+    /**
+     * Return search string
+     *
+     * @global resource $DB
+     * @param type $resourceid
+     * @param type $instanceid
+     * @return string
+     */
     public function get_search_string($resourceid, $instanceid) {
         global $DB;
 
@@ -76,6 +84,13 @@ class caboodle {
         return $results->searchstr;
     }
 
+    /**
+     * Return all results older than $expire_after seconds
+     *
+     * @global resource $DB
+     * @param type $expire_after
+     * @return array
+     */
     public function get_all_expired_results($expire_after) {
         global $DB;
 
@@ -90,6 +105,12 @@ class caboodle {
     }
 
 
+    /**
+     * Return all caboodle block instances
+     *
+     * @global resource $DB
+     * @return array
+     */
     public function get_all_block_instances() {
         global $DB;
 
@@ -102,6 +123,12 @@ class caboodle {
         return $instances;
     }
 
+    /**
+     * Decode configuration data
+     *
+     * @param type $configdata
+     * @return array
+     */
     private function decode_config($configdata) {
 
         $configdata = unserialize(base64_decode($configdata));
@@ -109,9 +136,15 @@ class caboodle {
         return $configdata;
     }
 
+    /**
+     * See decode_config
+     *
+     * @param type $results
+     * @return type
+     */
     private function decode_search_results($results) {
         return $this->decode_config($results);
     }
 
 
-} // class
+} // caboodle

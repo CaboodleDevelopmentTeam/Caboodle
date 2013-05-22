@@ -36,7 +36,6 @@ class block_caboodle extends block_base {
     }
 
     function get_content() {
-
         global $CFG, $OUTPUT;
 
         if (empty($this->instance)) {
@@ -72,8 +71,6 @@ class block_caboodle extends block_base {
             $this->content->text .= $this->get_user_search();
             //echo "<pre>"; var_dump($this->config); echo "</pre>";
         }
-
-        //echo "<pre>"; var_dump($_SESSION); echo "</pre>";
 
         $search_str = $this->config->search;
 
@@ -244,8 +241,8 @@ class block_caboodle extends block_base {
                  '<input id="searchform_search" name="caboodlesearch" type="text" size="12" />';
         $text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
         // advanced search
-//        $text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
-//        $text .= $OUTPUT->help_icon('search');
+        //$text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
+        //$text .= $OUTPUT->help_icon('search');
         $text .= '</fieldset></form></div>';
 
 
@@ -321,8 +318,6 @@ class block_caboodle extends block_base {
                             mtrace("\tError: API class does not exist or not readable: " . $api_class_file);
 
                         }
-
-                        //var_dump($resdata);
 
                     } // if
 

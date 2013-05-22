@@ -77,6 +77,12 @@ abstract class caboodle_api implements caboodle_api_interface {
 
     } // __construct
 
+    /**
+     * Execute search
+     *
+     * @param string $query
+     * @return array
+     */
     public function search($query) {
 
         // check if anything changed
@@ -92,6 +98,13 @@ abstract class caboodle_api implements caboodle_api_interface {
         return $results;
     }
 
+    /**
+     * This has to be overrided by api class
+     * search_api method is executing api-specific search
+     *
+     * @param type $query
+     * @throws moodle_exception
+     */
     protected function search_api($query) {
         throw new moodle_exception('search_api method not implemented');
     }
@@ -103,6 +116,12 @@ abstract class caboodle_api implements caboodle_api_interface {
 
     }
 
+    /**
+     * Unserializes and base64_decode search results saved in db
+     *
+     * @param string $results
+     * @return array
+     */
     private function decode_results($results) {
 
         $results = unserialize(base64_decode($results));
@@ -110,6 +129,12 @@ abstract class caboodle_api implements caboodle_api_interface {
         return $results;
     }
 
+    /**
+     * Encodes search results before saving to db
+     *
+     * @param array $results
+     * @return string
+     */
     private function encode_results($results) {
 
         $results = base64_encode(serialize($results));
@@ -117,6 +142,12 @@ abstract class caboodle_api implements caboodle_api_interface {
         return $results;
     }
 
+    /**
+     * Saving search results do db (insering a new record od updating existing)
+     *
+     * @global resource $DB
+     * @return boolean
+     */
     public function save_results() {
         global $DB;
 
@@ -134,8 +165,6 @@ abstract class caboodle_api implements caboodle_api_interface {
         } else {
             $this->_searchid = $DB->insert_record('caboodle_search_results', $record);
         }
-
-        //var_dump($record);
 
         return true;
     }

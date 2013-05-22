@@ -89,9 +89,6 @@ class block_caboodle_edit_form extends block_edit_form {
                     $blacklist[$index] = rtrim($url);
                 }
 
-                //echo "<pre>"; var_dump($blacklist); echo "</pre>";
-
-
                 if (!empty($results)) {
 
                     $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
@@ -106,7 +103,6 @@ class block_caboodle_edit_form extends block_edit_form {
                             $mform->addElement('html', '</li>');
 
                         }
-
 
                     }
 
