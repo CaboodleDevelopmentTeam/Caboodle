@@ -1,5 +1,28 @@
 <?php
 
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Component 'caboodle', language 'en', branch 'MOODLE_24_STABLE'
+ *
+ * @package   caboodle
+ * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/caboodle/lib.php');
@@ -62,7 +85,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
                 if (!empty($results)) {
 
-                    $mform->addElement('html', '<ul style="list-style-type: none;">');
+                    $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
 
                     foreach($results as $result_id => $result_data) {
 

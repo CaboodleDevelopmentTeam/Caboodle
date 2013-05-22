@@ -1,5 +1,8 @@
 /*
- * @author Grzegorz Adamowicz
+ * @package   caboodle
+ * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2013 Enovation Solutions
  */
 
 
@@ -10,7 +13,9 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
     };
     Y.extend(BLACKLISTER, Y.Base, {
         initializer : function() { // 'config' contains the parameter values
-            // this will implement onClick
+
+            // module body
+
         }
     }, {
         NAME : BLACKLISTER, //module name is something mandatory.
