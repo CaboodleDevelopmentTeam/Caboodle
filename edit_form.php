@@ -89,7 +89,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
                     foreach($results as $result_id => $result_data) {
 
-                        $mform->addElement('html', '<li class="caboodle_blacklister_item" style="margin: 3px 0;">');
+                        $mform->addElement('html', '<li class="caboodle_blacklister_item" style="margin: 3px 0;">' . $cross . '&nbsp;');
                         $mform->addElement('html', '<a href="' . $result_data['url']  .'">' . $result_data['title'] .'</a>' . ' (' . $result_data['url'] . ')' );
                         $mform->addElement('html', '</li>');
 //                  <li>$cross search result 1 http://...</li>

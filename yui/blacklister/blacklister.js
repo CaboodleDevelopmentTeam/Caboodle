@@ -16,25 +16,28 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
     Y.extend(BLACKLISTER, Y.Base, {
         initializer : function() { // 'config' contains the parameter values
             //module body
-            //Y.delegate('click', this.hide, '.caboodle_blacklister_item', this);
-
-            var items = Y.all('li.caboodle_blacklister_item');
+            var items = Y.all('li.caboodle_blacklister_item img');
 
             items.on('click', this.hide);
             items.on('click', this.move);
-
         },
 
         hide : function(e) {
             // hide blocked url
-            e.currentTarget.hide(); // setStyle
-            //alert('you clicked ');
+            e.currentTarget.ancestor().hide();
         },
 
         move : function(e) {
             // move clicked url to blacklist textarea
-            var url = e.target.getElementsByTagName('a').get('href');
+            //var url = e.target.getElementsByTagName('a').get('href');
+            var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             // textarea id="id_config_blacklist"
+            var textarea = Y.one('textarea#id_config_blacklist');
+            var text = textarea.getContent();
+
+            text = text + '\n' + url; // TODO add checking for newlines
+
+            textarea.setContent(text);
         }
 
     }, {
