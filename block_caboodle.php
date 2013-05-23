@@ -303,7 +303,7 @@ class block_caboodle extends block_base {
                 mtrace("Processing resource $resourceid for instance $instanceid ...");
                 // resource needs to be enabled
                 if ($resource_enabled) {
-                    mtrace("\tResource $resourceid is enabled!");
+                    mtrace("\tResource is enabled!");
 
                     // we'll proceed only when there is a search query
                     if(!empty($instance->configdata->search)) {
