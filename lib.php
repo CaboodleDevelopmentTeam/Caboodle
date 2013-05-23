@@ -104,6 +104,31 @@ class caboodle {
         return $results;
     }
 
+    /**
+     * @param int $resourceid
+     * @param int $instanceid
+     * @global resource $DB
+     * @return boolean
+     */
+    public function is_expired($resourceid, $instanceid, $expire_after) {
+        global $DB;
+
+        $timestamp = time() - $expire_after;
+
+        if (! $resource = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
+            return false;
+        }
+
+        //mtrace(date('Y-m-d H:i:s', $resource->timestamp) . ' > ' . date('Y-m-d H:i:s', $timestamp));
+
+        if ($resource->timestamp > $timestamp) {
+            // yes, it's expired
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * Return all caboodle block instances

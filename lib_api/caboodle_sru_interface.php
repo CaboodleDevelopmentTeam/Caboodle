@@ -70,7 +70,10 @@ class caboodle_sru_interface extends caboodle_api {
 
             $xmldata = $this->parse_data($xmldata);
 
-        } else return false;
+        } else {
+            $this->lasterror = curl_error($curl);
+            return false;
+        }
 
         return $xmldata;
     }

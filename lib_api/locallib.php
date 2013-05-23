@@ -30,14 +30,15 @@ interface caboodle_api_interface {
 }
 
 abstract class caboodle_api implements caboodle_api_interface {
-    public $name;
-    public $url;
+    public $name;                           // api name
+    public $url;                            // api main url (without search string)
+    public $lasterror;                      // last error from search api
 
     protected $_searchid;
     protected $_searchstr;
     protected $_searchdata;
     protected $_numresults;
-    protected $_transfer_timeout = 5000; // 5000ms == 5 seconds
+    protected $_transfer_timeout = 5000;    // 5000ms == 5 seconds
 
     private $resourceid;
     private $instanceid;
@@ -106,17 +107,6 @@ abstract class caboodle_api implements caboodle_api_interface {
      * @throws moodle_exception
      */
     protected abstract function search_api($query);
-
-    /**
-     * @param int $resourceid
-     * @param int $instanceid
-     * @global resource $DB
-     */
-    public function is_expired($resourceid, $instanceid) {
-        global $DB;
-
-
-    }
 
     /**
      * Unserializes and base64_decode search results saved in db

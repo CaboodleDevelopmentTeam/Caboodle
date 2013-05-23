@@ -295,20 +295,17 @@ class block_caboodle extends block_base {
 
         $caboodle = new caboodle();
 
-        mtrace('Perform search...');
         $instances = $caboodle->get_all_block_instances();
-
-        $timestamp = time() - $removeafter; // timestamp when records are still "valid"
 
         foreach ($instances as $instanceid => $instance) {
             foreach ($instance->configdata->resource as $resourceid => $resource_enabled) {
 
-                mtrace("Processing resource $resourceid ...");
+                mtrace("Processing resource $resourceid for instance $instanceid ...");
                 // resource needs to be enabled
                 if ($resource_enabled) {
                     mtrace("\tResource $resourceid is enabled!");
+
                     // we'll proceed only when there is a search query
-                    //var_dump($instance->configdata);
                     if(!empty($instance->configdata->search)) {
                         mtrace("\tSearch query: " . $instance->configdata->search);
 
@@ -326,17 +323,28 @@ class block_caboodle extends block_base {
                             require_once($api_class_file);
 
                             $api = new $api_class($resourceid, $instanceid, $numresults);
-                            mtrace("\tExecuting search");
-                            if ($search_result = $api->search($instance->configdata->search)) {
 
-                                $api->save_results();
+                            if (!$caboodle->is_expired($resourceid, $instanceid, $removeafter)) {
+
+                                mtrace("\tExecuting search");
+                                if ($search_result = $api->search($instance->configdata->search)) {
+
+                                    $api->save_results();
+
+                                } else {
+                                    mtrace("Error: curl failed");
+
+                                    if (isset($api->lasterror) && !empty($api->lasterror)) {
+                                        mtrace("Last reported error: " . $api->lasterror);
+                                    } else mtrace("No error string provided");
+
+                                }
+
+                                mtrace("\tDone searching");
 
                             } else {
-                                mtrace("Error: curl failed");
-                                var_dump($search_result);
+                                mtrace("\tSearch results not expired yet, skipping search");
                             }
-
-                            mtrace("\tDone searching");
 
                         } else {
                             mtrace("\tError: API class does not exist or not readable: " . $api_class_file);
@@ -349,8 +357,21 @@ class block_caboodle extends block_base {
             }// foreach
         } // foreach
 
-//        mtrace('Clean expired items...');
-//        $expired_items = $caboodle->get_all_expired_results($removeafter);
+        mtrace('Clean expired items...');
+        if ($expired_items = $caboodle->get_all_expired_results($removeafter)) {
+
+            foreach ($expired_items as $itemid => $itemdata) {
+                $item = array('id' => $itemid);
+
+                mtrace("Removing from caboodle_search_results item id " . $itemid);
+
+                $DB->delete_records('caboodle_search_results', $item);
+            }
+
+        } else {
+            mtrace('No expired items found');
+        }
+
 
         return false;
     } // cron
