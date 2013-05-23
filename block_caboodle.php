@@ -60,16 +60,16 @@ class block_caboodle extends block_base {
             return $this->content;
         }
 
-        $this->content->text .= "<div>";
+        $this->content->text .= '<div class="caboodle_block_container">';
 
+        // show search form if user search is enabled
         if ($this->config->student_search) {
             $this->content->text .= $this->get_search_form();
         }
 
-        // show user search (if any)
+        // show user search results (if any)
         if (!empty($_SESSION['caboodle_usersearch_str']) || (! is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
             $this->content->text .= $this->get_user_search();
-            //echo "<pre>"; var_dump($this->config); echo "</pre>";
         }
 
         $search_str = $this->config->search;
@@ -89,7 +89,7 @@ class block_caboodle extends block_base {
 
                     $results = $caboodle->get_results($resourceid, $this->instance->id);
 
-                    $this->content->text .= '<ul>';
+                    $this->content->text .= '<ul class="caboodle_results">';
 
                     if (!empty($results)) {
                         // get search string saved in DB
@@ -106,7 +106,7 @@ class block_caboodle extends block_base {
                             foreach ($results as $rid => $rdata) {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
-                                    $this->content->text .= '<li style="margin: 3px 0;">';
+                                    $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
                                     $this->content->text .= '<a href="' . $rdata['url']  .'">' . $rdata['title'] . '</a>';
                                     $this->content->text .= "</li>";
                                     $count++;
@@ -115,12 +115,12 @@ class block_caboodle extends block_base {
                             } // foreach
 
                         } else {
-                            $this->content->text .= '<li style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
+                            $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
                         }
 
                     } else {
                         // no results
-                        $this->content->text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                        $this->content->text .=  '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
                     }
 
                     $this->content->text .= "</ul>";
@@ -162,14 +162,12 @@ class block_caboodle extends block_base {
 
         }
 
-
         $search_str = $_SESSION['caboodle_usersearch_str'];
 
             // get all resources
             $caboodle = new caboodle();
-            $resources = caboodle::get_resources();
+            $resources = $caboodle->get_resources();
 
-            //$this->content->text .= '<h3>User search on "<i>' . $search_str . '</i>"</h3>';
             $this->content->text .= get_string('user_search_on', 'block_caboodle', $search_str);
 
             foreach ($resources as $resourceid => $resource) {
@@ -199,12 +197,12 @@ class block_caboodle extends block_base {
                     }
 
 
-                    $this->content->text .= '<ul>';
+                    $this->content->text .= '<ul class="caboodle_results">';
 
                     if (!empty($results)) {
 
                         foreach($results as $r => $result) {
-                            $this->content->text .= '<li style="margin: 3px 0;">';
+                            $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
 
                             $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
 
