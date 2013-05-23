@@ -338,6 +338,8 @@ class block_caboodle extends block_base {
                                         mtrace("Last reported error: " . $api->lasterror);
                                     } else mtrace("No error string provided");
 
+                                    // make sure cron will be executed on next run
+                                    return false;
                                 }
 
                                 mtrace("\tDone searching");
@@ -348,7 +350,7 @@ class block_caboodle extends block_base {
 
                         } else {
                             mtrace("\tError: API class does not exist or not readable: " . $api_class_file);
-
+                            return false;
                         }
 
                     } // if
@@ -373,6 +375,6 @@ class block_caboodle extends block_base {
         }
 
 
-        return false;
+        return true;
     } // cron
 }
