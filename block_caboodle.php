@@ -223,16 +223,22 @@ class block_caboodle extends block_base {
 
     }
 
+    /**
+     * Return search form
+     *
+     * @global type $CFG
+     * @global type $OUTPUT
+     * @return string
+     */
     public function get_search_form() {
         global $CFG, $OUTPUT;
 
         $strsearch  = get_string('search');
         $strgo      = get_string('go');
-        $advancedsearch = get_string('advancedsearch', 'block_caboodle');
         $yourownsearch = get_string('yourownsearch', 'block_caboodle');
+        //$advancedsearch = get_string('advancedsearch', 'block_caboodle');
 
-
-        $text  = '<div class="searchform">';
+        $text  = '<div class="searchform caboodle_searchform">';
         $text .= '<p>' . $yourownsearch . '</p>';
         $text .= '<form action="?" style="display:inline"><fieldset class="invisiblefieldset">';
         $text .= '<legend class="accesshide">'.$strsearch.'</legend>';
@@ -245,22 +251,42 @@ class block_caboodle extends block_base {
         //$text .= $OUTPUT->help_icon('search');
         $text .= '</fieldset></form></div>';
 
-
         return $text;
     }
 
+    /**
+     * Where this block may be added (only in course view)
+     *
+     * @return type
+     */
     public function applicable_formats() {
         return array('all' => false,
                      'course-view' => true
                     );
     }
 
+    /**
+     * Allowing multiple instances of this block on a single page
+     *
+     * @return boolean
+     */
     public function instance_allow_multiple() {
         return true;
     }
 
+    /**
+     * Yes, we have a config
+     *
+     * @return boolean
+     */
     function has_config() { return true; }
 
+    /**
+     * Cron processing
+     *
+     * @global type $DB
+     * @return boolean
+     */
     public function cron() {
         global $DB;
         mtrace("block_caboodle cron");

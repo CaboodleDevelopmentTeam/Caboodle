@@ -99,18 +99,20 @@ abstract class caboodle_api implements caboodle_api_interface {
     }
 
     /**
-     * This has to be overrided by api class
+     * This has to be implemented in api class
      * search_api method is executing api-specific search
      *
      * @param type $query
      * @throws moodle_exception
      */
-    protected function search_api($query) {
-        throw new moodle_exception('search_api method not implemented');
-    }
+    protected abstract function search_api($query);
 
-
-    public function is_expired() {
+    /**
+     * @param int $resourceid
+     * @param int $instanceid
+     * @global resource $DB
+     */
+    public function is_expired($resourceid, $instanceid) {
         global $DB;
 
 

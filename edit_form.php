@@ -110,8 +110,8 @@ class block_caboodle_edit_form extends block_edit_form {
 
                 } else {
                     // nothing found
-                    $mform->addElement('html', '<ul style="list-style-type: none;">');
-                    $mform->addElement('html', '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>');
+                    $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
+                    $mform->addElement('html', '<li class="caboodle_blacklister_item">'. get_string('nothing_found', 'block_caboodle') . '</li>');
                     $mform->addElement('html', '</ul>');
                 }
 
