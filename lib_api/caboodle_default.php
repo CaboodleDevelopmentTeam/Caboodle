@@ -43,27 +43,15 @@ class caboodle_default extends caboodle_api {
      * @param type $query
      * @return array
      */
-    public function search($query) {
+    public function search_api($query) {
 
-        $ret = array(
-            0 => array(
-                'title' => 'Title 1',
-                'url'   => 'http://localhost'
-            ),
-            1 => array(
-                'title' => 'Title 2',
-                'url'   => 'http://localhost'
-            ),
-            2 => array(
-                'title' => 'Title 3',
-                'url'   => 'http://localhost'
-            ),
-            3 => array(
-                'title' => 'Title 4',
-                'url'   => 'http://localhost'
-            )
-        );
+        for($i = 0; $i < 20; $i++) {
 
+            $ret[$i] = array('title' => 'Title ' . $i,
+                             'url'   => 'http://some.url/sample' . $i
+                            );
+
+        }
 
         return $ret;
     }
