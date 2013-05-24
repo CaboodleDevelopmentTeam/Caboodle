@@ -68,7 +68,7 @@ class block_caboodle extends block_base {
         }
 
         // show user search results (if any)
-        if (!empty($_SESSION['caboodle_usersearch_str']) || (! is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
+        if (!empty($_SESSION['caboodle_usersearch_str'][$this->instance->id]) || (!is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
             $this->content->text .= $this->get_user_search();
         }
 
@@ -151,73 +151,75 @@ class block_caboodle extends block_base {
     public function get_user_search() {
         global $DB;
 
-        if(!isset($_SESSION['caboodle_usersearch_str'])) {
+        if(!isset($_SESSION['caboodle_usersearch_str'][$this->instance->id])) {
 
-            $_SESSION['caboodle_usersearch_str'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+            $_SESSION['caboodle_usersearch_str'][$this->instance->id] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
 
-        } else if (strcmp($_SESSION['caboodle_usersearch_str'], optional_param('caboodlesearch', NULL, PARAM_ALPHANUM)) != 0) {
+        } else if (strcmp($_SESSION['caboodle_usersearch_str'][$this->instance->id], optional_param('caboodlesearch', NULL, PARAM_ALPHANUM)) != 0) {
 
-            $_SESSION['caboodle_usersearch_str'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
-            unset($_SESSION['caboodle_usersearch_result']);
+            $_SESSION['caboodle_usersearch_str'][$this->instance->id] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+            unset($_SESSION['caboodle_usersearch_result'][$this->instance->id]);
 
         }
 
-        $search_str = $_SESSION['caboodle_usersearch_str'];
+        $search_str = $_SESSION['caboodle_usersearch_str'][$this->instance->id];
 
-            // get all resources
-            $caboodle = new caboodle();
-            $resources = $caboodle->get_resources();
+        // get all resources
+        $caboodle = new caboodle();
+        $resources = $caboodle->get_resources();
 
-            $this->content->text .= get_string('user_search_on', 'block_caboodle', $search_str);
+        $this->content->text .= get_string('user_search_on', 'block_caboodle', $search_str);
 
-            foreach ($resources as $resourceid => $resource) {
-                if ($this->config->resource[$resourceid] == 1) {
+        foreach ($resources as $resourceid => $resource) {
+            if ($this->config->resource[$resourceid] == 1) {
 
-                    $this->content->text .= "<h4>" . $resource->name . "</h4>";
+                $this->content->text .= "<h4>" . $resource->name . "</h4>";
 
-                    if (empty($_SESSION['caboodle_usersearch_result'])) {
+                if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id])) {
 
-                        $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
-                                WHERE r.type = rt.id
-                                AND r.id = ". $resourceid;
-                        $resource_data = $DB->get_record_sql($sql);
+                    $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
+                            WHERE r.type = rt.id
+                            AND r.id = ". $resourceid;
+                    $resource_data = $DB->get_record_sql($sql);
 
-                        $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
-                        $api_class = $resource_data->typeclass;
+                    $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
+                    $api_class = $resource_data->typeclass;
 
-                        require_once($api_class_file);
+                    // we don't need to check if file exists and/or is readable, below line will raise an error anyway
+                    // but the check can be added in the future to fail gracefully
+                    require_once($api_class_file);
 
-                        $api = new $api_class($resourceid, $this->instance->id, $this->config->search_items_displayed);
+                    $api = new $api_class($resourceid, $this->instance->id, $this->config->search_items_displayed);
 
-                        $results = $api->search($search_str);
-                        $_SESSION['caboodle_usersearch_result'] = $results;
+                    $results = $api->search($search_str);
+                    $_SESSION['caboodle_usersearch_result'][$this->instance->id] = $results;
 
-                    } else {
-                        $results = $_SESSION['caboodle_usersearch_result'];
+                } else {
+                    $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id];
+                }
+
+
+                $this->content->text .= '<ul class="caboodle_results">';
+
+                if (!empty($results)) {
+
+                    foreach($results as $r => $result) {
+                        $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+
+                        $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
+
+                        $this->content->text .= "</li>";
                     }
 
+                } else {
+                    // no results
+                    $this->content->text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                }
 
-                    $this->content->text .= '<ul class="caboodle_results">';
+                $this->content->text .= "</ul>";
 
-                    if (!empty($results)) {
-
-                        foreach($results as $r => $result) {
-                            $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-
-                            $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
-
-                            $this->content->text .= "</li>";
-                        }
-
-                    } else {
-                        // no results
-                        $this->content->text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
-                    }
-
-                    $this->content->text .= "</ul>";
-
-                } // if
-            } // foreach
+            } // if
+        } // foreach
 
     }
 
