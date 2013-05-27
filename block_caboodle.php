@@ -121,7 +121,28 @@ class block_caboodle extends block_base {
                             } // foreach
 
                         } else {
-                            $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
+                            //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
+
+                            $results = $this->perform_search($resourceid, true);
+
+                            $this->content->text .= '<ul class="caboodle_results">';
+
+                            // get and filter blacklist urls
+                            $blacklist = $this->get_blacklist();
+                            $count = 0;
+
+                            // display list of elements
+                            foreach ($results as $rid => $rdata) {
+
+                                if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
+                                    $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                                    $this->content->text .= '<a href="' . $rdata['url']  .'">' . $rdata['title'] . '</a>';
+                                    $this->content->text .= "</li>";
+                                    $count++;
+                                } // if
+
+                            } // foreach
+
                         }
 
                     } else {
@@ -186,6 +207,7 @@ class block_caboodle extends block_base {
 
                 if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
 
+                    // execute
                     $results = $this->perform_search($resourceid);
 
                     $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
@@ -201,9 +223,7 @@ class block_caboodle extends block_base {
 
                     foreach($results as $r => $result) {
                         $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-
                         $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
-
                         $this->content->text .= "</li>";
                     }
 
