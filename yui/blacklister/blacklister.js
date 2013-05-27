@@ -30,6 +30,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">New: <a href="' + url + '">' + url + '</a></li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
+            // get textarea content
             var text = textarea.getContent();
 
             text = text + '\n' + url; // TODO add checking for newlines
@@ -41,17 +42,20 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // add element to blacklisted list
             var blacklisted = Y.one('ul.caboodle_blacklisted');
             blacklisted.append(formatted_url);
-
-            var mexyk = '';
         },
 
         unblacklist : function(e) {
+            // get URL
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
+            // pinpoint of textarea (it is hidden form field)
             var textarea = Y.one('textarea#id_config_blacklist');
             var text = '';
+            // get text area content and split it by a newline
             var arraytext = textarea.getContent().split('\n');
+            // get lenght of above array
             var arraytext_length = arraytext.length;
 
+            // foreach array element and re-set its content filtering out clicked url
             for (var i = 0; i < arraytext_length; i++ ) {
 
                 if (url[0].toUpperCase() != arraytext[i].toUpperCase()) {
@@ -60,10 +64,10 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
             }
 
+            // set new content
             textarea.setContent(text);
+            // hide list element
             e.currentTarget.ancestor().hide();
-
-
         }
 
     }, {
