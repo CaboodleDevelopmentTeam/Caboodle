@@ -15,19 +15,15 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
     Y.extend(BLACKLISTER, Y.Base, {
         initializer : function() { // 'config' contains the parameter values
-            //module body
+            // match all blaclist-able items
             var items = Y.all('li.caboodle_blacklister_item img');
-
-            items.on('click', this.hide);
-            items.on('click', this.move);
+            var blacklisted = Y.all('li.caboodle_blacklisted_item img');
+            // perform blacklist action on click
+            items.on('click', this.blacklist);
+            blacklisted.on('click', this.unblacklist);
         },
 
-        hide : function(e) {
-            // hide blocked url
-            e.currentTarget.ancestor().hide();
-        },
-
-        move : function(e) {
+        blacklist : function(e) {
             // move clicked url to blacklist textarea
             //var url = e.target.getElementsByTagName('a').get('href');
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
@@ -37,7 +33,20 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
             text = text + '\n' + url; // TODO add checking for newlines
 
+            // modify current text
             textarea.setContent(text);
+            // hide list element
+            e.currentTarget.ancestor().hide();
+        },
+
+        unblacklist : function(e) {
+            var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
+            var textarea = Y.one('textarea#id_config_blacklist');
+            var text = textarea.getContent();
+            var arraytext = text.split('\n');
+
+            var test = 'test';
+
         }
 
     }, {
