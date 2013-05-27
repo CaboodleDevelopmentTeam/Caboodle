@@ -77,12 +77,10 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
 
 
-        //$blacklist = explode("\n", $this->block->config->blacklist);
         $blacklist = preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
 
         $blacklist_ul = '<ul class="caboodle_blacklisted" style="list-style-type: none;">';
 
-        //echo "<pre>"; var_dump($blacklist); echo "</pre>";
         if (count($blacklist) > 0) {
 
             foreach ($blacklist as $index => $url) {
@@ -95,10 +93,6 @@ class block_caboodle_edit_form extends block_edit_form {
                 $blacklist_ul .= '</li>';
 
             }
-        } else {
-            $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">';
-            $blacklist_ul .= get_string('nothing_found', 'block_caboodle');
-            $blacklist_ul .= '</li>';
         }
 
         $blacklist_ul .= '</ul>';
