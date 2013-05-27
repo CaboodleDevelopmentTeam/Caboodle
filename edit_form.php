@@ -53,20 +53,26 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
 
         $choices = array(get_string('no'), get_string('yes'));
-        $default = 0;
+        $default = 1;
         $mform->addElement('select', 'config_student_search', get_string('student_search', 'block_caboodle'), $choices);
         $mform->setDefault('config_student_search', $default);
         $mform->setType('config_student_search', PARAM_BOOL);
         $mform->addHelpButton('config_student_search', 'student_search', 'block_caboodle');
 
-        $choices = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5);
+        unset($choices);
+
+        for ($choice=1; $choice < 11; $choice++) {
+            $choices[$choice] = $choice;
+        }
+
+        //$choices = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5);
         $default = 3;
         $mform->addElement('select', 'config_search_items_displayed', get_string('search_items_displayed', 'block_caboodle'), $choices);
         $mform->setDefault('config_search_items_displayed', $default);
         $mform->setType('config_search_items_displayed', PARAM_INT);
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
 
-        $mform->addElement('textarea', 'config_blacklist', get_string('blacklist', 'block_caboodle'), array('rows' => 6, 'cols' => 40));
+        $mform->addElement('textarea', 'config_blacklist', get_string('blacklist', 'block_caboodle'), array('rows' => 10, 'cols' => 140));
         $mform->addHelpButton('config_blacklist', 'blacklist', 'block_caboodle');
 
         $mform->addElement('header', 'general', get_string('search_results', 'block_caboodle'));

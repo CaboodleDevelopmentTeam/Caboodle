@@ -69,6 +69,11 @@ class block_caboodle extends block_base {
 
         // show user search results (if any)
         if (!empty($_SESSION['caboodle_usersearch_str'][$this->instance->id]) || (!is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
+//            echo "<pre>";
+//                var_dump($_SESSION['caboodle_usersearch_str'][$this->instance->id]);
+//                var_dump(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM));
+//            echo "</pre>";
+
             $this->content->text .= $this->get_user_search();
         }
 
@@ -151,18 +156,21 @@ class block_caboodle extends block_base {
     public function get_user_search() {
         global $DB;
 
-        if(!isset($_SESSION['caboodle_usersearch_str'][$this->instance->id])) {
+        if(!isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'])) {
 
-            $_SESSION['caboodle_usersearch_str'][$this->instance->id] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
 
-        } else if (strcmp($_SESSION['caboodle_usersearch_str'][$this->instance->id], optional_param('caboodlesearch', NULL, PARAM_ALPHANUM)) != 0) {
+        } else if (strcmp($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'], optional_param('caboodlesearch', NULL, PARAM_ALPHANUM)) != 0
+                AND !is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) {
 
-            $_SESSION['caboodle_usersearch_str'][$this->instance->id] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
-            unset($_SESSION['caboodle_usersearch_result'][$this->instance->id]);
+            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+            unset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results']);
 
         }
 
-        $search_str = $_SESSION['caboodle_usersearch_str'][$this->instance->id];
+        //var_dump($_SESSION['caboodle_usersearch_str'][$this->instance->id]);
+
+        $search_str = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'];
 
         // get all resources
         $caboodle = new caboodle();
@@ -175,7 +183,7 @@ class block_caboodle extends block_base {
 
                 $this->content->text .= "<h4>" . $resource->name . "</h4>";
 
-                if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id])) {
+                if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
 
                     $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
                             WHERE r.type = rt.id
@@ -192,10 +200,10 @@ class block_caboodle extends block_base {
                     $api = new $api_class($resourceid, $this->instance->id, $this->config->search_items_displayed);
 
                     $results = $api->search($search_str);
-                    $_SESSION['caboodle_usersearch_result'][$this->instance->id] = $results;
+                    $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
 
                 } else {
-                    $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id];
+                    $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'];
                 }
 
 
