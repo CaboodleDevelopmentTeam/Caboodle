@@ -122,7 +122,7 @@ class block_caboodle extends block_base {
 
                         } else {
                             //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
-
+                            // search string has changed, execute search and save all data
                             $results = $this->perform_search($resourceid, true);
 
                             $this->content->text .= '<ul class="caboodle_results">';
@@ -152,8 +152,8 @@ class block_caboodle extends block_base {
 
                     $this->content->text .= "</ul>";
 
-                } // if
-            } // foreach
+                } // if resource is enabled
+            } // foreach resources
 
         } else {
             // no search string
@@ -164,17 +164,26 @@ class block_caboodle extends block_base {
         return $this->content;
     }
 
+    /**
+     * Get all blacklisted URLs for this block instance
+     *
+     * @return type
+     */
     public function get_blacklist() {
 
-        $blacklist = explode("\n", $this->config->blacklist);
+        $blacklist = preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
 
-        foreach ($blacklist as $index => $url) {
-            $blacklist[$index] = rtrim($url);
-        }
+//        foreach ($blacklist as $index => $url) {
+//            $blacklist[$index] = rtrim($url);
+//        }
 
         return $blacklist;
     }
 
+    /*
+     * Add search form
+     *
+     */
     public function get_user_search() {
         global $DB;
 
@@ -215,7 +224,6 @@ class block_caboodle extends block_base {
                 } else {
                     $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'];
                 }
-
 
                 $this->content->text .= '<ul class="caboodle_results">';
 
