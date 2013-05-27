@@ -32,6 +32,9 @@ class block_caboodle_edit_form extends block_edit_form {
     protected function specific_definition($mform) {
         global $OUTPUT, $PAGE, $CFG;
 
+        // an "X" before blacklisted urls
+        $cross = $OUTPUT->pix_icon('i/cross_red_small','blacklist');
+
         // add js which do automatic blacklisting
         $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
 
@@ -59,6 +62,7 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->setType('config_student_search', PARAM_BOOL);
         $mform->addHelpButton('config_student_search', 'student_search', 'block_caboodle');
 
+        // just to be sure it'll not be reused by mistake
         unset($choices);
 
         for ($choice=1; $choice < 11; $choice++) {
@@ -72,11 +76,31 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->setType('config_search_items_displayed', PARAM_INT);
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
 
-        $mform->addElement('textarea', 'config_blacklist', get_string('blacklist', 'block_caboodle'), array('rows' => 10, 'cols' => 140));
-        $mform->addHelpButton('config_blacklist', 'blacklist', 'block_caboodle');
+
+        $blacklist = explode("\n", $this->block->config->blacklist);
+
+        $blacklist_ul = '<ul class="caboodle_blacklisted" style="list-style-type: none;">';
+
+        foreach ($blacklist as $index => $url) {
+            //$blacklist[$index] = trim($url);
+            $url = trim($url);
+
+            $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
+            $blacklist_ul .= '<a href="' . $url  .'">' . $url .'</a>';
+            $blacklist_ul .= '</li>';
+
+        }
+
+        $blacklist_ul .= '</ul>';
+
+        $mform->addElement('static', 'blacklist', get_string('blacklist', 'block_caboodle'), $blacklist_ul);
+        $mform->addHelpButton('blacklist', 'blacklist', 'block_caboodle');
+
+        //$mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140, 'hidden' => 'hidden'));
+        $mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140));
+        //$mform->addHelpButton('config_blacklist', 'blacklist', 'block_caboodle');
 
         $mform->addElement('header', 'general', get_string('search_results', 'block_caboodle'));
-        $cross = $OUTPUT->pix_icon('i/cross_red_small','blacklist');
 
         $caboodle = new caboodle();
 
@@ -92,7 +116,7 @@ class block_caboodle_edit_form extends block_edit_form {
                 $blacklist = explode("\n", $this->block->config->blacklist);
 
                 foreach ($blacklist as $index => $url) {
-                    $blacklist[$index] = rtrim($url);
+                    $blacklist[$index] = trim($url);
                 }
 
                 if (!empty($results)) {
