@@ -25,8 +25,9 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
         blacklist : function(e) {
             // move clicked url to blacklist textarea
-            //var url = e.target.getElementsByTagName('a').get('href');
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
+            // new url in blacklisted list
+            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">New: <a href="' + url + '">' + url + '</a></li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
             var text = textarea.getContent();
@@ -37,15 +38,31 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             textarea.setContent(text);
             // hide list element
             e.currentTarget.ancestor().hide();
+            // add element to blacklisted list
+            var blacklisted = Y.one('ul.caboodle_blacklisted');
+            blacklisted.append(formatted_url);
+
+            var mexyk = '';
         },
 
         unblacklist : function(e) {
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             var textarea = Y.one('textarea#id_config_blacklist');
-            var text = textarea.getContent();
-            var arraytext = text.split('\n');
+            var text = '';
+            var arraytext = textarea.getContent().split('\n');
+            var arraytext_length = arraytext.length;
 
-            var test = 'test';
+            for (var i = 0; i < arraytext_length; i++ ) {
+
+                if (url[0].toUpperCase() != arraytext[i].toUpperCase()) {
+                    text = text + arraytext[i] + '\n';
+                }
+
+            }
+
+            textarea.setContent(text);
+            e.currentTarget.ancestor().hide();
+
 
         }
 
