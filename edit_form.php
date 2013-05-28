@@ -51,6 +51,10 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
 
+        if (optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM)) {
+            $mform->setDefault('config_search', optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM));
+        }
+
         $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
         $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
 
@@ -114,8 +118,14 @@ class block_caboodle_edit_form extends block_edit_form {
             if ($this->block->config->resource[$k] == 1) {
                 $mform->addElement('html', '<div class="caboodle_results_settings"><h2>'.$repository->name."</h2>");
 
-                // check if resource has any search results
-                $results = $caboodle->get_results($k, $this->block->instance->id);
+                // if initial search not set, retrieve saved results
+                if (! optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM)) {
+                    // check if resource has any search results
+                    $results = $caboodle->get_results($k, $this->block->instance->id);
+                } else {
+                    // if initial search string set, perform search
+                    $results = $this->caboodle_perform_search($k);
+                }
 
                 $blacklist = preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -135,7 +145,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
                         }
 
-                    }
+                    } // foreach results
 
                     $mform->addElement('html', '</ul>');
 
@@ -151,5 +161,29 @@ class block_caboodle_edit_form extends block_edit_form {
         } // foreach
 
     }
+
+    private function caboodle_perform_search($resourceid) {
+        global $DB;
+
+        $search_str = optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM);
+
+        $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
+                 WHERE r.type = rt.id
+                 AND r.id = ". $resourceid;
+        $resource_data = $DB->get_record_sql($sql);
+
+        $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
+        $api_class = $resource_data->typeclass;
+
+        // we don't need to check if file exists and/or is readable, below line will raise an error anyway
+        // but the check can be added in the future to fail gracefully
+        require_once($api_class_file);
+
+        $api = new $api_class($resourceid, $this->block->instance->id);
+
+        $results = $api->search($search_str);
+
+        return $results;
+    } // caboodle_perform_search
 
 }
