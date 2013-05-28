@@ -50,20 +50,20 @@ class block_caboodle_edit_form extends block_edit_form {
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
+        $mform->setDefault('config_search', optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM));
 
-        if (optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM)) {
-            $mform->setDefault('config_search', optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM));
-        }
 
         $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
         $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
 
+        // button code
+        // buttonUrl js function can be found at the end of yui/blacklister/blacklister.js file
         $button = '<input name="intro" value="'
                 . get_string('initial_search', 'block_caboodle')
                 . '" type="button" id="id_intro" onClick="document.location.href=\'' . $button_url
                 . '\' + buttonUrl();"/>';
+        // add button as a static element
         $mform->addElement('static', 'initialsearch', '', $button);
-
 
         $choices = array(get_string('no'), get_string('yes'));
         $default = 1;
@@ -115,7 +115,7 @@ class block_caboodle_edit_form extends block_edit_form {
         foreach ($repositories as $k => $repository) {
 
             // if resource enabled, display it:
-            if ($this->block->config->resource[$k] == 1) {
+            if ($this->block->config->resource[$k] == 1 OR optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM)) {
                 $mform->addElement('html', '<div class="caboodle_results_settings"><h2>'.$repository->name."</h2>");
 
                 // if initial search not set, retrieve saved results
@@ -128,7 +128,6 @@ class block_caboodle_edit_form extends block_edit_form {
                 }
 
                 $blacklist = preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
-
 
                 if (!empty($results)) {
 
@@ -162,6 +161,15 @@ class block_caboodle_edit_form extends block_edit_form {
 
     }
 
+    /**
+     * Perform search on resourceid set API and return results (max = 20)
+     *
+     * @todo Move this method to caboodle class (in lib)
+     *
+     * @global resource $DB
+     * @param int $resourceid
+     * @return array
+     */
     private function caboodle_perform_search($resourceid) {
         global $DB;
 
