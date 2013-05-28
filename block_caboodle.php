@@ -171,7 +171,7 @@ class block_caboodle extends block_base {
      */
     public function get_blacklist() {
 
-        $blacklist = preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
+        $blacklist = preg_split("/\n/", $this->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
 
 //        foreach ($blacklist as $index => $url) {
 //            $blacklist[$index] = rtrim($url);

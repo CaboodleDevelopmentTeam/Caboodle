@@ -49,6 +49,7 @@ $string['blacklist'] = 'Blacklist';
 $string['blacklist_help'] = 'Click on "X" on the left of the black listed URL to remove it from list';
 $string['search_results'] = 'Search results';
 $string['advancedsearch'] = 'Advanced search';
+$string['initial_search'] = 'Perform initial search';
 $string['search_not_performed'] = 'Search not yet performed. It\'ll be updated soon.';
 $string['yourownsearch'] = 'Conduct your own search:';
 $string['search_on'] = '<h3>Search on "<i>{$a}</i>"</h3>';

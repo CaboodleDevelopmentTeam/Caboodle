@@ -14,7 +14,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
 
     Y.extend(BLACKLISTER, Y.Base, {
-        initializer : function() { // 'config' contains the parameter values
+        initializer : function() {
             // match all blaclist-able items
             var items = Y.all('li.caboodle_blacklister_item img');
             var blacklisted = Y.all('li.caboodle_blacklisted_item img');
@@ -91,3 +91,16 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
   }, '@VERSION@', {
       requires:['node', 'base', 'event']
   });
+
+
+/**
+ * This function returns search string from search box to be used
+ * for initial search.
+ * See: edit_form.php lines 54-62
+ */
+function buttonUrl() {
+    // another script
+    var initialsearch = document.getElementById("id_config_search");
+
+    return initialsearch.value;
+}

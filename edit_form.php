@@ -38,10 +38,6 @@ class block_caboodle_edit_form extends block_edit_form {
         // add js which do automatic blacklisting
         $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
 
-        // A sample string variable with a default value.
-        $mform->setDefault('config_text', 'default value');
-        $mform->setType('config_text', PARAM_MULTILANG);
-
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
         $caboodle = new caboodle();
@@ -54,6 +50,16 @@ class block_caboodle_edit_form extends block_edit_form {
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
+
+        $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
+        $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
+
+        $button = '<input name="intro" value="'
+                . get_string('initial_search', 'block_caboodle')
+                . '" type="button" id="id_intro" onClick="document.location.href=\'' . $button_url
+                . '\' + buttonUrl();"/>';
+        $mform->addElement('static', 'initialsearch', '', $button);
+
 
         $choices = array(get_string('no'), get_string('yes'));
         $default = 1;
@@ -69,13 +75,11 @@ class block_caboodle_edit_form extends block_edit_form {
             $choices[$choice] = $choice;
         }
 
-        //$choices = array(1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5);
         $default = 3;
         $mform->addElement('select', 'config_search_items_displayed', get_string('search_items_displayed', 'block_caboodle'), $choices);
         $mform->setDefault('config_search_items_displayed', $default);
         $mform->setType('config_search_items_displayed', PARAM_INT);
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
-
 
         $blacklist = preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -84,14 +88,11 @@ class block_caboodle_edit_form extends block_edit_form {
         if (count($blacklist) > 0) {
 
             foreach ($blacklist as $index => $url) {
-
-                //$blacklist[$index] = trim($url);
                 $url = trim($url);
 
                 $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
                 $blacklist_ul .= '<a href="' . $url  .'">' . $url .'</a>';
                 $blacklist_ul .= '</li>';
-
             }
         }
 
