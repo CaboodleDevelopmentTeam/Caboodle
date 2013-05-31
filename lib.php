@@ -147,6 +147,15 @@ class caboodle {
 
         return $instances;
     }
+    
+    public function trim_array_elements($array) {
+        
+        foreach ($array as $key => $val) {
+            $ret[$key] = trim($val);
+        }
+        
+        return $ret;
+    }
 
     /**
      * Decode configuration data
@@ -170,6 +179,5 @@ class caboodle {
     private function decode_search_results($results) {
         return $this->decode_config($results);
     }
-
 
 } // caboodle

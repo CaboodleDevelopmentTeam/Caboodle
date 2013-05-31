@@ -105,7 +105,7 @@ class block_caboodle extends block_base {
                         if (strcmp($search_str, $old_search_str) == 0) {
 
                             // get and filter blacklist urls
-                            $blacklist = $this->get_blacklist();
+                            $blacklist = $caboodle->trim_array_elements($this->get_blacklist());
                             $count = 0;
 
                             // display list of elements
@@ -128,7 +128,7 @@ class block_caboodle extends block_base {
                             $this->content->text .= '<ul class="caboodle_results">';
 
                             // get and filter blacklist urls
-                            $blacklist = $this->get_blacklist();
+                            $blacklist = $caboodle->trim_array_elements($this->get_blacklist());
                             $count = 0;
 
                             // display list of elements

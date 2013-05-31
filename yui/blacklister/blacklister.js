@@ -12,28 +12,29 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
         BLACKLISTER.superclass.constructor.apply(this, arguments);
     };
 
-
     Y.extend(BLACKLISTER, Y.Base, {
         initializer : function() {
             // match all blaclist-able items
             var items = Y.all('li.caboodle_blacklister_item img');
-            var blacklisted = Y.all('li.caboodle_blacklisted_item img');
+            var blacklisted_items = Y.all('li.caboodle_blacklisted_item img');
+
             // perform blacklist action on click
             items.on('click', this.blacklist);
-            blacklisted.on('click', this.unblacklist);
+            blacklisted_items.on('click', this.unblacklist);
         },
 
         blacklist : function(e) {
             // move clicked url to blacklist textarea
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             // new url in blacklisted list
-            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">New: <a href="' + url + '">' + url + '</a></li>';
+            var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + '<a href="' + url + '">' + url + '</a></li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
             // get textarea content
             var text = textarea.getContent();
 
-            text = text + '\n' + url; // TODO add checking for newlines
+            text = text + '\n' + url;
 
             // modify current text
             textarea.setContent(text);
@@ -42,6 +43,39 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // add element to blacklisted list
             var blacklisted = Y.one('ul.caboodle_blacklisted');
             blacklisted.append(formatted_url);
+
+            // get added li element
+            var last = blacklisted.get('lastChild');
+            // select img to be used as on click icon
+            var last_img = last.getElementsByTagName('img');
+
+            // define on click action
+            // we cant use unblacklist method, so this function must be redefined here
+            // this is a workaround
+            last_img.once('click', function(e){
+                        var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
+                        // pinpoint of textarea (it is hidden form field)
+                        var textarea = Y.one('textarea#id_config_blacklist');
+                        var text = '';
+                        // get text area content and split it by a newline
+                        var arraytext = textarea.getContent().split('\n');
+                        // get lenght of above array
+                        var arraytext_length = arraytext.length;
+
+                        // foreach array element and re-set its content filtering out clicked url
+                        for (var i = 0; i < arraytext_length; i++ ) {
+
+                            if (url[0].toUpperCase() != arraytext[i].toUpperCase()) {
+                                text = text + arraytext[i] + '\n';
+                            }
+
+                        }
+                        var ct = e.currentTarget.ancestor();
+                        // set new content
+                        textarea.setContent(text);
+                        e.currentTarget.ancestor().hide();
+            });
+
         },
 
         unblacklist : function(e) {
@@ -61,7 +95,6 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
                 if (url[0].toUpperCase() != arraytext[i].toUpperCase()) {
                     text = text + arraytext[i] + '\n';
                 }
-
             }
 
             // set new content
@@ -72,8 +105,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
     }, {
         NAME : BLACKLISTER, //module name is something mandatory.
-                                // It should be in lower case without space
-                                // as YUI use it for name space sometimes.
+
         ATTRS : {
                  aparam : {}
         } // Attributes are the parameters sent when the $PAGE->requires->yui_module calls the module.
