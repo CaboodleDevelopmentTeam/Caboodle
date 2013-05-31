@@ -37,7 +37,6 @@ class block_caboodle_edit_form extends block_edit_form {
 
         // add js which do automatic blacklisting
         $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
-        $PAGE->requires->js('/blocks/caboodle/js/main.js');
 
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
