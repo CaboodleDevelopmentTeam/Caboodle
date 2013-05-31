@@ -123,16 +123,3 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
   }, '@VERSION@', {
       requires:['node', 'base', 'event']
   });
-
-
-/**
- * This function returns search string from search box to be used
- * for initial search.
- * See: edit_form.php lines 54-62
- */
-function buttonUrl() {
-    // another script
-    var initialsearch = document.getElementById("id_config_search");
-
-    return initialsearch.value;
-}
