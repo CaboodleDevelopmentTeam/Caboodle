@@ -150,6 +150,8 @@ class caboodle {
     
     public function trim_array_elements($array) {
         
+        $ret = array();
+        
         foreach ($array as $key => $val) {
             $ret[$key] = trim($val);
         }

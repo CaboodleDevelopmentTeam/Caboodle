@@ -37,6 +37,9 @@ class block_caboodle_edit_form extends block_edit_form {
 
         // add js which do automatic blacklisting
         $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
+        
+        // disable form change check for "initial search"
+        $mform->disable_form_change_checker();
 
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
@@ -51,8 +54,7 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
         $mform->setDefault('config_search', optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM));
-
-
+        
         $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
         $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
 
