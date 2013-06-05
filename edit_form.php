@@ -95,7 +95,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
             foreach ($blacklist as $index => $url) {
 
-                $url = preg_split('/::/', $url);
+                $url = explode('::', $url);
 
                 $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
                 $blacklist_ul .= '<a href="' . $url[1]  .'">' . $url[0] .'</a> (' . $url[1] . ')';
@@ -110,8 +110,8 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('static', 'blacklist', get_string('blacklist', 'block_caboodle'), $blacklist_ul);
         $mform->addHelpButton('blacklist', 'blacklist', 'block_caboodle');
 
-        $mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140, 'hidden' => 'hidden'));
-        //$mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140));
+        //$mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140, 'hidden' => 'hidden'));
+        $mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140));
 
         $mform->addElement('header', 'general', get_string('search_results', 'block_caboodle'));
 
@@ -133,10 +133,11 @@ class block_caboodle_edit_form extends block_edit_form {
                 }
 
                 $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
+                $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
 
                 if (!empty($results)) {
 
-                    $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
+                    $mform->addElement('html', '<ul class="caboodle_blacklister" id="repo_'.$k.'" style="list-style-type: none;">');
 
                     foreach($results as $result_id => $result_data) {
 

@@ -27,7 +27,10 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // move clicked url to blacklist textarea
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             var title = e.currentTarget.ancestor().getElementsByTagName('a').getContent();
+            // get ul id which will represent repository id
+            var resource = e.currentTarget.ancestor().ancestor().getAttribute('id');
             // new url in blacklisted list
+            //var cross_url = document.URL;
             var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
             var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + '<a href="' + url + '">' + title + '</a> (' + url + ')</li>';
             // textarea id="id_config_blacklist"
@@ -35,8 +38,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // get textarea content
             var text = textarea.getContent();
 
-            //text = text + '\n' + url;
-            text = text + '\n' + title + '::' + url;
+            text = text + '\n' + title + '::' + url + '::' + resource;
 
             // modify current text
             textarea.setContent(text);
@@ -76,9 +78,10 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
                         // foreach array element and re-set its content filtering out clicked url
                         for (var i = 0; i < arraytext_length; i++ ) {
                             
-                            var the_text = arraytext[i];
-                            var arraytext_title = the_text.replace(/::.*$/, '');
-                            var arraytext_url = the_text.replace(/^.*::/, '');
+                            var the_text = arraytext[i].split('::');
+                            var arraytext_title = the_text[0];
+                            var arraytext_url = the_text[1];
+                            var arraytext_resource = the_text[2];
                             
                             if (url[0].toUpperCase() != arraytext_url.toUpperCase()) {
                                 text = text + arraytext[i] + '\n';
@@ -89,6 +92,12 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
                         // set new content
                         textarea.setContent(text);
                         e.currentTarget.ancestor().hide();
+                        
+                        var repository = Y.one('ul#'+arraytext_resource);
+                        // new url in blacklisted list
+                        //var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+                        var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;"><a href="' + arraytext_url + '">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
+                        repository.append(formatted_url);
             });
 
         },
@@ -107,9 +116,10 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // foreach array element and re-set its content filtering out clicked url
             for (var i = 0; i < arraytext_length; i++ ) {
 
-                var the_text = arraytext[i];
-                var arraytext_title = the_text.replace(/::.*$/, '');
-                var arraytext_url = the_text.replace(/^.*::/, '');
+                var the_text = arraytext[i].split('::');
+                var arraytext_title = the_text[0];
+                var arraytext_url = the_text[1];
+                var arraytext_resource = the_text[2];
 
                 if (url[0].toUpperCase() != arraytext_url.toUpperCase()) {
                     text = text + arraytext[i] + '\n';
@@ -121,6 +131,12 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             textarea.setContent(text);
             // hide list element
             e.currentTarget.ancestor().hide();
+            
+            var repository = Y.one('ul#'+arraytext_resource);
+            // new url in blacklisted list
+            //var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;"><a href="' + arraytext_url + '">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
+            repository.append(formatted_url);
         }
 
     }, {

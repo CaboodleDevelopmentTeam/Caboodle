@@ -158,6 +158,18 @@ class caboodle {
         
         return $ret;
     }
+    
+    public function get_urls_from_blacklist($blacklist) {
+        
+        $ret = array();
+        
+        foreach ($blacklist as $index => $data) {
+            $exploded =  explode('::', $data);
+            $ret[$index] = $exploded[1];
+        }
+        
+        return $ret;
+    }
 
     /**
      * Decode configuration data
