@@ -52,6 +52,7 @@ class block_caboodle_edit_form extends block_edit_form {
         }
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
+       
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
         $mform->setDefault('config_search', optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM));
         

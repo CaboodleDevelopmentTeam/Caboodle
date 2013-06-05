@@ -55,7 +55,7 @@ class block_caboodle extends block_base {
             $this->content->text = $this->config->text;
         }
 
-        $this->content = '';
+        $this->content->text = '';
         if (empty($currentcontext)) {
             return $this->content;
         }
