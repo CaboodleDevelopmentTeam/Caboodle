@@ -47,6 +47,7 @@ $string['search_items_displayed'] = 'Number of search items displayed';
 $string['search_items_displayed_help'] = 'Number of search items displayed in block';
 $string['blacklist'] = 'Blacklist';
 $string['blacklist_help'] = 'Click on "X" on the left of the black listed URL to remove it from list';
+$string['blacklist_empty'] = 'Blacklist is empty';
 $string['search_results'] = 'Search results';
 $string['advancedsearch'] = 'Advanced search';
 $string['initial_search'] = 'Perform initial search';

@@ -99,6 +99,8 @@ class block_caboodle_edit_form extends block_edit_form {
                 $blacklist_ul .= '<a href="' . $url  .'">' . $url .'</a>';
                 $blacklist_ul .= '</li>';
             }
+        } else {
+            $mform->addElement('html', '<li id="blacklist_empty">'.get_string('blacklist_empty', 'block_caboodle')."</li>");
         }
 
         $blacklist_ul .= '</ul>';
