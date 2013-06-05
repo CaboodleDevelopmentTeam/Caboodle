@@ -26,9 +26,10 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
         blacklist : function(e) {
             // move clicked url to blacklist textarea
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
+            var title = e.currentTarget.ancestor().getElementsByTagName('a').getContent();
             // new url in blacklisted list
             var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
-            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + '<a href="' + url + '">' + url + '</a></li>';
+            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + '<a href="' + url + '">' + title + '</a> (' + url + ')</li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
             // get textarea content
@@ -42,6 +43,11 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             e.currentTarget.ancestor().hide();
             // add element to blacklisted list
             var blacklisted = Y.one('ul.caboodle_blacklisted');
+            
+            // destroy empty list element, we don't need it
+            var empty_list = Y.one('li#blacklist_empty');
+            empty_list.hide();
+            
             blacklisted.append(formatted_url);
 
             // get added li element

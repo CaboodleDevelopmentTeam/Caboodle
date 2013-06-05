@@ -95,12 +95,12 @@ class block_caboodle_edit_form extends block_edit_form {
 
             foreach ($blacklist as $index => $url) {
 
-                $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
+                $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0; border: 1px solid black">' . $cross . '&nbsp;';
                 $blacklist_ul .= '<a href="' . $url  .'">' . $url .'</a>';
                 $blacklist_ul .= '</li>';
             }
         } else {
-            $mform->addElement('html', '<li id="blacklist_empty">'.get_string('blacklist_empty', 'block_caboodle')."</li>");
+            $blacklist_ul .= '<li id="blacklist_empty">' . get_string('blacklist_empty', 'block_caboodle') . '</li>';
         }
 
         $blacklist_ul .= '</ul>';
