@@ -54,7 +54,6 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
        
         $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
-        $mform->setDefault('config_search', optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM));
         
         $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
         $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
