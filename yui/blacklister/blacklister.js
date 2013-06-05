@@ -35,13 +35,14 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // get textarea content
             var text = textarea.getContent();
 
-            text = text + '\n' + url;
+            //text = text + '\n' + url;
+            text = text + '\n' + title + '::' + url;
 
             // modify current text
             textarea.setContent(text);
             // hide list element
             e.currentTarget.ancestor().hide();
-            // add element to blacklisted list
+            // get NodeList for blacklisted ul
             var blacklisted = Y.one('ul.caboodle_blacklisted');
             
             // destroy empty list element, we don't need it
@@ -50,8 +51,8 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             if (empty_list != null) {
                 empty_list.hide();
             }            
-            
-            
+
+            // add blacklisted item to ul
             blacklisted.append(formatted_url);
 
             // get added li element
@@ -74,8 +75,12 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
                         // foreach array element and re-set its content filtering out clicked url
                         for (var i = 0; i < arraytext_length; i++ ) {
-
-                            if (url[0].toUpperCase() != arraytext[i].toUpperCase()) {
+                            
+                            var the_text = arraytext[i];
+                            var arraytext_title = the_text.replace(/::.*$/, '');
+                            var arraytext_url = the_text.replace(/^.*::/, '');
+                            
+                            if (url[0].toUpperCase() != arraytext_url.toUpperCase()) {
                                 text = text + arraytext[i] + '\n';
                             }
 
@@ -102,9 +107,14 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // foreach array element and re-set its content filtering out clicked url
             for (var i = 0; i < arraytext_length; i++ ) {
 
-                if (url[0].toUpperCase() != arraytext[i].toUpperCase()) {
+                var the_text = arraytext[i];
+                var arraytext_title = the_text.replace(/::.*$/, '');
+                var arraytext_url = the_text.replace(/^.*::/, '');
+
+                if (url[0].toUpperCase() != arraytext_url.toUpperCase()) {
                     text = text + arraytext[i] + '\n';
                 }
+                
             }
 
             // set new content

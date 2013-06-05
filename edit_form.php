@@ -95,8 +95,10 @@ class block_caboodle_edit_form extends block_edit_form {
 
             foreach ($blacklist as $index => $url) {
 
-                $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0; border: 1px solid black">' . $cross . '&nbsp;';
-                $blacklist_ul .= '<a href="' . $url  .'">' . $url .'</a>';
+                $url = preg_split('/::/', $url);
+
+                $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
+                $blacklist_ul .= '<a href="' . $url[1]  .'">' . $url[0] .'</a> (' . $url[1] . ')';
                 $blacklist_ul .= '</li>';
             }
         } else {
