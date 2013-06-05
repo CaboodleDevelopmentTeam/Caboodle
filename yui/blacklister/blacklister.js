@@ -46,7 +46,11 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             
             // destroy empty list element, we don't need it
             var empty_list = Y.one('li#blacklist_empty');
-            empty_list.hide();
+            
+            if (empty_list != null) {
+                empty_list.hide();
+            }            
+            
             
             blacklisted.append(formatted_url);
 
