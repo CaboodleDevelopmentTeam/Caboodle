@@ -200,4 +200,17 @@ class block_caboodle_edit_form extends block_edit_form {
         return $results;
     } // caboodle_perform_search
 
+    public function definition_after_data() {
+        parent::definition_after_data();
+        
+        $mform =& $this->_form;
+        $config_search =& $mform->getElement('config_search');
+
+        // override default value if initial search executed
+        if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_ALPHANUM))) {
+            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM);
+        }
+
+    }
+    
 }
