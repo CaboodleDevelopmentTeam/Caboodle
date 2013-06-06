@@ -106,6 +106,7 @@ class block_caboodle extends block_base {
 
                             // get and filter blacklist urls
                             $blacklist = $caboodle->trim_array_elements($this->get_blacklist());
+                            $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
                             $count = 0;
 
                             // display list of elements
@@ -282,6 +283,7 @@ class block_caboodle extends block_base {
         global $DB;
 
         $search_str = $this->config->search;
+        $numresults = get_config('caboodle', 'numresults');
 
         $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
                  WHERE r.type = rt.id
@@ -295,7 +297,7 @@ class block_caboodle extends block_base {
          // but the check can be added in the future to fail gracefully
          require_once($api_class_file);
 
-         $api = new $api_class($resourceid, $this->instance->id, $this->config->search_items_displayed);
+         $api = new $api_class($resourceid, $this->instance->id, $numresults);
 
          $results = $api->search($search_str);
 
