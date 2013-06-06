@@ -31,7 +31,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             var resource = e.currentTarget.ancestor().ancestor().getAttribute('id');
             // new url in blacklisted list
             //var cross_url = document.URL;
-            var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+            var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="../theme/image.php/standard/core/1369325419/i/cross_red_small" />';
             var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + '<a href="' + url + '">' + title + '</a> (' + url + ')</li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
@@ -95,8 +95,8 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
                         
                         var repository = Y.one('ul#'+arraytext_resource);
                         // new url in blacklisted list
-                        //var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
-                        var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;"><a href="' + arraytext_url + '">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
+                        var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="../theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+                        var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">'+ cross +'<a href="' + arraytext_url + '">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
                         repository.append(formatted_url);
             });
 
@@ -134,8 +134,8 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             
             var repository = Y.one('ul#'+arraytext_resource);
             // new url in blacklisted list
-            //var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="http://gadamowicz/caboodle/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
-            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;"><a href="' + arraytext_url + '">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
+            var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="../theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">'+ cross +'<a href="' + arraytext_url + '">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
             repository.append(formatted_url);
         }
 
