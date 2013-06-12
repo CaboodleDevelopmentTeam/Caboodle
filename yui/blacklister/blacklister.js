@@ -171,5 +171,5 @@ function buttonUrl() {
     // another script
     var initialsearch = document.getElementById("id_config_search");
 
-    return initialsearch.value;
+    return escape(initialsearch.value);
 }

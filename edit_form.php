@@ -120,11 +120,11 @@ class block_caboodle_edit_form extends block_edit_form {
         foreach ($repositories as $k => $repository) {
 
             // if resource enabled, display it:
-            if ($this->block->config->resource[$k] == 1 OR optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM)) {
+            if ($this->block->config->resource[$k] == 1 OR optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
                 $mform->addElement('html', '<div class="caboodle_results_settings"><h2>'.$repository->name."</h2>");
 
                 // if initial search not set, retrieve saved results
-                if (! optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM)) {
+                if (! optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
                     // check if resource has any search results
                     $results = $caboodle->get_results($k, $this->block->instance->id);
                 } else {
@@ -179,7 +179,7 @@ class block_caboodle_edit_form extends block_edit_form {
     private function caboodle_perform_search($resourceid) {
         global $DB;
 
-        $search_str = optional_param('caboodle_initialsearch', false, PARAM_ALPHANUM);
+        $search_str = optional_param('caboodle_initialsearch', false, PARAM_RAW);
 
         $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
                  WHERE r.type = rt.id
@@ -207,8 +207,8 @@ class block_caboodle_edit_form extends block_edit_form {
         $config_search =& $mform->getElement('config_search');
 
         // override default value if initial search executed
-        if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_ALPHANUM))) {
-            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_ALPHANUM);
+        if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
+            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
         }
 
     }
