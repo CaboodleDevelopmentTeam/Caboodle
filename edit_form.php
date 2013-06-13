@@ -205,12 +205,23 @@ class block_caboodle_edit_form extends block_edit_form {
         
         $mform =& $this->_form;
         $config_search =& $mform->getElement('config_search');
-
+        
         // override default value if initial search executed
         if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
+            // set search string
             $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
-        }
+            
+            // check all resources as enabled
+            $caboodle = new caboodle();
+            $repositories = $caboodle->get_resources();
 
-    }
+            foreach ($repositories as $k => $repo) {
+                $config_resource[$k] =& $mform->getElement('config_resource[' . $k . ']');
+                $config_resource[$k]->_attributes['checked'] = 'checked';
+            } // foreach
+            
+        } // if
+
+    } // definition_after_data
     
 }
