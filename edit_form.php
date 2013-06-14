@@ -98,7 +98,7 @@ class block_caboodle_edit_form extends block_edit_form {
                 $url = explode('::', $url);
 
                 $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
-                $blacklist_ul .= '<a href="' . $url[1]  .'">' . $url[0] .'</a> (' . $url[1] . ')';
+                $blacklist_ul .= '<a href="' . $url[1]  .'" target="_blank">' . $url[0] .'</a> (' . $url[1] . ')';
                 $blacklist_ul .= '</li>';
             }
         } else {
@@ -145,7 +145,7 @@ class block_caboodle_edit_form extends block_edit_form {
                         if (!in_array($result_data['url'], $blacklist)) {
 
                             $mform->addElement('html', '<li class="caboodle_blacklister_item" style="margin: 3px 0;">' . $cross . '&nbsp;');
-                            $mform->addElement('html', '<a href="' . $result_data['url']  .'">' . $result_data['title'] .'</a>' . ' (' . $result_data['url'] . ')' );
+                            $mform->addElement('html', '<a href="' . $result_data['url']  .'" target="_blank">' . $result_data['title'] .'</a>' . ' (' . $result_data['url'] . ')' );
                             $mform->addElement('html', '</li>');
 
                         }

@@ -114,7 +114,7 @@ class block_caboodle extends block_base {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
                                     $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    $this->content->text .= '<a href="' . $rdata['url']  .'">' . $rdata['title'] . '</a>';
+                                    $this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
                                     $this->content->text .= "</li>";
                                     $count++;
                                 } // if
@@ -137,7 +137,7 @@ class block_caboodle extends block_base {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
                                     $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    $this->content->text .= '<a href="' . $rdata['url']  .'">' . $rdata['title'] . '</a>';
+                                    $this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
                                     $this->content->text .= "</li>";
                                     $count++;
                                 } // if
@@ -233,7 +233,7 @@ class block_caboodle extends block_base {
 
                     foreach($results as $r => $result) {
                         $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                        $this->content->text .= '<a href="' . $result['url']  .'">' . $result['title'] . '</a>';
+                        $this->content->text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
                         $this->content->text .= "</li>";
                     }
 
