@@ -165,11 +165,30 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 /**
  * This function returns search string from search box to be used
  * for initial search.
+ * It should be moved to separate js file
  * See: edit_form.php lines 54-62
  */
 function buttonUrl() {
     // another script
     var initialsearch = document.getElementById("id_config_search");
 
-    return escape(initialsearch.value);
+    var checked_repos = getAllCheckedRepos();
+
+    return escape(initialsearch.value) + checked_repos;
+}
+
+function getAllCheckedRepos() {
+    var repositories = document.getElementById('caboodle_repositories').getElementsByTagName("input");
+    var ret = '';
+
+    for (var i = 0; i < repositories.length; i++ ) {
+
+        if (repositories[i].attributes.getNamedItem('type') !== 'hidden' && repositories[i].checked === true) {
+            ret = ret + '&repo_' + i + '=1';
+        }
+
+    }
+    
+    var test = '';
+    return ret;
 }

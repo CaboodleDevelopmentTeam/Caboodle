@@ -46,10 +46,14 @@ class block_caboodle_edit_form extends block_edit_form {
         $caboodle = new caboodle();
         $repositories = $caboodle->get_resources();
 
+        $mform->addElement('html', '<div id="caboodle_repositories">');
+        
         foreach ($repositories as $k => $repository) {
             $mform->addElement('advcheckbox', "config_resource[$k]", $repository->name);
             $mform->setType("config_resource[$k]", PARAM_BOOL);
         }
+        
+        $mform->addElement('html', '</div>');
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
        
@@ -128,8 +132,9 @@ class block_caboodle_edit_form extends block_edit_form {
                     // check if resource has any search results
                     $results = $caboodle->get_results($k, $this->block->instance->id);
                 } else {
-                    // if initial search string set, perform search
-                    $results = $this->caboodle_perform_search($k);
+                    // if initial search string set and repo checked, perform search
+                    if (optional_param('repo_'.$k, false, PARAM_INT) == 1)
+                            $results = $this->caboodle_perform_search($k);
                 }
 
                 $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
@@ -154,6 +159,12 @@ class block_caboodle_edit_form extends block_edit_form {
 
                     $mform->addElement('html', '</ul>');
 
+                } else if (! optional_param('repo_'.$k, false, PARAM_INT) == 1) {
+                    // repository disabled this time
+                    $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
+                    $mform->addElement('html', '<li class="caboodle_blacklister_item">'. get_string('repository_disabled', 'block_caboodle') . '</li>');
+                    $mform->addElement('html', '</ul>');
+                    
                 } else {
                     // nothing found
                     $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
@@ -217,7 +228,10 @@ class block_caboodle_edit_form extends block_edit_form {
 
             foreach ($repositories as $k => $repo) {
                 $config_resource[$k] =& $mform->getElement('config_resource[' . $k . ']');
-                $config_resource[$k]->_attributes['checked'] = 'checked';
+                
+                if (optional_param('repo_'.$k, false, PARAM_INT) == 1) {
+                    $config_resource[$k]->_attributes['checked'] = 'checked';
+                }
             } // foreach
             
         } // if

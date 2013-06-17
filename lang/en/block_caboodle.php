@@ -57,3 +57,4 @@ $string['search_on'] = '<h3>Search on "<i>{$a}</i>"</h3>';
 $string['user_search_on'] = '<h3>User search on "<i>{$a}</i>"</h3>';
 $string['nosearchstring'] = '';
 $string['nothing_found'] = 'Nothing found';
+$string['repository_disabled'] = 'Repository disabled';
