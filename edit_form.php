@@ -231,6 +231,8 @@ class block_caboodle_edit_form extends block_edit_form {
                 
                 if (optional_param('repo_'.$k, false, PARAM_INT) == 1) {
                     $config_resource[$k]->_attributes['checked'] = 'checked';
+                } else {
+                    unset($config_resource[$k]->_attributes['checked']);
                 }
             } // foreach
             
