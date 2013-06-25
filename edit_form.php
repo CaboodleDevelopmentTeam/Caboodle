@@ -114,7 +114,7 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('static', 'blacklist', get_string('blacklist', 'block_caboodle'), $blacklist_ul);
         $mform->addHelpButton('blacklist', 'blacklist', 'block_caboodle');
 
-        $mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140, 'hidden' => 'hidden'));
+        $mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140, 'hidden' => 'hidden', 'style' => 'display: none;'));
         //$mform->addElement('textarea', 'config_blacklist', '', array('rows' => 10, 'cols' => 140));
 
         $mform->addElement('header', 'general', get_string('search_results', 'block_caboodle'));
