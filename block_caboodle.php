@@ -158,8 +158,7 @@ class block_caboodle extends block_base {
 
         } else {
             // no search string
-            // Disabled as per https://support.enovation.ie/view.php?id=18604
-            //$this->content->text .= '<h3>'. get_string('nosearchstring', 'block_caboodle') . '</h3>';
+            $this->content->text .= '<h3>'. get_string('nosearchstring', 'block_caboodle') . '</h3>';
         }
 
         $this->content->text .= "</div>";

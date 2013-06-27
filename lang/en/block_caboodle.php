@@ -55,6 +55,6 @@ $string['search_not_performed'] = 'Search not yet performed. It\'ll be updated s
 $string['yourownsearch'] = 'Conduct your own search:';
 $string['search_on'] = '<h3>Search on "<i>{$a}</i>"</h3>';
 $string['user_search_on'] = '<h3>User search on "<i>{$a}</i>"</h3>';
-$string['nosearchstring'] = '';
+$string['nosearchstring'] = 'No Search Criteria';
 $string['nothing_found'] = 'Nothing found';
 $string['repository_disabled'] = 'Repository disabled';
