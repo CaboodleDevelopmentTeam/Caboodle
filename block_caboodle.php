@@ -36,7 +36,7 @@ class block_caboodle extends block_base {
     }
 
     function get_content() {
-        global $CFG, $OUTPUT;
+        global $CFG, $OUTPUT, $DB;
 
         if (empty($this->instance)) {
             $this->content = '';
@@ -69,30 +69,32 @@ class block_caboodle extends block_base {
 
         // show user search results (if any)
         if (!empty($_SESSION['caboodle_usersearch_str'][$this->instance->id]) || (!is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
-
             $this->content->text .= $this->get_user_search();
         }
 
-        $search_str = $this->config->search;
-
+        if (array_key_exists('search_term', $_SESSION) && array_key_exists('search_id', $_SESSION) && $_SESSION['search_id'] == $this->instance->id) {
+            $search_str = $_SESSION['search_term'];
+            unset($_SESSION['search_term']);
+            unset($_SESSION['search_id']);
+        } else if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $this->instance->id))) {
+            $search_str = $search_record->searchstr;
+        }
+        
         if (!empty($search_str)) {
-
             // get all resources
             $caboodle = new caboodle();
             $resources = $caboodle->get_resources();
 
             $this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
-
             foreach ($resources as $resourceid => $resource) {
                 if ($this->config->resource[$resourceid] == 1) {
-
                     $this->content->text .= "<h4>" . $resource->name . "</h4>";
 
                     $results = $caboodle->get_results($resourceid, $this->instance->id);
 
                     // if results are empty, no search has been performed yet, we can do that now
                     if (empty($results)) {
-                        $results = $this->perform_search($resourceid, true);
+                        $results = $this->perform_search($resourceid, true, $search_str);
                     }
 
                     $this->content->text .= '<ul class="caboodle_results">';
@@ -124,7 +126,7 @@ class block_caboodle extends block_base {
                         } else {
                             //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
                             // search string has changed, execute search and save all data
-                            $results = $this->perform_search($resourceid, true);
+                            $results = $this->perform_search($resourceid, true, $search_str);
 
                             $this->content->text .= '<ul class="caboodle_results">';
 
@@ -279,33 +281,38 @@ class block_caboodle extends block_base {
         return $text;
     }
 
-    public function perform_search($resourceid, $save = false) {
+    public function perform_search($resourceid, $save = false, $search_str=null) {
         global $DB;
+        
+        if (is_null($search_str)) {
+            if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $resourceid))) {
+                $search_str = $search_record->searchstr;
+            }
+        }
 
-        $search_str = $this->config->search;
         $numresults = get_config('caboodle', 'numresults');
 
         $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
                  WHERE r.type = rt.id
                  AND r.id = ". $resourceid;
-         $resource_data = $DB->get_record_sql($sql);
+        $resource_data = $DB->get_record_sql($sql);
 
-         $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
-         $api_class = $resource_data->typeclass;
+        $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
+        $api_class = $resource_data->typeclass;
 
-         // we don't need to check if file exists and/or is readable, below line will raise an error anyway
-         // but the check can be added in the future to fail gracefully
-         require_once($api_class_file);
+        // we don't need to check if file exists and/or is readable, below line will raise an error anyway
+        // but the check can be added in the future to fail gracefully
+        require_once($api_class_file);
 
-         $api = new $api_class($resourceid, $this->instance->id, $numresults);
+        $api = new $api_class($resourceid, $this->instance->id, $numresults);
 
-         $results = $api->search($search_str);
+        $results = $api->search($search_str);
 
-         if ($save) {
-             $api->save_results();
-         }
+        if ($save) {
+            $api->save_results();
+        }
 
-         return $results;
+        return $results;
     }
 
     /**

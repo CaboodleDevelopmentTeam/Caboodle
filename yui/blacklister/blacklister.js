@@ -173,8 +173,12 @@ function buttonUrl() {
     var initialsearch = document.getElementById("id_config_search");
 
     var checked_repos = getAllCheckedRepos();
+    
+    var student_search_option = getStudentSearchOption();
+    
+    var number_of_display_items = getNumberOfDisplayItems();
 
-    return escape(initialsearch.value) + checked_repos;
+    return escape(initialsearch.value) + checked_repos + student_search_option + number_of_display_items;
 }
 
 function getAllCheckedRepos() {
@@ -191,4 +195,25 @@ function getAllCheckedRepos() {
     
     var test = '';
     return ret;
+}
+
+function getStudentSearchOption() {
+    var student_option = document.getElementById('id_config_student_search');
+    var choice = student_option.options[student_option.selectedIndex].value;
+    var ret = '&student_option=' + choice;
+    return ret;
+}
+
+function getNumberOfDisplayItems() {
+    var number_of_display_items = document.getElementById('id_config_search_items_displayed');
+    var choice = number_of_display_items[number_of_display_items.selectedIndex].value;
+    var ret = '&number_items=' + choice;
+    return ret;
+}
+
+function in_page_search(event, url) {
+    if (event.keyCode == 13) {
+        event.preventDefault();
+        document.location.href = url + buttonUrl();
+    }
 }

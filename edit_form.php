@@ -57,10 +57,24 @@ class block_caboodle_edit_form extends block_edit_form {
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
        
-        $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
+//        $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
         
         $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
         $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
+        
+        $search_term = optional_param('caboodle_initialsearch', '', PARAM_RAW);
+        if (!$search_term) {
+            $id = required_param('bui_editid', PARAM_INT);
+            global $DB;
+            if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $id))) {
+                $search_term = $search_record->searchstr;
+            }
+        }
+        
+        $search_box = '<input name="config_search" id="id_config_search" type="text" value="'.$search_term.'" '
+                . 'onkeydown="in_page_search(event, \''.$button_url.'\');" style="margin-left: 1%;"/>';
+        $search_box = '<label for="id_config_search" style="width: 15%; float: left; text-align: right;">Search </label>' . $search_box;
+        $mform->addElement('html', $search_box);
 
         // button code
         // buttonUrl js function can be found at the end of yui/blacklister/blacklister.js file
@@ -72,7 +86,7 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('static', 'initialsearch', '', $button);
 
         $choices = array(get_string('no'), get_string('yes'));
-        $default = 1;
+        $default = optional_param('student_option', 1, PARAM_INT);
         $mform->addElement('select', 'config_student_search', get_string('student_search', 'block_caboodle'), $choices);
         $mform->setDefault('config_student_search', $default);
         $mform->setType('config_student_search', PARAM_BOOL);
@@ -85,9 +99,14 @@ class block_caboodle_edit_form extends block_edit_form {
             $choices[$choice] = $choice;
         }
 
-        $default = 3;
+        $temp_num_items = optional_param('number_items', 0, PARAM_INT);
         $mform->addElement('select', 'config_search_items_displayed', get_string('search_items_displayed', 'block_caboodle'), $choices);
         $mform->setDefault('config_search_items_displayed', $default);
+        if (!$temp_num_items) {
+            $mform->setDefault('config_search_items_displayed', 3);
+        } else {
+            $mform->setConstant('config_search_items_displayed', $temp_num_items);
+        }
         $mform->setType('config_search_items_displayed', PARAM_INT);
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
 
@@ -215,12 +234,18 @@ class block_caboodle_edit_form extends block_edit_form {
         parent::definition_after_data();
         
         $mform =& $this->_form;
-        $config_search =& $mform->getElement('config_search');
+        $search_term = optional_param('config_search', NULL, PARAM_RAW);
+        $search_id = required_param('bui_editid', PARAM_INT);
+
+        if (!is_null($search_term)) {
+            $_SESSION['search_id'] = $search_id;
+            $_SESSION['search_term'] = $search_term;
+        }
         
         // override default value if initial search executed
         if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
             // set search string
-            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
+//            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
             
             // check all resources as enabled
             $caboodle = new caboodle();
@@ -237,7 +262,7 @@ class block_caboodle_edit_form extends block_edit_form {
             } // foreach
             
         } // if
-
+        
     } // definition_after_data
     
 }
