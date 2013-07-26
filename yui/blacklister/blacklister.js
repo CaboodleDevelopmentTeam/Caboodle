@@ -24,6 +24,8 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
         },
 
         blacklist : function(e) {
+            // don't propagate up the DOM tree
+            e.stopPropagation();
             // move clicked url to blacklist textarea
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             var title = e.currentTarget.ancestor().getElementsByTagName('a').getContent();
@@ -62,47 +64,15 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // select img to be used as on click icon
             var last_img = last.getElementsByTagName('img');
 
-            // define on click action
-            // we cant use unblacklist method, so this function must be redefined here
-            // this is a workaround
-            last_img.once('click', function(e){
-                        var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
-                        // pinpoint of textarea (it is hidden form field)
-                        var textarea = Y.one('textarea#id_config_blacklist');
-                        var text = '';
-                        // get text area content and split it by a newline
-                        var arraytext = textarea.getContent().split('\n');
-                        // get lenght of above array
-                        var arraytext_length = arraytext.length;
-
-                        // foreach array element and re-set its content filtering out clicked url
-                        for (var i = 0; i < arraytext_length; i++ ) {
-                            
-                            var the_text = arraytext[i].split('::');
-                            var arraytext_title = the_text[0];
-                            var arraytext_url = the_text[1];
-                            var arraytext_resource = the_text[2];
-                            
-                            if (url[0].toUpperCase() != arraytext_url.toUpperCase()) {
-                                text = text + arraytext[i] + '\n';
-                            }
-
-                        }
-                        var ct = e.currentTarget.ancestor();
-                        // set new content
-                        textarea.setContent(text);
-                        e.currentTarget.ancestor().hide();
-                        
-                        var repository = Y.one('ul#'+arraytext_resource);
-                        // new url in blacklisted list
-                        var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="../theme/image.php/standard/core/1369325419/i/cross_red_small" />';
-                        var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">'+ cross +'<a href="' + arraytext_url + '" target="_blank">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
-                        repository.append(formatted_url);
-            });
-
+            // define on click action with already defined method
+            var unblacklist = BLACKLISTER.prototype.unblacklist;
+            last_img.once('click', unblacklist);
+            
         },
 
         unblacklist : function(e) {
+            // don't propagate up the DOM tree
+            e.stopPropagation();
             // get URL
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             // pinpoint of textarea (it is hidden form field)
@@ -137,6 +107,16 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="../theme/image.php/standard/core/1369325419/i/cross_red_small" />';
             var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">'+ cross +'<a href="' + arraytext_url + '" target="_blank">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
             repository.append(formatted_url);
+            
+            // get added li element
+            var last = repository.get('lastChild');
+            // select img to be used as on click icon
+            var last_img = last.getElementsByTagName('img');
+
+            // define on click action with already defined method
+            var blacklist = BLACKLISTER.prototype.blacklist;
+            last_img.once('click', blacklist);
+
         }
 
     }, {
