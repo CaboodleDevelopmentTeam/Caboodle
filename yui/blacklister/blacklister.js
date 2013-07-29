@@ -157,8 +157,10 @@ function buttonUrl() {
     var student_search_option = getStudentSearchOption();
     
     var number_of_display_items = getNumberOfDisplayItems();
+    
+    var blacklist = getBlackilstItems();
 
-    return escape(initialsearch.value) + checked_repos + student_search_option + number_of_display_items;
+    return escape(initialsearch.value) + checked_repos + student_search_option + number_of_display_items + blacklist;
 }
 
 function getAllCheckedRepos() {
@@ -173,7 +175,6 @@ function getAllCheckedRepos() {
 
     }
     
-    var test = '';
     return ret;
 }
 
@@ -189,6 +190,16 @@ function getNumberOfDisplayItems() {
     var choice = number_of_display_items[number_of_display_items.selectedIndex].value;
     var ret = '&number_items=' + choice;
     return ret;
+}
+
+function getBlackilstItems() {
+    var textarea = document.getElementById('id_config_blacklist').value;
+    
+    // see: http://www.webtoolkit.info/javascript-base64.html
+    // js script in caboodle: /mod/caboodle/js/base64-encode.js
+    var ret = CaboodleBase64.encode(textarea);
+    
+    return '&blacklisted=' + encodeURIComponent(ret);
 }
 
 function in_page_search(event, url) {

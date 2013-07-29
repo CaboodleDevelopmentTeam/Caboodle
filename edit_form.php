@@ -35,6 +35,8 @@ class block_caboodle_edit_form extends block_edit_form {
         // an "X" before blacklisted urls
         $cross = $OUTPUT->pix_icon('i/cross_red_small','blacklist');
 
+        // get js with Base64 encode/deocde class
+        $PAGE->requires->js('/blocks/caboodle/js/base64-encode.js');
         // add js which do automatic blacklisting
         $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
         
@@ -110,16 +112,35 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->setType('config_search_items_displayed', PARAM_INT);
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
 
-        $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
 
+        if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
+            
+            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0) {
+                $blacklist = array();
+            } else {
+
+                // decode all elements
+                $blacklist_tmp = base64_decode(urldecode(optional_param('blacklisted', false, PARAM_RAW)));
+                // array-ify them and trim all wite spaces from the begginning and end of each string
+                $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $blacklist_tmp, -1, PREG_SPLIT_NO_EMPTY));
+            }
+            
+        } else {
+            
+            $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
+            
+        }
+        
+        // prepare unordered list for blacklist
         $blacklist_ul = '<ul class="caboodle_blacklisted" style="list-style-type: none;">';
-
+        
         if (count($blacklist) > 0) {
 
             foreach ($blacklist as $index => $url) {
 
                 $url = explode('::', $url);
-
+                
+                // TODO: data validation
                 $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
                 $blacklist_ul .= '<a href="' . $url[1]  .'" target="_blank">' . $url[0] .'</a> (' . $url[1] . ')';
                 $blacklist_ul .= '</li>';
@@ -235,6 +256,7 @@ class block_caboodle_edit_form extends block_edit_form {
         
         $mform =& $this->_form;
         $search_term = optional_param('config_search', NULL, PARAM_RAW);
+        $blacklist = urldecode(optional_param('blacklisted', '', PARAM_RAW));
         $search_id = required_param('bui_editid', PARAM_INT);
 
         if (!is_null($search_term)) {
@@ -260,6 +282,11 @@ class block_caboodle_edit_form extends block_edit_form {
                     unset($config_resource[$k]->_attributes['checked']);
                 }
             } // foreach
+            
+            // blacklist
+            $blacklist_decoded = base64_decode($blacklist);
+            $config_blacklist =& $mform->getElement('config_blacklist');
+            $config_blacklist->_value = $blacklist_decoded;
             
         } // if
         
