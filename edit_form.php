@@ -37,6 +37,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
         // get js with Base64 encode/deocde class
         $PAGE->requires->js('/blocks/caboodle/js/base64-encode.js');
+        $PAGE->requires->js('/blocks/caboodle/js/initialsearch.js');
         // add js which do automatic blacklisting
         $PAGE->requires->yui_module('moodle-block_caboodle-blacklister', 'M.block_caboodle.init_blacklister');
         
@@ -177,7 +178,7 @@ class block_caboodle_edit_form extends block_edit_form {
                             $results = $this->caboodle_perform_search($k);
                 }
 
-                $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
+                // get urls from prevously retrieved blacklist
                 $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
 
                 if (!empty($results)) {
