@@ -5,7 +5,6 @@
  * @copyright 2013 Enovation Solutions
  */
 
-
 YUI.add('moodle-block_caboodle-blacklister', function(Y) {
     var BLACKLISTER = 'blacklister';
     var BLACKLISTER = function() {

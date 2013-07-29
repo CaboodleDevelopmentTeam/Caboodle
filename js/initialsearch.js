@@ -1,8 +1,13 @@
+/*
+ * @package   caboodle
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2013 Enovation Solutions
+ */
+
+
 /**
  * This function returns search string from search box to be used
- * for initial search.
- * It should be moved to separate js file
- * See: edit_form.php lines 54-62
+ * for initial search URL.
  */
 var buttonUrl = function() {
     // another script
