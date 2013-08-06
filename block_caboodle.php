@@ -220,7 +220,7 @@ class block_caboodle extends block_base {
                 if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
 
                     // execute
-                    $results = $this->perform_search($resourceid);
+                    $results = $this->perform_search($resourceid, false, $search_str);
 
                     $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
 
