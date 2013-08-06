@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2013072900;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2013080600;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires = 2012062506;
 $plugin->component = 'block_caboodle'; // Full name of the plugin (used for diagnostics)
 $plugin->cron = 300;

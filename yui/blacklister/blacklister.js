@@ -24,7 +24,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
         blacklist : function(e) {
             // don't propagate up the DOM tree
-            e.stopPropagation();
+            //e.stopPropagation();
             // move clicked url to blacklist textarea
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             var title = e.currentTarget.ancestor().getElementsByTagName('a').getContent();
@@ -33,7 +33,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // new url in blacklisted list
             //var cross_url = document.URL;
             var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="' + M.cfg.wwwroot + '/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
-            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + '<a href="' + url + '" target="_blank">' + title + '</a> (' + url + ')</li>';
+            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + ' <a href="' + url + '" target="_blank">' + title + '</a> (' + url + ')</li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
             // get textarea content
@@ -71,7 +71,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
 
         unblacklist : function(e) {
             // don't propagate up the DOM tree
-            e.stopPropagation();
+            //e.stopPropagation();
             // get URL
             var url = e.currentTarget.ancestor().getElementsByTagName('a').get('href');
             // pinpoint of textarea (it is hidden form field)
@@ -90,9 +90,20 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
                 var arraytext_url = the_text[1];
                 var arraytext_resource = the_text[2];
 
-                if (url[0].toUpperCase() != arraytext_url.toUpperCase()) {
+                if (url[0].toLowerCase() !== arraytext_url.toLowerCase()) {
+                    // re-add to text box if not matched
                     text = text + arraytext[i] + '\n';
-                }
+                } else {
+                    // found clicked url, append it to blacklist
+                    var repository = Y.one('ul#'+arraytext_resource);
+                    // new url in blacklisted list
+                    var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="' + M.cfg.wwwroot + '/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+                    var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">'+ cross +' <a href="' + arraytext_url + '" target="_blank">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
+                    
+                    // append url to a resource unordered list
+                    repository.append(formatted_url);
+
+                } // if ... else
                 
             }
 
@@ -101,13 +112,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             // hide list element
             e.currentTarget.ancestor().hide();
             
-            var repository = Y.one('ul#'+arraytext_resource);
-            // new url in blacklisted list
-            var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="' + M.cfg.wwwroot + '/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
-            var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">'+ cross +'<a href="' + arraytext_url + '" target="_blank">' + arraytext_title + '</a> (' + arraytext_url + ')</li>';
-            repository.append(formatted_url);
-            
-            // get added li element
+            // get last added li element
             var last = repository.get('lastChild');
             // select img to be used as on click icon
             var last_img = last.getElementsByTagName('img');
