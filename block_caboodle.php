@@ -76,8 +76,10 @@ class block_caboodle extends block_base {
             $search_str = $_SESSION['search_term'];
             unset($_SESSION['search_term']);
             unset($_SESSION['search_id']);
-        } else if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $this->instance->id))) {
-            $search_str = $search_record->searchstr;
+        } else {
+//            if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $this->instance->id))) {
+            $search_str = $this->config->search;
+            //$search_str = $search_record->searchstr;
         }
         
         if (!empty($search_str)) {

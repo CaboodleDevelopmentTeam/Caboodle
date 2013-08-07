@@ -59,28 +59,25 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('html', '</div>');
 
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
-       
-//        $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'));
-        
-        $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
-        $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&caboodle_initialsearch=';
-        
-        $search_term = optional_param('caboodle_initialsearch', '', PARAM_RAW);
-        if (!$search_term) {
-            $id = required_param('bui_editid', PARAM_INT);
-            global $DB;
-            if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $id))) {
-                $search_term = $search_record->searchstr;
-            }
+
+        // get initial search count
+        $initialsearch_count = optional_param('initialsearchcnt', NULL, PARAM_INT);
+        // set count to zero if it's a first attempt or increment it if not
+        if (is_null($initialsearch_count)) {
+            $initialsearch_count = 0;
+        } else {
+            $initialsearch_count++;
         }
         
-        $search_box = '<input name="config_search" id="id_config_search" type="text" value="'.$search_term.'" '
-                . 'onkeydown="in_page_search(event, \''.$button_url.'\');" style="margin-left: 1%;"/>';
-        $search_box = '<label for="id_config_search" style="width: 15%; float: left; text-align: right;">Search </label>' . $search_box;
-        $mform->addElement('html', $search_box);
+        $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
+        $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&initialsearchcnt=' . $initialsearch_count . '&caboodle_initialsearch=';
+        
+        // config_search button attributes with additional js/style
+        $config_search_attributes = array('onkeydown' => "return in_page_search(event, '" . $button_url ."');", "style" => "margin-left: 0;");
+        // add config_search text box
+        $mform->addElement('text', 'config_search', get_string('search', 'block_caboodle'), $config_search_attributes);
 
-        // button code
-        // buttonUrl js function can be found at the end of yui/blacklister/blacklister.js file
+        // button code - see js/initialsearch.js file
         $button = '<input name="intro" value="'
                 . get_string('initial_search', 'block_caboodle')
                 . '" type="button" id="id_intro" onClick="document.location.href=\'' . $button_url
@@ -116,7 +113,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
         if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
             
-            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0) {
+            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0 || optional_param('initialsearchcnt', 0, PARAM_INT) == 0) {
                 $blacklist = array();
             } else {
 
@@ -174,17 +171,19 @@ class block_caboodle_edit_form extends block_edit_form {
                     $results = $caboodle->get_results($k, $this->block->instance->id);
                 } else {
                     // if initial search string set and repo checked, perform search
-                    if (optional_param('repo_'.$k, false, PARAM_INT) == 1)
-                            $results = $this->caboodle_perform_search($k);
+                    if (optional_param('repo_'.$k, false, PARAM_INT) == 1) {
+                        $results = $this->caboodle_perform_search($k);
+                    }
                 }
 
                 // get urls from prevously retrieved blacklist
                 $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
 
-                if (!empty($results)) {
+                if (!empty($results) || optional_param('repo_'.$k, 0, PARAM_INT) == 1) {
 
                     $mform->addElement('html', '<ul class="caboodle_blacklister" id="repo_'.$k.'" style="list-style-type: none;">');
-
+                    
+                    
                     foreach($results as $result_id => $result_data) {
 
                         // filter out blacklisted urls
@@ -253,6 +252,8 @@ class block_caboodle_edit_form extends block_edit_form {
     } // caboodle_perform_search
 
     public function definition_after_data() {
+        //global $DB;
+        
         parent::definition_after_data();
         
         $mform =& $this->_form;
@@ -265,10 +266,18 @@ class block_caboodle_edit_form extends block_edit_form {
             $_SESSION['search_term'] = $search_term;
         }
         
+        // set student option Yes/No
+        if (!is_null(optional_param('student_option', NULL, PARAM_INT))) {
+            $config_student_option =& $mform->getElement('config_student_search');
+            $config_student_option->_values[0] = optional_param('student_option', NULL, PARAM_INT);
+        }
+        
         // override default value if initial search executed
         if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
             // set search string
-//            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
+            $config_search =& $mform->getElement('config_search');
+            $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
+//            var_dump($config_search);
             
             // check all resources as enabled
             $caboodle = new caboodle();
@@ -281,13 +290,22 @@ class block_caboodle_edit_form extends block_edit_form {
                     $config_resource[$k]->_attributes['checked'] = 'checked';
                 } else {
                     unset($config_resource[$k]->_attributes['checked']);
+                    // clean blacklist (whole blacklist, it should be added logic to clean out only repository items)
+                    $config_blacklist =& $mform->getElement('config_blacklist');
+                    $config_blacklist->_value = '';
                 }
             } // foreach
             
             // blacklist
-            $blacklist_decoded = base64_decode($blacklist);
-            $config_blacklist =& $mform->getElement('config_blacklist');
-            $config_blacklist->_value = $blacklist_decoded;
+            
+            if (optional_param('initialsearchcnt', 0, PARAM_INT) == 0 ) {
+                $config_blacklist =& $mform->getElement('config_blacklist');
+                $config_blacklist->_value = '';
+            } else {
+                $blacklist_decoded = base64_decode($blacklist);
+                $config_blacklist =& $mform->getElement('config_blacklist');
+                $config_blacklist->_value = $blacklist_decoded;
+            }
             
         } // if
         

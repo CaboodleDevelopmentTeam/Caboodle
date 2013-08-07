@@ -64,8 +64,19 @@ var getBlackilstItems = function() {
 }
 
 var in_page_search = function(event, url) {
+
     if (event.keyCode == 13) {
-        event.preventDefault();
+        // prevent default action
+        if (event.preventDefault) {
+            event.preventDefault();
+        } else {
+            event.returnValue = false;
+        }
+
+        // open initial search
         document.location.href = url + buttonUrl();
+        return false;
     }
+    
+    return true;
 }
