@@ -125,7 +125,7 @@ class block_caboodle_edit_form extends block_edit_form {
             
         } else {
             
-            $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
+                $blacklist = $caboodle->trim_array_elements(preg_split("/\n/", $this->block->config->blacklist, -1, PREG_SPLIT_NO_EMPTY));
             
         }
         
@@ -211,7 +211,7 @@ class block_caboodle_edit_form extends block_edit_form {
                     $mform->addElement('html', '<li class="caboodle_blacklister_item">'. get_string('nothing_found', 'block_caboodle') . '</li>');
                     $mform->addElement('html', '</ul>');
                 }
-
+                
                 $mform->addElement('html', "</div>");
             } // if
         } // foreach
@@ -250,9 +250,9 @@ class block_caboodle_edit_form extends block_edit_form {
 
         return $results;
     } // caboodle_perform_search
+    
 
     public function definition_after_data() {
-        //global $DB;
         
         parent::definition_after_data();
         
@@ -277,7 +277,6 @@ class block_caboodle_edit_form extends block_edit_form {
             // set search string
             $config_search =& $mform->getElement('config_search');
             $config_search->_attributes['value'] = optional_param('caboodle_initialsearch', '', PARAM_RAW);
-//            var_dump($config_search);
             
             // check all resources as enabled
             $caboodle = new caboodle();
@@ -309,6 +308,7 @@ class block_caboodle_edit_form extends block_edit_form {
             
         } // if
         
+        
     } // definition_after_data
-    
+
 }

@@ -128,11 +128,11 @@ class block_caboodle extends block_base {
                         } else {
                             //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">' . get_string('search_not_performed', 'block_caboodle') . '</li>';
                             // search string has changed, execute search and save all data
-                            $results = $this->perform_search($resourceid, true, $search_str);
+                            $results = $this->perform_search($resourceid, true, $search_str, true);
 
                             $this->content->text .= '<ul class="caboodle_results">';
 
-                            // get and filter blacklist urls
+                            // new search criteria, clear black list
                             $blacklist = $caboodle->trim_array_elements($this->get_blacklist());
                             $count = 0;
 
@@ -177,10 +177,6 @@ class block_caboodle extends block_base {
     public function get_blacklist() {
 
         $blacklist = preg_split("/\n/", $this->config->blacklist, -1, PREG_SPLIT_NO_EMPTY);
-
-//        foreach ($blacklist as $index => $url) {
-//            $blacklist[$index] = rtrim($url);
-//        }
 
         return $blacklist;
     }
@@ -283,7 +279,7 @@ class block_caboodle extends block_base {
         return $text;
     }
 
-    public function perform_search($resourceid, $save = false, $search_str=null) {
+    public function perform_search($resourceid, $save = false, $search_str = null, $criteria_changed = false) {
         global $DB;
         
         if (is_null($search_str)) {
@@ -312,6 +308,11 @@ class block_caboodle extends block_base {
 
         if ($save) {
             $api->save_results();
+        }
+        
+        // if a new search conducted - delete all items from blacklist (aka exclude list)
+        if($criteria_changed) {
+            $this->caboodle_clear_blacklist($this->instance->id);
         }
 
         return $results;
@@ -442,4 +443,27 @@ class block_caboodle extends block_base {
 
         return true;
     } // cron
+
+    private function caboodle_clear_blacklist($id) {
+        global $DB;
+        
+        if ($data = $DB->get_record('block_instances', array('id' => $id))) {
+        
+            $configdata = unserialize(base64_decode($data->configdata));
+
+
+            $configdata->blacklist = '';
+
+            $configdata = base64_encode(serialize($configdata));
+
+            $record = new stdClass();
+            $record->id = $id;
+            $record->configdata = $configdata;
+
+            $DB->update_record('block_instances', $record);
+
+        
+        } // if
+        
+    }
 }
