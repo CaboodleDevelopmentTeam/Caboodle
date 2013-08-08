@@ -77,9 +77,7 @@ class block_caboodle extends block_base {
             unset($_SESSION['search_term']);
             unset($_SESSION['search_id']);
         } else {
-//            if ($search_record = $DB->get_record('caboodle_search_results', array('instance' => $this->instance->id))) {
             $search_str = $this->config->search;
-            //$search_str = $search_record->searchstr;
         }
         
         if (!empty($search_str)) {
@@ -163,6 +161,8 @@ class block_caboodle extends block_base {
         } else {
             // no search string
             $this->content->text .= '<h3>'. get_string('nosearchstring', 'block_caboodle') . '</h3>';
+            // clear exclude (aka black) list
+            $this->caboodle_clear_blacklist($this->instance->id);
         }
 
         $this->content->text .= "</div>";
@@ -199,8 +199,6 @@ class block_caboodle extends block_base {
             unset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results']);
 
         }
-
-        //var_dump($_SESSION['caboodle_usersearch_str'][$this->instance->id]);
 
         $search_str = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'];
 
@@ -450,7 +448,6 @@ class block_caboodle extends block_base {
         if ($data = $DB->get_record('block_instances', array('id' => $id))) {
         
             $configdata = unserialize(base64_decode($data->configdata));
-
 
             $configdata->blacklist = '';
 

@@ -111,9 +111,9 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addHelpButton('config_search_items_displayed', 'search_items_displayed', 'block_caboodle');
 
 
-        if (!is_null(optional_param('caboodle_initialsearch', NULL, PARAM_RAW))) {
+        if (isset($_GET['caboodle_initialsearch'])) {
             
-            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0 || optional_param('initialsearchcnt', 0, PARAM_INT) == 0) {
+            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0 || optional_param('initialsearchcnt', 0, PARAM_INT) == 0 || strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) == 0) {
                 $blacklist = array();
             } else {
 
@@ -162,24 +162,25 @@ class block_caboodle_edit_form extends block_edit_form {
         foreach ($repositories as $k => $repository) {
 
             // if resource enabled, display it:
-            if ($this->block->config->resource[$k] == 1 OR optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
+            if ($this->block->config->resource[$k] == 1 || optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
                 $mform->addElement('html', '<div class="caboodle_results_settings"><h2>'.$repository->name."</h2>");
 
                 // if initial search not set, retrieve saved results
-                if (! optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
+                if (! isset($_GET['caboodle_initialsearch'])) {
                     // check if resource has any search results
                     $results = $caboodle->get_results($k, $this->block->instance->id);
                 } else {
                     // if initial search string set and repo checked, perform search
-                    if (optional_param('repo_'.$k, false, PARAM_INT) == 1) {
+                    if (optional_param('repo_'.$k, 0, PARAM_INT) == 1 && strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) > 0) {
                         $results = $this->caboodle_perform_search($k);
                     }
+                    
                 }
 
                 // get urls from prevously retrieved blacklist
                 $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
 
-                if (!empty($results) || optional_param('repo_'.$k, 0, PARAM_INT) == 1) {
+                if (!empty($results) || optional_param('repo_'.$k, 0, PARAM_INT) == 1 ) {
 
                     $mform->addElement('html', '<ul class="caboodle_blacklister" id="repo_'.$k.'" style="list-style-type: none;">');
                     
@@ -199,7 +200,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
                     $mform->addElement('html', '</ul>');
 
-                } else if (! optional_param('repo_'.$k, false, PARAM_INT) == 1) {
+                } else if ( optional_param('repo_'.$k, 0, PARAM_INT) == 0 || strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) == 0) {
                     // repository disabled this time
                     $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
                     $mform->addElement('html', '<li class="caboodle_blacklister_item">'. get_string('repository_disabled', 'block_caboodle') . '</li>');
