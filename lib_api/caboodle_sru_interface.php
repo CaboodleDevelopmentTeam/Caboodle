@@ -72,7 +72,7 @@ class caboodle_sru_interface extends caboodle_api {
 
         } else {
             $this->lasterror = curl_error($curl);
-            return false;
+            return '';
         }
 
         return $xmldata;
@@ -93,6 +93,7 @@ class caboodle_sru_interface extends caboodle_api {
         $dcNS = "http://purl.org/dc/elements/1.1/";
 
         $count = 0;
+        $ret = '';
 
         foreach ($xml->getElementsByTagNameNS($mhubNS, 'record') as $element) {
 

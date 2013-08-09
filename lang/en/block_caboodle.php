@@ -56,5 +56,5 @@ $string['yourownsearch'] = 'Conduct your own search:';
 $string['search_on'] = '<h3>Search on "<i>{$a}</i>"</h3>';
 $string['user_search_on'] = '<h3>User search on "<i>{$a}</i>"</h3>';
 $string['nosearchstring'] = 'No Search Criteria';
-$string['nothing_found'] = 'Nothing found';
-$string['repository_disabled'] = 'Repository disabled';
+$string['nothing_found'] = 'Nothing found. Repository search could timed out. Please try again. If this won\'t help, change your query.';
+$string['repository_disabled'] = 'Repository disabled or provided query is invalid';

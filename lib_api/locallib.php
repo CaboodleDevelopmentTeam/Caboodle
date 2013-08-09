@@ -94,7 +94,7 @@ abstract class caboodle_api implements caboodle_api_interface {
         $results = $this->search_api($query);
 
         // update search data
-        if ($results) $this->_searchdata = $results;
+        $this->_searchdata = $results;
 
         return $results;
     }

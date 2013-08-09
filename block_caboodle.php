@@ -391,12 +391,11 @@ class block_caboodle extends block_base {
                             if (!$caboodle->is_expired($resourceid, $instanceid, $removeafter)) {
 
                                 mtrace("\tExecuting search");
-                                if ($search_result = $api->search($instance->configdata->search)) {
+                                $search_result = $api->search($instance->configdata->search);
+                                $api->save_results();
 
-                                    $api->save_results();
-
-                                } else {
-                                    mtrace("Error: curl failed");
+                                if (strlen($search_result) == 0) {
+                                    mtrace("Error: search results empty, possible curl error");
 
                                     if (isset($api->lasterror) && !empty($api->lasterror)) {
                                         mtrace("Last reported error: " . $api->lasterror);

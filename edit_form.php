@@ -185,7 +185,7 @@ class block_caboodle_edit_form extends block_edit_form {
                 // get urls from prevously retrieved blacklist
                 $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
 
-                if (!empty($results) || optional_param('repo_'.$k, 0, PARAM_INT) == 1 ) {
+                if (!empty($results)) {
 
                     $mform->addElement('html', '<ul class="caboodle_blacklister" id="repo_'.$k.'" style="list-style-type: none;">');
                     
@@ -205,7 +205,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
                     $mform->addElement('html', '</ul>');
 
-                } else if ( optional_param('repo_'.$k, 0, PARAM_INT) == 0 || strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) == 0) {
+                } else if ( isset($_GET['caboodle_initialsearch']) && (optional_param('repo_'.$k, 0, PARAM_INT) == 0 || strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) == 0) ) {
                     // repository disabled this time
                     $mform->addElement('html', '<ul class="caboodle_blacklister" style="list-style-type: none;">');
                     $mform->addElement('html', '<li class="caboodle_blacklister_item">'. get_string('repository_disabled', 'block_caboodle') . '</li>');
