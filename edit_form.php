@@ -61,16 +61,19 @@ class block_caboodle_edit_form extends block_edit_form {
         $mform->addElement('header', 'general', get_string('search', 'block_caboodle'));
 
         // get initial search count
-        $initialsearch_count = optional_param('initialsearchcnt', NULL, PARAM_INT);
-        // set count to zero if it's a first attempt or increment it if not
-        if (is_null($initialsearch_count)) {
-            $initialsearch_count = 0;
+        $initialsearch = optional_param('initialsearchcnt', '', PARAM_RAW);
+
+        // if initial search string is different than prevous one, set initialsearchcnt
+        // this will clear the exclude list if search string is different than prevous one
+        if (strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) != 0 && strcmp($initialsearch, optional_param('caboodle_initialsearch', '', PARAM_RAW)) != 0 ) {
+                $initialsearch = '&initialsearchcnt=' . optional_param('caboodle_initialsearch', '', PARAM_RAW);
+
         } else {
-            $initialsearch_count++;
+            $initialsearch = '&initialsearchcnt=' . $initialsearch;
         }
         
         $button_url = $CFG->wwwroot . '/course/view.php?id=' . required_param('id', PARAM_INT) . '&sesskey=' . required_param('sesskey', PARAM_ALPHANUM);
-        $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . '&initialsearchcnt=' . $initialsearch_count . '&caboodle_initialsearch=';
+        $button_url .= '&bui_editid=' . required_param('bui_editid', PARAM_INT) . $initialsearch . '&caboodle_initialsearch=';
         
         // config_search button attributes with additional js/style
         $config_search_attributes = array('onkeydown' => "return in_page_search(event, '" . $button_url ."');", "style" => "margin-left: 0;");
@@ -113,7 +116,9 @@ class block_caboodle_edit_form extends block_edit_form {
 
         if (isset($_GET['caboodle_initialsearch'])) {
             
-            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0 || optional_param('initialsearchcnt', 0, PARAM_INT) == 0 || strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) == 0) {
+            if (strlen(optional_param('blacklisted', '', PARAM_RAW)) == 0 
+                    || strcmp(optional_param('initialsearchcnt', '', PARAM_RAW), optional_param('caboodle_initialsearch', '', PARAM_RAW)) != 0  
+                    || strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) == 0) {
                 $blacklist = array();
             } else {
 
