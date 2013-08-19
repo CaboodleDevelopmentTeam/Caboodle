@@ -200,12 +200,57 @@ class caboodle_htmldump {
     
     private $courseid;
     private $label_content;
+    public  $errors;
     
     public function __construct($courseid, $label_content) {
         $this->courseid = $courseid;
         $this->label_content = $label_content;
     }
 
-    
-    
+    public function add_label() {
+        // add label and return resource_id
+
+    }
+
+    private function get_module_id() {
+        global $DB;
+
+        $module = $DB->get_record('modules', array('name' => 'label'), '*', MUST_EXIST);
+
+        return $module->id;
+    }
+
+    private function get_course_section() {
+        global $DB;
+        
+        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+
+        $cw = get_course_section(0, $course->id);
+
+        return $cw->id;
+    }
+
+    private function add_course_module() {
+        // add course module
+        $cm = new stdClass();
+        $cm->course = $courseid;
+        $cm->module = $module->id; // should be retrieved from mdl_modules
+        $cm->instance = $resource_id; // from mdl_resource
+        $cm->section = $cw->id; // from mdl_course_sections
+        $cm->visible = 1;
+        $cm->visibleold = 1;
+        $cm->showavailability = 1;
+        $cm->added = time();
+
+        $cmid = $DB->insert_record('course_modules', $cm);
+    }
+
+    private function clear_cache() {
+        // force clear module cache
+         $modulecache = new stdClass();
+         $modulecache->id = $this->courseid;
+         $modulecache->sectioncache = 'NULL';
+
+         $DB->update_record('course', $modulecache);
+    }
 } // caboodle_htmldump

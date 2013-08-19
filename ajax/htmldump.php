@@ -17,7 +17,7 @@ $myurl= new moodle_url('/report/cpd/index.php', array('course' => $courseid));
 $PAGE->set_url($myurl);
 //$PAGE->set_pagelayout('report');
 
-require_login();
+
 
 $course = $DB->get_record('course',array('id' => $courseid));
 
@@ -28,9 +28,23 @@ if (!$course) {
 // get course context
 $context = context_course::instance($course->id);
 
+// set header 500 error if there was an error and there MUST be an error
+//header('HTTP/1.1 500 Internal Server Error');
+
 // user need to be able to update this course
+if (!has_capability('moodle/course:update', $context)) {
+    header('HTTP/1.1 500 Internal Server Error');
+    echo "\n\nYou don't have permission to do that!\n";
+    die();
+}
+
+// double check - is logged in? (this will redirect to login page if not)
+require_login();
+// has capability?
 require_capability('moodle/course:update', $context);
 
+// set page context
 $PAGE->set_context($context);
 
 // proceed with adding label to a course
+$htmldump = new caboodle_htmldump($courseid, $htmltoadd);
