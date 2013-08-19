@@ -230,6 +230,40 @@ class caboodle_htmldump {
         return $cw->id;
     }
 
+    private function add_to_course_sections() {
+        global $DB;
+
+        if ($DB->record_exists('course_sections', array('course' => $courseid, 'section' => 0))) {
+            $sectionid = $DB->get_record('course_sections', array('course' => $courseid, 'section' => 0));
+
+            // if sequence is not empty, add another course_module id
+            if (!empty($sectionid->sequence)) {
+                $sequence = $sectionid->sequence . ',' . $cmid;
+            } else {
+                // if sequence is empty, add course_module id
+                $sequence = $cmid;
+            }
+
+            $course_section = new stdClass();
+            $course_section->id = $sectionid->id;
+            $course_section->course = $courseid;
+            $course_section->section = 1;
+            $course_section->sequence = $sequence;
+            $csid = $DB->update_record('course_sections', $course_section);
+
+        } else {
+            $sequence = $cmid;
+
+            $course_section = new stdClass();
+            $course_section->course = $courseid;
+            $course_section->section = 1;
+            $course_section->sequence = $sequence;
+
+            $csid = $DB->insert_record('course_sections', $course_section);
+
+        }
+    }
+
     private function add_course_module() {
         // add course module
         $cm = new stdClass();
@@ -243,6 +277,8 @@ class caboodle_htmldump {
         $cm->added = time();
 
         $cmid = $DB->insert_record('course_modules', $cm);
+
+        return $cmid;
     }
 
     private function clear_cache() {
