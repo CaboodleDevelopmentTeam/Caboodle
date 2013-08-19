@@ -5,7 +5,7 @@
  */
 
 
-var htmlDump = function(html) {
+var htmlDump = function(courseid, html_list) {
     var xmlhttp;
 
     if (window.XMLHttpRequest) {
@@ -18,10 +18,16 @@ var htmlDump = function(html) {
 
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            document.href('');
+            window.location.reload();
+            // xmlhttp.responseText
+        } else if (xmlhttp.readyState == 4 && xmlhttp.status !== 200) {
+            alert("Error occured. Try again.");
+            return false;
         }
     }
 
-    xmlhttp.open("GET", "URL", true);
+    var urltoquery = this.M.cfg.wwwroot + '/blocks/caboodle/ajax/htmldump.php?courseid=' + courseid + '&html_list=' + html_list;
+
+    xmlhttp.open("GET", urltoquery, true);
     xmlhttp.send();
 }
