@@ -395,10 +395,10 @@ class block_caboodle extends block_base {
                                 $api->save_results();
 
                                 if (strlen($search_result) == 0) {
-                                    mtrace("Error: search results empty, possible curl error");
+                                    mtrace("Notice: search results empty, see below messages");
 
                                     if (isset($api->lasterror) && !empty($api->lasterror)) {
-                                        mtrace("Last reported error: " . $api->lasterror);
+                                        mtrace("Last reported cURL error: " . $api->lasterror);
                                     } else mtrace("No error string provided");
 
                                     // make sure cron will be executed on next run

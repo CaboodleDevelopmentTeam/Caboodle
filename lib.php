@@ -195,3 +195,15 @@ class caboodle {
     }
 
 } // caboodle
+
+class caboodle_htmldump {
+    
+    private $courseid;
+    private $label_content;
+    
+    public function __construct($courseid, $label_content) {
+        $this->courseid = $courseid;
+        $this->label_content = $label_content;
+    }
+    
+} // caboodle_htmldump
