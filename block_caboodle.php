@@ -85,10 +85,13 @@ class block_caboodle extends block_base {
             $caboodle = new caboodle();
             $resources = $caboodle->get_resources();
 
-            $this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
+            //$this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
+            $caboodle_results = get_string('search_on', 'block_caboodle', $search_str);
+
             foreach ($resources as $resourceid => $resource) {
                 if ($this->config->resource[$resourceid] == 1) {
-                    $this->content->text .= "<h4>" . $resource->name . "</h4>";
+                    //$this->content->text .= "<h4>" . $resource->name . "</h4>";
+                    $caboodle_results .= "<h4>" . $resource->name . "</h4>";
 
                     $results = $caboodle->get_results($resourceid, $this->instance->id);
 
@@ -97,7 +100,8 @@ class block_caboodle extends block_base {
                         $results = $this->perform_search($resourceid, true, $search_str);
                     }
 
-                    $this->content->text .= '<ul class="caboodle_results">';
+                    //$this->content->text .= '<ul class="caboodle_results">';
+                    $caboodle_results .= '<ul class="caboodle_results">';
 
                     if (!empty($results)) {
                         // get search string saved in DB
@@ -115,9 +119,12 @@ class block_caboodle extends block_base {
                             foreach ($results as $rid => $rdata) {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
-                                    $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    $this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
-                                    $this->content->text .= "</li>";
+                                    //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                                    $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                                    //$this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    $caboodle_results .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    //$this->content->text .= "</li>";
+                                    $caboodle_results .= "</li>";
                                     $count++;
                                 } // if
 
@@ -128,7 +135,8 @@ class block_caboodle extends block_base {
                             // search string has changed, execute search and save all data
                             $results = $this->perform_search($resourceid, true, $search_str, true);
 
-                            $this->content->text .= '<ul class="caboodle_results">';
+                            //$this->content->text .= '<ul class="caboodle_results">';
+                            $caboodle_results .= '<ul class="caboodle_results">';
 
                             // new search criteria, clear black list
                             $blacklist = $caboodle->trim_array_elements($this->get_blacklist());
@@ -138,9 +146,12 @@ class block_caboodle extends block_base {
                             foreach ($results as $rid => $rdata) {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
-                                    $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    $this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
-                                    $this->content->text .= "</li>";
+                                    //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                                    $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                                    //$this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    $caboodle_results .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    //$this->content->text .= "</li>";
+                                    $caboodle_results .= "</li>";
                                     $count++;
                                 } // if
 
@@ -150,10 +161,12 @@ class block_caboodle extends block_base {
 
                     } else {
                         // no results
-                        $this->content->text .=  '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                        //$this->content->text .=  '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                        $caboodle_results .=   '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
                     }
 
-                    $this->content->text .= "</ul>";
+                    $this->content->text .= $caboodle_results . "</ul>";
+                    //$caboodle_results .= "</ul>";
 
                 } // if resource is enabled
             } // foreach resources
@@ -161,11 +174,16 @@ class block_caboodle extends block_base {
         } else {
             // no search string
             $this->content->text .= '<h3>'. get_string('nosearchstring', 'block_caboodle') . '</h3>';
+
             // clear exclude (aka black) list
             $this->caboodle_clear_blacklist($this->instance->id);
         }
 
         $this->content->text .= "</div>";
+
+        // add html dump button
+        $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump">'.get_string('html_dump', 'block_caboodle').'</button>' . '</div>';
+        
         return $this->content;
     }
 

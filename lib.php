@@ -205,5 +205,7 @@ class caboodle_htmldump {
         $this->courseid = $courseid;
         $this->label_content = $label_content;
     }
+
+    
     
 } // caboodle_htmldump
