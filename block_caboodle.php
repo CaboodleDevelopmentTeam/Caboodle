@@ -258,10 +258,16 @@ class block_caboodle extends block_base {
 
                 if (!empty($results)) {
 
+                    $count = 0;
+
                     foreach($results as $r => $result) {
-                        $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                        $this->content->text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
-                        $this->content->text .= "</li>";
+
+                        if ($count < $this->config->search_items_displayed) {
+                            $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                            $this->content->text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
+                            $this->content->text .= "</li>";
+                            $count++;
+                        }
                     }
 
                 } else {
