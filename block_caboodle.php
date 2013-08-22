@@ -69,7 +69,6 @@ class block_caboodle extends block_base {
         if ($this->config->student_search) {
             $this->content->text .= $this->get_search_form();
         }
-//echo "<pre>"; var_dump($_SESSION['caboodle_usersearch_result'][$this->instance->id]); echo "</pre>";
 
         // show user search results (if any)
         if (isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]) || !is_null(optional_param('caboodleusersearch', NULL, PARAM_RAW)) ) {
@@ -185,7 +184,7 @@ class block_caboodle extends block_base {
 
         $this->content->text .= "</div>";
 
-        // add html dump button
+        // add html dump button - @TODO show only to editing teachers
         $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
                 'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode($caboodle_results)) . '\')">'.
                 get_string('html_dump', 'block_caboodle') . '</button></div>';
