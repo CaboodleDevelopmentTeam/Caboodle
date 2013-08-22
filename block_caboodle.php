@@ -69,9 +69,10 @@ class block_caboodle extends block_base {
         if ($this->config->student_search) {
             $this->content->text .= $this->get_search_form();
         }
+//echo "<pre>"; var_dump($_SESSION['caboodle_usersearch_result'][$this->instance->id]); echo "</pre>";
 
         // show user search results (if any)
-        if (!empty($_SESSION['caboodle_usersearch_str'][$this->instance->id]) || (!is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) ) {
+        if (isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]) || !is_null(optional_param('caboodleusersearch', NULL, PARAM_RAW)) ) {
             $this->content->text .= $this->get_user_search();
         }
 
@@ -211,16 +212,22 @@ class block_caboodle extends block_base {
     public function get_user_search() {
         global $DB;
 
-        if(!isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'])) {
+        // return nothing if id is not match for this block or there is no saved user search
+        if ((isset($_GET['caboodle_block_id']) && optional_param('caboodle_block_id', 0, PARAM_INT) != (int)$this->instance->id)
+                && !isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'])) {
+            return '';
+        }
 
-            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
+        // user search is for this block? clean possible previously saved results
+        if (!is_null(optional_param('caboodleusersearch', null, PARAM_RAW)) && optional_param('caboodle_block_id', 0, PARAM_INT) == $this->instance->id) {
+            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'] = optional_param('caboodleusersearch', null, PARAM_RAW);
+            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = "";
+        }
 
-        } else if (strcmp($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'], optional_param('caboodlesearch', NULL, PARAM_ALPHANUM)) != 0
-                AND !is_null(optional_param('caboodlesearch', NULL, PARAM_ALPHANUM))) {
-
-            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'] = optional_param('caboodlesearch', NULL, PARAM_ALPHANUM);
-            unset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results']);
-
+        // a new user search for this block? clean possible previously saved results
+        if (isset($_GET['caboodleusersearch']) &&
+                strcmp($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'], optional_param('caboodleusersearch', null, PARAM_RAW)) != 0) {
+            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = "";
         }
 
         $search_str = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'];
@@ -288,9 +295,10 @@ class block_caboodle extends block_base {
         $text .= '<p>' . $yourownsearch . '</p>';
         $text .= '<form action="?" style="display:inline"><fieldset class="invisiblefieldset">';
         $text .= '<legend class="accesshide">'.$strsearch.'</legend>';
-        $text .= '<input name="id" type="hidden" value="'.$this->page->course->id.'" />';  // course
+        $text .= '<input name="id" type="hidden" value="'.$this->page->course->id.'" />';  // course id
+        $text .= '<input name="caboodle_block_id" type="hidden" value="'.$this->instance->id.'" />';  // block id
         $text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>'.
-                 '<input id="searchform_search" name="caboodlesearch" type="text" size="12" />';
+                 '<input id="searchform_search" name="caboodleusersearch" type="text" size="12" />';
         $text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
         // advanced search
         //$text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
