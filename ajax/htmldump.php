@@ -7,12 +7,13 @@
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) .'/../lib.php');
 
-$courseid = required_param('courseid', PARAM_INT);
-$htmltoadd = required_param('html_list', PARAM_RAW);
-// decode html
-$htmltoadd = base64_decode(urldecode($htmltoadd));
+//$courseid = required_param('courseid', PARAM_INT);
+$courseid = 2;
+//$htmltoadd = required_param('html_list', PARAM_RAW);
+//// decode html
+//$htmltoadd = base64_decode(urldecode($htmltoadd));
 
-$myurl= new moodle_url('/report/cpd/index.php', array('course' => $courseid));
+$myurl= new moodle_url('/blocks/caboodle/ajax/htmldump.php', array('course' => $courseid));
 
 $PAGE->set_url($myurl);
 //$PAGE->set_pagelayout('report');
@@ -47,4 +48,10 @@ require_capability('moodle/course:update', $context);
 $PAGE->set_context($context);
 
 // proceed with adding label to a course
+
+// test data
+$courseid = 2;
+$htmltoadd = "This is a test";
+
 $htmldump = new caboodle_htmldump($courseid, $htmltoadd);
+$htmldump->insert_new_label();

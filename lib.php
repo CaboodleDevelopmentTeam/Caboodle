@@ -207,9 +207,38 @@ class caboodle_htmldump {
         $this->label_content = $label_content;
     }
 
-    public function add_label() {
+    public function insert_new_label() {
+        
+        $resource_id = $this->add_label();
+
+        $cmid = $this->add_course_module($resource_id);
+
+        $this->add_to_course_sections($cmid);
+        
+        $context = get_context_instance(CONTEXT_MODULE, $cmid);
+
+        $this->clear_cache();
+
+        return true;
+    }
+
+    private function add_label() {
+        global $DB;
         // add label and return resource_id
 
+        $label = new stdClass();
+        $label->course = $this->courseid;
+        $label->name = "Caboodle block html dump";
+        $label->intro = $this->label_content;
+        $label->introformat = 1;
+        $label->timemodified = time();
+
+        if ($labelid = $DB->insert_record('label', $label)) {
+            return $labelid;
+        } else {
+            echo "label not added"; die();
+            return false;
+        }
     }
 
     private function get_module_id() {
@@ -223,18 +252,18 @@ class caboodle_htmldump {
     private function get_course_section() {
         global $DB;
         
-        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $this->courseid), '*', MUST_EXIST);
 
         $cw = get_course_section(0, $course->id);
 
         return $cw->id;
     }
 
-    private function add_to_course_sections() {
+    private function add_to_course_sections($cmid) {
         global $DB;
 
-        if ($DB->record_exists('course_sections', array('course' => $courseid, 'section' => 0))) {
-            $sectionid = $DB->get_record('course_sections', array('course' => $courseid, 'section' => 0));
+        if ($DB->record_exists('course_sections', array('course' => $this->courseid, 'section' => $this->get_course_section()))) {
+            $sectionid = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => $this->get_course_section()));
 
             // if sequence is not empty, add another course_module id
             if (!empty($sectionid->sequence)) {
@@ -246,42 +275,56 @@ class caboodle_htmldump {
 
             $course_section = new stdClass();
             $course_section->id = $sectionid->id;
-            $course_section->course = $courseid;
+            $course_section->course = $this->courseid;
             $course_section->section = 1;
             $course_section->sequence = $sequence;
-            $csid = $DB->update_record('course_sections', $course_section);
+
+            if ($csid = $DB->update_record('course_sections', $course_section)) {
+                return $csid;
+            } else {
+                echo "course section not updated"; die();
+            }
 
         } else {
             $sequence = $cmid;
 
             $course_section = new stdClass();
-            $course_section->course = $courseid;
+            $course_section->course = $this->courseid;
             $course_section->section = 1;
             $course_section->sequence = $sequence;
 
-            $csid = $DB->insert_record('course_sections', $course_section);
+            if ($csid = $DB->insert_record('course_sections', $course_section)) {
+                return $csid;
+            } else {
+                echo "course section not added"; die();
+            }
 
         }
     }
 
-    private function add_course_module() {
+    private function add_course_module($resource_id) {
+        global $DB;
         // add course module
         $cm = new stdClass();
-        $cm->course = $courseid;
-        $cm->module = $module->id; // should be retrieved from mdl_modules
-        $cm->instance = $resource_id; // from mdl_resource
-        $cm->section = $cw->id; // from mdl_course_sections
+        $cm->course = $this->courseid;
+        $cm->module = $this->get_module_id(); // should be retrieved from mdl_modules
+        $cm->instance = $resource_id; // from mdl_label ($this->add_label(); )
+        $cm->section = $this->get_course_section(); // from mdl_course_sections
         $cm->visible = 1;
         $cm->visibleold = 1;
         $cm->showavailability = 1;
         $cm->added = time();
 
-        $cmid = $DB->insert_record('course_modules', $cm);
-
-        return $cmid;
+        if ($cmid = $DB->insert_record('course_modules', $cm)) {
+            return $cmid;
+        } else {
+            echo "course module not added"; die();
+            return false;
+        }
     }
 
     private function clear_cache() {
+        global $DB;
         // force clear module cache
          $modulecache = new stdClass();
          $modulecache->id = $this->courseid;
