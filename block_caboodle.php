@@ -185,9 +185,9 @@ class block_caboodle extends block_base {
         $this->content->text .= "</div>";
 
         // add html dump button - @TODO show only to editing teachers
-        $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
-                'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
-                get_string('html_dump', 'block_caboodle') . '</button></div>';
+//        $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
+//                'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
+//                get_string('html_dump', 'block_caboodle') . '</button></div>';
         
         return $this->content;
     }
