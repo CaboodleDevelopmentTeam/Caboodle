@@ -16,17 +16,11 @@ if (!$courseid = optional_param('courseid', false, PARAM_INT)) {
 if (!$htmltoadd = optional_param('html_list', false, PARAM_RAW)) {
     header('HTTP/1.1 500 Internal Server Error');
     echo "\nData to add missing!\n";
-//    die();
+    die();
 }
 
 // decode html
-$htmltoadd = base64_decode(urldecode($htmltoadd));
-
-echo "<pre>";
-var_dump($htmltoadd);
-echo "</pre>";
-
-die();
+$htmltoadd = urldecode(base64_decode(urldecode($htmltoadd)));
 
 $myurl= new moodle_url('/blocks/caboodle/ajax/htmldump.php', array('course' => $courseid));
 

@@ -21,12 +21,12 @@ var htmlDump = function(courseid, html_list) {
             window.location.reload();
             // xmlhttp.responseText
         } else if (xmlhttp.readyState == 4 && xmlhttp.status !== 200) {
-            alert("Error occured. Try again." + xmlhttp.responseText);
+            alert("Error occured. Try again.\n" + xmlhttp.responseText);
             return false;
         }
     }
 
-    var urltoquery = this.M.cfg.wwwroot + '/blocks/caboodle/ajax/htmldump.php?courseid=' + courseid + '&html_list="' + html_list + '"';
+    var urltoquery = this.M.cfg.wwwroot + '/blocks/caboodle/ajax/htmldump.php?courseid=' + courseid + '&html_list=' + html_list;
 
     xmlhttp.open("GET", urltoquery, true);
     xmlhttp.send();

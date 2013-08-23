@@ -210,23 +210,19 @@ class caboodle_htmldump {
     public function insert_new_label() {
         
         if ( !$resource_id = $this->add_label() ) {
-            echo "resource_id";
-//            throw new Exception('Label not added');
+            throw new Exception('Label not added');
         }
 
         if ( !$cmid = $this->add_course_module($resource_id) ) {
-            echo "cmid";
-//            throw new Exception('Course module not added');
+            throw new Exception('Course module not added');
         }
 
         if (! $this->add_to_course_sections($cmid)) {
-            echo "course sections";
-//            throw new Exception('Could not add to course sections');
+            throw new Exception('Could not add to course sections');
         }
         
         if (! $context = get_context_instance(CONTEXT_MODULE, $cmid)) {
-            echo "context";
-//            throw new Exception('Module has no context');
+            throw new Exception('Module has no context');
         }
 
         $this->clear_cache();
