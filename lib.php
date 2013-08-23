@@ -209,13 +209,25 @@ class caboodle_htmldump {
 
     public function insert_new_label() {
         
-        $resource_id = $this->add_label();
+        if ( !$resource_id = $this->add_label() ) {
+            echo "resource_id";
+//            throw new Exception('Label not added');
+        }
 
-        $cmid = $this->add_course_module($resource_id);
+        if ( !$cmid = $this->add_course_module($resource_id) ) {
+            echo "cmid";
+//            throw new Exception('Course module not added');
+        }
 
-        $this->add_to_course_sections($cmid);
+        if (! $this->add_to_course_sections($cmid)) {
+            echo "course sections";
+//            throw new Exception('Could not add to course sections');
+        }
         
-        $context = get_context_instance(CONTEXT_MODULE, $cmid);
+        if (! $context = get_context_instance(CONTEXT_MODULE, $cmid)) {
+            echo "context";
+//            throw new Exception('Module has no context');
+        }
 
         $this->clear_cache();
 
@@ -236,7 +248,6 @@ class caboodle_htmldump {
         if ($labelid = $DB->insert_record('label', $label)) {
             return $labelid;
         } else {
-            echo "label not added"; die();
             return false;
         }
     }
@@ -282,7 +293,7 @@ class caboodle_htmldump {
             if ($csid = $DB->update_record('course_sections', $course_section)) {
                 return $csid;
             } else {
-                echo "course section not updated"; die();
+                return false;
             }
 
         } else {
@@ -296,7 +307,7 @@ class caboodle_htmldump {
             if ($csid = $DB->insert_record('course_sections', $course_section)) {
                 return $csid;
             } else {
-                echo "course section not added"; die();
+                return false;
             }
 
         }

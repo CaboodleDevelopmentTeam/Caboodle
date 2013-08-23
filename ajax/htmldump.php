@@ -7,11 +7,26 @@
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) .'/../lib.php');
 
-//$courseid = required_param('courseid', PARAM_INT);
-$courseid = 2;
-//$htmltoadd = required_param('html_list', PARAM_RAW);
-//// decode html
-//$htmltoadd = base64_decode(urldecode($htmltoadd));
+if (!$courseid = optional_param('courseid', false, PARAM_INT)) {
+    header('HTTP/1.1 500 Internal Server Error');
+    echo "\nCourse ID missing!\n";
+  //  die();
+}
+
+if (!$htmltoadd = optional_param('html_list', false, PARAM_RAW)) {
+    header('HTTP/1.1 500 Internal Server Error');
+    echo "\nData to add missing!\n";
+//    die();
+}
+
+// decode html
+$htmltoadd = base64_decode(urldecode($htmltoadd));
+
+echo "<pre>";
+var_dump($htmltoadd);
+echo "</pre>";
+
+die();
 
 $myurl= new moodle_url('/blocks/caboodle/ajax/htmldump.php', array('course' => $courseid));
 
@@ -28,9 +43,6 @@ if (!$course) {
 
 // get course context
 $context = context_course::instance($course->id);
-
-// set header 500 error if there was an error and there MUST be an error
-//header('HTTP/1.1 500 Internal Server Error');
 
 // user need to be able to update this course
 if (!has_capability('moodle/course:update', $context)) {
@@ -49,9 +61,16 @@ $PAGE->set_context($context);
 
 // proceed with adding label to a course
 
-// test data
-$courseid = 2;
-$htmltoadd = "This is a test";
-
 $htmldump = new caboodle_htmldump($courseid, $htmltoadd);
-$htmldump->insert_new_label();
+
+//try {
+    $htmldump->insert_new_label();
+//} catch (Exception $e) {
+//    header('HTTP/1.1 500 Internal Server Error');
+//    echo "\nOperation failed!\n";
+//    echo "Last error: " . $e->getMessage();
+    //die();
+//}
+
+// this won't be seen
+echo "Operation successfull!";
