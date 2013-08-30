@@ -22,6 +22,12 @@ final class caboodle_cli {
     private $config;
 
     public function __construct($argv) {
+        
+        if (!function_exists('pcntl_fork')) {
+            echo 'Error: No pcntl_fork function available';
+            exit(1);
+        }
+        
         // process commandline options
         $this->process_options($argv);
         
@@ -42,7 +48,7 @@ final class caboodle_cli {
                 if (!$pid[$resourceid]) {
                     $results[$resourceid] = $this->perform_search($resourceid, $this->search_str);
                     // format result and output as JSON
-                    echo json_encode($results);
+                    echo json_encode($results) . "\n";
                     die();
                 }
 
@@ -56,7 +62,6 @@ final class caboodle_cli {
             pcntl_waitpid($pid[$resourceid], $status, WUNTRACED);
 
         } // foreach
-
 
         exit(0);
     } // run
@@ -101,8 +106,6 @@ final class caboodle_cli {
         unset($options_array[0]);
 
         if(count($options_array) == 0 || count($options_array) <> 3) {
-            echo "\nError: Wrong options\n\n";
-            $this->display_help();
             exit(1);
         }
 
@@ -135,9 +138,6 @@ final class caboodle_cli {
         return true;
     }
 
-    public function display_help() {
-        echo "\nHelp:\n";
-    }
 } // caboodle_cli
 
 $cli = new caboodle_cli($argv);

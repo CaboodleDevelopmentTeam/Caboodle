@@ -65,15 +65,20 @@ class block_caboodle extends block_base {
 
         $this->content->text .= '<div class="caboodle_block_container">';
 
-        // show search form if user search is enabled
+        // show search form and results if user search is enabled
         if ($this->config->student_search) {
+            
+            // show user search results (if any)
+            if (isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]) || !is_null(optional_param('caboodleusersearch', NULL, PARAM_RAW)) ) {
+                $usersearch = $this->get_user_search();
+            }
+            
             $this->content->text .= $this->get_search_form();
-        }
-
-        // show user search results (if any)
-        if (isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]) || !is_null(optional_param('caboodleusersearch', NULL, PARAM_RAW)) ) {
-            $this->content->text .= $this->get_user_search();
-        }
+            
+            if (!empty($usersearch)) {
+                $this->content->text .= $usersearch;
+            }
+        } // student search if
 
         if (array_key_exists('search_term', $_SESSION) && array_key_exists('search_id', $_SESSION) && $_SESSION['search_id'] == $this->instance->id) {
             $search_str = $_SESSION['search_term'];
@@ -212,6 +217,8 @@ class block_caboodle extends block_base {
      */
     public function get_user_search() {
         global $DB;
+        
+        $text = '';
 
         // return nothing if id is not match for this block or there is no saved user search
         if ((isset($_GET['caboodle_block_id']) && optional_param('caboodle_block_id', 0, PARAM_INT) != (int)$this->instance->id)
@@ -237,51 +244,56 @@ class block_caboodle extends block_base {
         $caboodle = new caboodle();
         $resources = $caboodle->get_resources();
 
-        $this->content->text .= get_string('user_search_on', 'block_caboodle', $search_str);
+        $text .= get_string('user_search_on', 'block_caboodle', $search_str);
 
-        foreach ($resources as $resourceid => $resource) {
+        if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
 
-            if ($this->config->resource[$resourceid] == 1) {
+            // execute search
+            //$php = shell_exec('which php');
+            $php = 'php';
+            $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
+                    ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
+            
+            $shell_results = shell_exec($exec);
 
-                $this->content->text .= "<h4>" . $resource->name . "</h4>";
+            $shell_results = preg_split("/\n/", $shell_results, -1, PREG_SPLIT_NO_EMPTY);
+            
+            foreach ($shell_results as $r => $result_chunk) {
+                $results = json_decode($result_chunk, true);
 
-                if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
+            }
 
-                    // execute search
-                    $results = $this->perform_search($resourceid, false, $search_str);
+            $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
 
-                    $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
+        } else {
+            $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'];
+        }
 
-                } else {
-                    $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'];
-                }
+        // foreach resources!
+        foreach ($resources as $resid => $resource) {
+        
+            $text .= "<h4>" . $resource->name . "</h4>";
+            $text .= '<ul class="caboodle_results">';
 
-                $this->content->text .= '<ul class="caboodle_results">';
+            if (!empty($results[$resid])) {
 
-                if (!empty($results)) {
+                foreach($results[$resid] as $r => $result) {
 
-                    $count = 0;
+                    $text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                    $text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
+                    $text .= "</li>";
 
-                    foreach($results as $r => $result) {
+                } // foreach
 
-                        if ($count < $this->config->search_items_displayed) {
-                            $this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                            $this->content->text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
-                            $this->content->text .= "</li>";
-                            $count++;
-                        }
-                    }
+            } else {
+                // no results
+                $text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+            }
 
-                } else {
-                    // no results
-                    $this->content->text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
-                }
-
-                $this->content->text .= "</ul>";
-
-            } // if
+            $text .= "</ul>";
         } // foreach
 
+        return $text;
     } // get_user_search
 
     /**
@@ -305,8 +317,15 @@ class block_caboodle extends block_base {
         $text .= '<legend class="accesshide">'.$strsearch.'</legend>';
         $text .= '<input name="id" type="hidden" value="'.$this->page->course->id.'" />';  // course id
         $text .= '<input name="caboodle_block_id" type="hidden" value="'.$this->instance->id.'" />';  // block id
-        $text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>'.
-                 '<input id="searchform_search" name="caboodleusersearch" type="text" size="12" />';
+        $text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>';
+        
+        if (!empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'])) {
+            $text .= '<input id="searchform_search" name="caboodleusersearch" type="text" size="12" value="'.
+                    $_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'] .'"/>';
+        } else {
+            $text .= '<input id="searchform_search" name="caboodleusersearch" type="text" size="12" />';
+        }
+        
         $text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
         // advanced search
         //$text .= '<a href="'.$CFG->wwwroot.'/blocks/caboodle/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
