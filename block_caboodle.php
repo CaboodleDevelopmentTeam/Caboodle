@@ -185,9 +185,11 @@ class block_caboodle extends block_base {
         $this->content->text .= "</div>";
 
         // add html dump button - @TODO show only to editing teachers
-//        $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
-//                'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
-//                get_string('html_dump', 'block_caboodle') . '</button></div>';
+//        if (has_capability('moodle/course:update', $this->page->context->get_course_context(false))) {
+//            $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
+//                    'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
+//                    get_string('html_dump', 'block_caboodle') . '</button></div>';
+//        }
         
         return $this->content;
     }
@@ -238,13 +240,14 @@ class block_caboodle extends block_base {
         $this->content->text .= get_string('user_search_on', 'block_caboodle', $search_str);
 
         foreach ($resources as $resourceid => $resource) {
+
             if ($this->config->resource[$resourceid] == 1) {
 
                 $this->content->text .= "<h4>" . $resource->name . "</h4>";
 
                 if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
 
-                    // execute
+                    // execute search
                     $results = $this->perform_search($resourceid, false, $search_str);
 
                     $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
@@ -279,7 +282,7 @@ class block_caboodle extends block_base {
             } // if
         } // foreach
 
-    }
+    } // get_user_search
 
     /**
      * Return search form
