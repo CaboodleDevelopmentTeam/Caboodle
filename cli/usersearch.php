@@ -31,6 +31,10 @@ final class caboodle_cli {
         // process commandline options
         $this->process_options($argv);
         
+        if (strlen($this->search_str) == 0) {
+            exit(1);
+        }
+        
         // get block saved options
         $this->get_block_options();
 
