@@ -20,8 +20,6 @@ final class caboodle_cli {
 
     private $blockid;
     private $config;
-    private $content = '';
-    private $tmp_table;
 
     public function __construct($argv) {
         // process commandline options
@@ -29,9 +27,7 @@ final class caboodle_cli {
         
         // get block saved options
         $this->get_block_options();
-        
-        // temporary table to keep all data
-        $this->create_tmp_table();
+
     }
 
     public function run() {
@@ -43,9 +39,10 @@ final class caboodle_cli {
             if ($this->config->resource[$resourceid] == 1) {
                 $pid[$resourceid] = pcntl_fork();
 
-                if (!$pid) {
-                    $results = $this->perform_search($resourceid, $search_str);
-                    $this->save_temp_search($results);
+                if (!$pid[$resourceid]) {
+                    $results[$resourceid] = $this->perform_search($resourceid, $this->search_str);
+                    // format result and output as JSON
+                    echo json_encode($results);
                     die();
                 }
 
@@ -58,40 +55,10 @@ final class caboodle_cli {
             // wait for childs to terminate
             pcntl_waitpid($pid[$resourceid], $status, WUNTRACED);
 
-            if ($this->config->resource[$resourceid] == 1) {
-
-                $this->content .= "<h4>" . $resource->name . "</h4>";
-
-                // get saved search
-                //$results = $this->perform_search($resourceid, $search_str);
-
-                $this->content->text .= '<ul class="caboodle_results">';
-
-                if (!empty($results)) {
-
-                    $count = 0;
-
-                    foreach($results as $r => $result) {
-
-                        if ($count < $this->config->search_items_displayed) {
-                            $this->content .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                            $this->content .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
-                            $this->content .= "</li>";
-                            $count++;
-                        }
-                    }
-
-                } else {
-                    // no results
-                    $this->content .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
-                }
-
-                $this->content .= "</ul>";
-
-            } // if
         } // foreach
 
-    
+
+        exit(0);
     } // run
 
     private function perform_search($resourceid, $search_str) {
@@ -109,31 +76,17 @@ final class caboodle_cli {
 
         require_once($api_class_file);
 
-        $api = new $api_class($resourceid, $this->instance->id, $numresults);
+        $api = new $api_class($resourceid, $this->blockid, $numresults);
 
         $results = $api->search($search_str);
+        
+        if (empty($results) && !empty($api->lasterror)) {
+            echo "ERROR: " . $api->lasterror . "\n";
+            exit(1);
+        }
 
         return $results;
     } // perform_search
-
-    private function save_temp_search($results) {
-        global $DB;
-
-        // $this->content;
-        $record = new stdClass();
-        $record->content = serialize(base64_encode($results));
-
-        $DB->insert_record($this->tmp_table, $record);
-    }
-
-    private function create_tmp_table() {
-        global $DB;
-
-        $tmp_tbl_name = "mdl_caboodle_temp_" . time();
-        $this->tmp_table = $tmp_tbl_name;
-
-        $sql = '';
-    }
 
     private function get_resources() {
         global $DB;

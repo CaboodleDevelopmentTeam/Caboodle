@@ -438,7 +438,7 @@ class block_caboodle extends block_base {
 
                                     if (isset($api->lasterror) && !empty($api->lasterror)) {
                                         mtrace("Last reported cURL error: " . $api->lasterror);
-                                    } else mtrace("No error string provided");
+                                    } else mtrace("No problems reported by cURL");
 
                                     // make sure cron will be executed on next run
                                     return false;
