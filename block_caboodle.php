@@ -154,11 +154,9 @@ class block_caboodle extends block_base {
                             foreach ($results as $rid => $rdata) {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
-                                    //$this->content->text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+
                                     $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    //$this->content->text .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
                                     $caboodle_results .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
-                                    //$this->content->text .= "</li>";
                                     $caboodle_results .= "</li>";
                                     $count++;
                                 } // if
@@ -169,12 +167,10 @@ class block_caboodle extends block_base {
 
                     } else {
                         // no results
-                        //$this->content->text .=  '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
                         $caboodle_results .=   '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
                     }
 
                     $this->content->text .= $caboodle_results . "</ul>";
-                    //$caboodle_results .= "</ul>";
 
                 } // if resource is enabled
             } // foreach resources
