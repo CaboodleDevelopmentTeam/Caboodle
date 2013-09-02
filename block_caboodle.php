@@ -257,9 +257,9 @@ class block_caboodle extends block_base {
             
             foreach ($shell_results as $r => $result_chunk) {
                 $results = json_decode($result_chunk, true);
-
             }
 
+            // @TODO checking if decoded results are ok
             $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
 
         } else {

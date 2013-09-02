@@ -5,7 +5,7 @@
  * @author     Grzegorz Adamowicz greg.adamowicz@enovation.ie
  */
 require_once(dirname(__FILE__) . '/../../../config.php');
-require_once(dirname(__FILE__) .'/../lib.php');
+require_once($CFG->dirroot .'/blocks/caboodle/lib.php');
 
 if (!$courseid = optional_param('courseid', false, PARAM_INT)) {
     header('HTTP/1.1 500 Internal Server Error');
@@ -25,9 +25,6 @@ $htmltoadd = urldecode(base64_decode(urldecode($htmltoadd)));
 $myurl= new moodle_url('/blocks/caboodle/ajax/htmldump.php', array('course' => $courseid));
 
 $PAGE->set_url($myurl);
-//$PAGE->set_pagelayout('report');
-
-
 
 $course = $DB->get_record('course',array('id' => $courseid));
 
@@ -54,17 +51,16 @@ require_capability('moodle/course:update', $context);
 $PAGE->set_context($context);
 
 // proceed with adding label to a course
-
 $htmldump = new caboodle_htmldump($courseid, $htmltoadd);
 
-//try {
+try {
     $htmldump->insert_new_label();
-//} catch (Exception $e) {
-//    header('HTTP/1.1 500 Internal Server Error');
-//    echo "\nOperation failed!\n";
-//    echo "Last error: " . $e->getMessage();
-    //die();
-//}
+} catch (Exception $e) {
+    header('HTTP/1.1 500 Internal Server Error');
+    echo "\nOperation failed!\n";
+    echo "Last error: " . $e->getMessage();
+    die();
+}
 
-// this won't be seen
-echo "Operation successfull!";
+header("HTTP/1.1 200 OK");
+echo "OK";
