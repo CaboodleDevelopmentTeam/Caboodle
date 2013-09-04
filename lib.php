@@ -195,6 +195,9 @@ class caboodle {
 
 } // caboodle
 
+/**
+ * HTML dump
+ */
 class caboodle_htmldump {
     
     private $courseid;
