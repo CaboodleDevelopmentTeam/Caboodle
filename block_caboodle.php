@@ -113,7 +113,7 @@ class block_caboodle extends block_base {
                         // get search string saved in DB
                         $old_search_str = $caboodle->get_search_string($resourceid, $this->instance->id);
 
-                        // check if searc string in DB has ben updated with the one in configuration
+                        // check if search string in DB has ben updated with the one in configuration
                         if (strcmp($search_str, $old_search_str) == 0) {
 
                             // get and filter blacklist urls
@@ -126,8 +126,14 @@ class block_caboodle extends block_base {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
 
+                                    $href = '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    $href_encoded = urlencode(base64_encode(urlencode($href)));
+
+                                    $plus = $OUTPUT->pix_icon('t/switch_plus', get_string('plus_href', 'block_caboodle'), '',
+                                            array('style' => 'margin-right: 5px; display: inline;', 'onclick' => 'htmlDump(' . required_param('id', PARAM_INT) .', "' . $href_encoded . '");'));
+
                                     $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    $caboodle_results .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    $caboodle_results .= $plus . $href;
                                     $caboodle_results .= "</li>";
                                     $count++;
                                 } // if
@@ -150,8 +156,14 @@ class block_caboodle extends block_base {
 
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
 
+                                    $href = '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    $href_encoded = urlencode(base64_encode(urlencode($href)));
+
+                                    $plus = $OUTPUT->pix_icon('t/switch_plus', get_string('plus_href', 'block_caboodle'), '',
+                                            array('style' => 'margin-right: 5px; display: inline;', 'onclick' => 'htmlDump(' . required_param('id', PARAM_INT) .', "' . $href_encoded . '");'));
+
                                     $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                                    $caboodle_results .= '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
+                                    $caboodle_results .= $plus . $href;
                                     $caboodle_results .= "</li>";
                                     $count++;
                                 } // if
@@ -186,7 +198,7 @@ class block_caboodle extends block_base {
 //                    'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
 //                    get_string('html_dump', 'block_caboodle') . '</button></div>';
 //        }
-        
+
         return $this->content;
     }
 

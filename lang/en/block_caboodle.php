@@ -59,3 +59,4 @@ $string['nosearchstring'] = 'No Search Criteria';
 $string['nothing_found'] = 'Nothing found. Repository search could timed out. Please try again. If this won\'t help, change your query.';
 $string['repository_disabled'] = 'Repository disabled or provided query is invalid';
 $string['html_dump'] = 'Add results to course';
+$string['plus_href'] = 'Add to course';
