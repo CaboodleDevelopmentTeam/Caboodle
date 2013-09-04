@@ -181,11 +181,11 @@ class block_caboodle extends block_base {
         $this->content->text .= "</div>";
 
         // add html dump button
-        if (has_capability('moodle/course:update', $this->page->context->get_course_context(false))) {
-            $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
-                    'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
-                    get_string('html_dump', 'block_caboodle') . '</button></div>';
-        }
+//        if (has_capability('moodle/course:update', $this->page->context->get_course_context(false))) {
+//            $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
+//                    'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
+//                    get_string('html_dump', 'block_caboodle') . '</button></div>';
+//        }
         
         return $this->content;
     }
@@ -246,8 +246,11 @@ class block_caboodle extends block_base {
         if (empty($_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'])) {
 
             // execute search
-            //$php = shell_exec('which php');
-            $php = 'php';
+            // detect php
+            // $php = shell_exec('which php');
+            // just exec php and let the system worry about it
+            // $php = 'php';
+            $php = '/opt/php/bin/php -c /storage/vhosts/demo2.enovation.ie/conf/php.ini';
             $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
                     ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
             

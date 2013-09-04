@@ -5,7 +5,7 @@
  *
  * @package    caboodle
  * @subpackage cli
- * @author     Grzegorz Adamowicz ()
+ * @author     Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -23,11 +23,6 @@ final class caboodle_cli {
 
     public function __construct($argv) {
         
-        if (!function_exists('pcntl_fork')) {
-            echo 'Error: No pcntl_fork function available';
-            exit(1);
-        }
-        
         // process commandline options
         $this->process_options($argv);
         
@@ -41,7 +36,19 @@ final class caboodle_cli {
     }
 
     public function run() {
-        
+
+        if (!function_exists('pcntl_fork')) {
+            // no pcntl, run search one by one
+            $this->run_nofork();
+        } else {
+            // pcntl enabled, run in threads
+            $this->run_fork();
+        }
+
+        exit(0);
+    } // run
+
+    private function run_fork() {
         $resources = $this->get_resources();
 
         foreach ($resources as $resourceid => $resource) {
@@ -66,9 +73,24 @@ final class caboodle_cli {
             pcntl_waitpid($pid[$resourceid], $status, WUNTRACED);
 
         } // foreach
+    }
 
-        exit(0);
-    } // run
+    private function run_nofork() {
+        $resources = $this->get_resources();
+
+        foreach ($resources as $resourceid => $resource) {
+
+            if ($this->config->resource[$resourceid] == 1) {
+
+                $results[$resourceid] = $this->perform_search($resourceid, $this->search_str);
+
+            } // if
+
+        } // foreach
+
+        // format result and output as JSON
+        echo json_encode($results) . "\n";
+    }
 
     private function perform_search($resourceid, $search_str) {
         global $DB;
