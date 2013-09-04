@@ -25,10 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if (!function_exists('get_course_section')) {
-    require_once($CFG->dirroot . '/course/lib.php');
-}
-
 /**
  *
  *
@@ -257,18 +253,6 @@ class caboodle_htmldump {
         $module = $DB->get_record('modules', array('name' => 'label'), '*', MUST_EXIST);
 
         return $module->id;
-    }
-
-    private function get_course_section() {
-        global $DB;
-        
-//        $course = $DB->get_record('course', array('id' => $this->courseid), '*', MUST_EXIST);
-//
-//        $cw = get_course_section(0, $course->id);
-
-        $cw = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 0), '*', MUST_EXIST);
-
-        return $cw;
     }
 
     private function add_to_course_sections($cmid) {
