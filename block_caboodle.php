@@ -127,10 +127,18 @@ class block_caboodle extends block_base {
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
 
                                     $href = '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
-                                    $href_encoded = urlencode(base64_encode(urlencode($href)));
 
-                                    $plus = $OUTPUT->pix_icon('t/switch_plus', get_string('plus_href', 'block_caboodle'), '',
-                                            array('style' => 'margin-right: 5px; display: inline;', 'onclick' => 'htmlDump(' . required_param('id', PARAM_INT) .', "' . $href_encoded . '");'));
+                                    if ($this->page->user_is_editing()) {
+                                        
+                                        $href_encoded = urlencode(base64_encode(urlencode($href)));
+                                        $plus = $OUTPUT->pix_icon('t/switch_plus', get_string('plus_href', 'block_caboodle'), '',
+                                                array('style' => 'margin-right: 5px; display: inline;', 'onclick' => 'htmlDump(' . required_param('id', PARAM_INT) .', "' . $href_encoded . '");'));
+
+                                    } else {
+
+                                        $plus = '';
+                                        
+                                    }
 
                                     $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
                                     $caboodle_results .= $plus . $href;
