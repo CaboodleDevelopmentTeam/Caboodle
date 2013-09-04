@@ -262,19 +262,22 @@ class caboodle_htmldump {
     private function get_course_section() {
         global $DB;
         
-        $course = $DB->get_record('course', array('id' => $this->courseid), '*', MUST_EXIST);
+//        $course = $DB->get_record('course', array('id' => $this->courseid), '*', MUST_EXIST);
+//
+//        $cw = get_course_section(0, $course->id);
 
-        $cw = get_course_section(0, $course->id);
+        $cw = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 0), '*', MUST_EXIST);
 
-
-        return $cw->id;
+        return $cw;
     }
 
     private function add_to_course_sections($cmid) {
         global $DB;
 
-        if ($DB->record_exists('course_sections', array('course' => $this->courseid, 'section' => $this->get_course_section()))) {
-            $sectionid = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => $this->get_course_section()));
+        //$section = $this->get_course_section();
+
+        if ($DB->record_exists('course_sections', array('course' => $this->courseid, 'section' => 0))) {
+            $sectionid = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 0));
 
             // if sequence is not empty, add another course_module id
             if (!empty($sectionid->sequence)) {
@@ -287,7 +290,7 @@ class caboodle_htmldump {
             $course_section = new stdClass();
             $course_section->id = $sectionid->id;
             $course_section->course = $this->courseid;
-            $course_section->section = $this->get_course_section();
+            $course_section->section = $sectionid->section;
             $course_section->sequence = $sequence;
 
             if ($csid = $DB->update_record('course_sections', $course_section)) {
@@ -301,7 +304,7 @@ class caboodle_htmldump {
 
             $course_section = new stdClass();
             $course_section->course = $this->courseid;
-            $course_section->section = 1;
+            $course_section->section = 0;
             $course_section->sequence = $sequence;
 
             if ($csid = $DB->insert_record('course_sections', $course_section)) {
@@ -316,8 +319,8 @@ class caboodle_htmldump {
     private function add_course_module($resource_id) {
         global $DB;
         
-        $section = $this->get_course_section();
-        $sectionid = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => $section), '*', MUST_EXIST);
+        //$section = $this->get_course_section();
+        $sectionid = $DB->get_record('course_sections', array('course' => $this->courseid, 'section' => 0), '*', MUST_EXIST);
         
         
         // add course module
