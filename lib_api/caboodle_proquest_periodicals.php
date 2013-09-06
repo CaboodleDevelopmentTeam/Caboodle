@@ -32,6 +32,8 @@ class caboodle_proquest_periodicals extends caboodle_api {
     private $xusername = '';
     private $xpassword = '';
 
+
+
     /**
      * __construct
      *
@@ -56,19 +58,19 @@ class caboodle_proquest_periodicals extends caboodle_api {
 
         $url = $this->url . '?operation=searchRetrieve&version=1.2&' .
                 'x-username=' . $this->xusername . '&x-password=' . $this->xpassword .
-                '&maximumRecords=' . $this->_numresults . '&query=' .
+                '&maximumRecords=' . $this->_numresults . '&query=title=' .
                 $query;
 
-//        if ($xmldata = $this->exec_curl($url)) {
-//
-//            $xmldata = $this->parse_data($xmldata);
-//
-//        } else {
-//            return '';
-//        }
+        if ($xmldata = $this->exec_curl($url)) {
 
-        $xmldata = file_get_contents(dirname(__FILE__) . '/sample.xml');
-        $xmldata = $this->parse_data($xmldata);
+            $xmldata = $this->parse_data($xmldata);
+
+        } else {
+            return '';
+        }
+
+//        $xmldata = file_get_contents(dirname(__FILE__) . '/sample.xml');
+//        $xmldata = $this->parse_data($xmldata);
 
         return $xmldata;
     }
@@ -114,9 +116,9 @@ class caboodle_proquest_periodicals extends caboodle_api {
 
         }
 
-        echo "<pre>";
-        var_dump($ret);
-        echo "</pre>";
+//        echo "<pre>";
+//        var_dump($ret);
+//        echo "</pre>";
 
         return $ret;
     }
