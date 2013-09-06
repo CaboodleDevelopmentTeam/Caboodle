@@ -27,7 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__) . '/locallib.php');
 
-class caboodle_sru_interface extends caboodle_api {
+class caboodle_proquest_periodicals extends caboodle_api {
+
+    private $xusername = '';
+    private $xpassword = '';
 
     /**
      * __construct
@@ -40,55 +43,46 @@ class caboodle_sru_interface extends caboodle_api {
         parent::__construct($resourceid, $instanceid, $numresults);
     }
 
+
     /**
-     * Execute api-specific search
+     * API-specific implementation
      *
      * @param type $query
-     * @return boolean
+     * @return type
      */
     protected function search_api($query) {
 
         $query = $this->clean_query_string($query);
 
-        $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
-                $query . '&maximumRecords=' . $this->_numresults;
+        $url = $this->url . '?operation=searchRetrieve&version=1.2&' .
+                'x-username=' . $this->xusername . '&x-password=' . $this->xpassword .
+                '&maximumRecords=' . $this->_numresults . '&query=' .
+                $query;
 
-
-        if ($xmldata = $this->exec_curl($url)) {
-
-            $xmldata = $this->parse_data($xmldata);
-
-        } else {
-            return '';
-        }
-
-        return $xmldata;
+        //$xmldata = $this->exec_curl($url);
+        $xmldata = file_get_contents(dirname(__FILE__) . '/sample.xml');
+        $this->parse_data($xmldata);
     }
 
-    /**
-     * Parse XML to array and extracts only required data
-     *
-     * @param type $data
-     * @return array
-     */
-    private function parse_data($data) {
+    private function parse_data($xmldata) {
 
         $xml = new DOMDocument();
-        $xml->loadXML($data);
+        $xml->loadXML($xmldata);
 
-        $mhubNS = "http://m2m.edina.ac.uk/ns/mediahub";
-        $dcNS = "http://purl.org/dc/elements/1.1/";
+        $zsNS = "http://www.loc.gov/zing/srw/";
+        $recordNS = "http://www.loc.gov/MARC21/slim";
 
         $count = 0;
         $ret = '';
 
-        foreach ($xml->getElementsByTagNameNS($mhubNS, 'record') as $element) {
+        foreach ($xml->getElementsByTagNameNS($recordNS, 'record') as $element) {
+echo "<pre>";
+var_dump($xml->getElementsByTagName('datafield')->length);
+echo "</pre>";
+// 'http://search.proquest/com/docview/'+tag35Code
 
-//            mtrace('Title: ' . $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent);
-//            mtrace('URL: ' . $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent);
-
-            $ret[$count]['title'] = $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent;
-            $ret[$count]['url'] = $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent;
+//            $ret[$count]['title'] = $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent;
+//            $ret[$count]['url'] = $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent;
 
             $count++;
         }
@@ -96,4 +90,4 @@ class caboodle_sru_interface extends caboodle_api {
         return $ret;
     }
 
-} // caboodle_sru_interface
+} // caboodle_proquest_periodicals

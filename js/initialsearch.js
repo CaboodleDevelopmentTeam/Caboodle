@@ -31,7 +31,12 @@ var getAllCheckedRepos = function() {
     for (var i = 0; i < repositories.length; i++ ) {
 
         if (repositories[i].attributes.getNamedItem('type') !== 'hidden' && repositories[i].checked === true) {
-            ret = ret + '&repo_' + i + '=1';
+
+            var the_id = repositories[i].attributes.getNamedItem('id');
+            
+            var array_id = the_id.textContent.split('_');
+
+            ret = ret + '&repo_' + array_id[3] + '=1';
         }
 
     }

@@ -109,6 +109,39 @@ abstract class caboodle_api implements caboodle_api_interface {
     protected abstract function search_api($query);
 
     /**
+     * Exec cURL
+     *
+     * @param type $url
+     * @return string|boolean
+     */
+    protected function exec_curl($url) {
+        if (!function_exists('curl_init')) {
+            $this->lasterror = 'cURL NOT installed!';
+            return '';
+        }
+
+        $curl = curl_init($url);
+
+        // set curl options
+        $options = array(
+            CURLOPT_CONNECTTIMEOUT_MS => $this->_transfer_timeout,  // set default connection timeout
+            CURLOPT_TIMEOUT_MS => $this->_transfer_timeout,         // set default transfer timeout
+            CURLOPT_RETURNTRANSFER => true,                         // return all data from connection
+            CURLOPT_FAILONERROR => true,                            // pay attention to http errors
+            CURLOPT_VERBOSE    => true                              // show verbose output to stderr
+        );
+
+        curl_setopt_array($curl, $options);
+
+        if($xmldata = curl_exec($curl)) {
+            return $xmldata;
+        } else {
+            $this->lasterror = curl_error($curl);
+            return false;
+        }
+    } // exec curl
+
+    /**
      * Unserializes and base64_decode search results saved in db
      *
      * @param string $results
@@ -159,6 +192,20 @@ abstract class caboodle_api implements caboodle_api_interface {
         }
 
         return true;
+    }
+
+    /**
+     * Strip html and php tags, convert all applicable characters to html entities
+     * url encodes string (eg. space becomes %20)
+     *
+     * @param type $query
+     * @return type
+     */
+    protected function clean_query_string($query) {
+
+        $query = rawurlencode(htmlentities(strip_tags($query)));
+
+        return $query;
     }
 
 } // abstract

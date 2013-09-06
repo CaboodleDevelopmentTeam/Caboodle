@@ -1,20 +1,34 @@
 <?php
 
+/**
+ *
+ *
+ * @package   caboodle
+ * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 function xmldb_block_caboodle_install() {
     global $DB;
 
     // repository types:
     $caboodle_resource_types = array (
-                                'Default'       => 'caboodle_default',      // class name
-                                'SRU interface' => 'caboodle_sru_interface' // class name
+                                'Default'                       => 'caboodle_default',      // class name
+                                'SRU interface'                 => 'caboodle_sru_interface', // class name
+                                'ProQuest periodicals (SRU)'    => 'caboodle_proquest_periodicals'
                             );
 
     // default repositories:
     $caboodle_resources = array(
                             0 => array (
                                 'name' => "Jisc MediaHub (SRU interface)",
-                                'type' => 'caboodle_sru_interface',
+                                'type' => 'caboodle_sru_interface',             // class name
                                 'url'  => "http://m2m.edina.ac.uk/sru/mediahub"
+                            ),
+                            1 => array (
+                                'name' => 'British Periodicals (ProQuest)',
+                                'type' => 'caboodle_proquest_periodicals',      // class name
+                                'url'  => 'http://fedsearch.proquest.com/search/sru/britishperiodicals'
                             )
                         );
 

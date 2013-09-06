@@ -17,7 +17,9 @@
 /**
  * Version details
  *
- * @package    block_caboodle
+ * @package   caboodle
+ * @author    Grzegorz Adamowicz (greg.adamowicz@enovation.ie)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();

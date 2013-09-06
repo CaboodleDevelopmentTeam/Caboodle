@@ -165,10 +165,18 @@ class block_caboodle extends block_base {
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
 
                                     $href = '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
-                                    $href_encoded = urlencode(base64_encode(urlencode($href)));
 
-                                    $plus = $OUTPUT->pix_icon('t/switch_plus', get_string('plus_href', 'block_caboodle'), '',
-                                            array('style' => 'margin-right: 5px; display: inline;', 'onclick' => 'htmlDump(' . required_param('id', PARAM_INT) .', "' . $href_encoded . '");'));
+                                    if ($this->page->user_is_editing()) {
+
+                                        $href_encoded = urlencode(base64_encode(urlencode($href)));
+                                        $plus = $OUTPUT->pix_icon('t/switch_plus', get_string('plus_href', 'block_caboodle'), '',
+                                                array('style' => 'margin-right: 5px; display: inline;', 'onclick' => 'htmlDump(' . required_param('id', PARAM_INT) .', "' . $href_encoded . '");'));
+
+                                    } else {
+
+                                        $plus = '';
+
+                                    }
 
                                     $caboodle_results .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
                                     $caboodle_results .= $plus . $href;
@@ -199,13 +207,6 @@ class block_caboodle extends block_base {
         }
 
         $this->content->text .= "</div>";
-
-        // add html dump button
-//        if (has_capability('moodle/course:update', $this->page->context->get_course_context(false))) {
-//            $this->content->text .= '<div class="singlebutton" style="width: 80%; margin: auto;"><button id="html_dump_button" type="submit" title="htmldump" ' .
-//                    'onclick="htmlDump(' . required_param('id', PARAM_INT) . ', \'' . urlencode(base64_encode(urlencode($caboodle_results))) . '\')">'.
-//                    get_string('html_dump', 'block_caboodle') . '</button></div>';
-//        }
 
         return $this->content;
     }
@@ -269,8 +270,8 @@ class block_caboodle extends block_base {
             // detect php
             // $php = shell_exec('which php');
             // just exec php and let the system worry about it
-            // $php = 'php';
-            $php = '/opt/php/bin/php -c /storage/vhosts/demo2.enovation.ie/conf/php.ini';
+            $php = 'php';
+            //$php = '/opt/php/bin/php -c /storage/vhosts/demo2.enovation.ie/conf/php.ini';
             $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
                     ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
             
