@@ -29,4 +29,6 @@ function xmldb_block_caboodle_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2013090500, 'caboodle');
     }
+
+    return true;
 }
