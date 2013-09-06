@@ -93,8 +93,9 @@ class block_caboodle extends block_base {
             $caboodle = new caboodle();
             $resources = $caboodle->get_resources();
 
-            //$this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
-            $caboodle_results = get_string('search_on', 'block_caboodle', $search_str);
+            $this->content->text .= get_string('search_on', 'block_caboodle', $search_str);
+            //$caboodle_results = get_string('search_on', 'block_caboodle', $search_str);
+            $caboodle_results = '';
 
             foreach ($resources as $resourceid => $resource) {
                 if ($this->config->resource[$resourceid] == 1) {
@@ -148,6 +149,8 @@ class block_caboodle extends block_base {
 
                             } // foreach
 
+                            $caboodle_results .= "</ul>";
+
                         } else {
 
                             // search string has changed, execute search and save all data
@@ -186,17 +189,20 @@ class block_caboodle extends block_base {
 
                             } // foreach
 
+                            $caboodle_results .= "</ul>";
                         }
 
                     } else {
                         // no results
+                        $caboodle_results .= '<ul class="caboodle_results">';
                         $caboodle_results .=   '<li class="caboodle_results_item">'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                        $caboodle_results .= "</ul>";
                     }
-
-                    $this->content->text .= $caboodle_results . "</ul>";
 
                 } // if resource is enabled
             } // foreach resources
+
+            $this->content->text .= $caboodle_results;
 
         } else {
             // no search string
