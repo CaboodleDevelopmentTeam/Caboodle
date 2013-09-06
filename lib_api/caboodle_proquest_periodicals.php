@@ -59,33 +59,64 @@ class caboodle_proquest_periodicals extends caboodle_api {
                 '&maximumRecords=' . $this->_numresults . '&query=' .
                 $query;
 
-        //$xmldata = $this->exec_curl($url);
+//        if ($xmldata = $this->exec_curl($url)) {
+//
+//            $xmldata = $this->parse_data($xmldata);
+//
+//        } else {
+//            return '';
+//        }
+
         $xmldata = file_get_contents(dirname(__FILE__) . '/sample.xml');
-        $this->parse_data($xmldata);
+        $xmldata = $this->parse_data($xmldata);
+
+        return $xmldata;
     }
 
     private function parse_data($xmldata) {
+        // we'll add document ID at the end of this URL
+        $url_prefix = 'http://search.proquest/com/docview/';
+        // empty output by default
+        $ret = '';
 
         $xml = new DOMDocument();
         $xml->loadXML($xmldata);
 
-        $zsNS = "http://www.loc.gov/zing/srw/";
+        //$zsNS = "http://www.loc.gov/zing/srw/";
         $recordNS = "http://www.loc.gov/MARC21/slim";
 
-        $count = 0;
-        $ret = '';
+        // set filters including namespace we register below
+        $title_path = "//record:record/record:datafield[@tag='245']/record:subfield[@code='a']";
+        $record_path = "//record:record/record:datafield[@tag='035']/record:subfield[@code='a']";
 
-        foreach ($xml->getElementsByTagNameNS($recordNS, 'record') as $element) {
-echo "<pre>";
-var_dump($xml->getElementsByTagName('datafield')->length);
-echo "</pre>";
-// 'http://search.proquest/com/docview/'+tag35Code
+        // get DOMXPath instance
+        $finder = new DOMXPath($xml);
+        // set name space we're interested in
+        $finder->registerNameSpace('record', $recordNS);
 
-//            $ret[$count]['title'] = $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent;
-//            $ret[$count]['url'] = $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent;
+        // find all nodes
+        $record_nodes = $finder->query($record_path);
+        $title_nodes = $finder->query($title_path);
 
-            $count++;
+        // we need to be sure that all records have title and length
+        if ($record_nodes->length == $title_nodes->length) {
+
+            // foreach item
+            for ($item = 0; $item < $record_nodes->length; $item++) {
+//                echo "<pre>";
+//                var_dump($record_nodes->item($item)->textContent);
+//                var_dump($title_nodes->item($item)->textContent);
+//                echo "</pre>";
+
+                $ret[$item]['title'] = $title_nodes->item($item)->textContent;
+                $ret[$item]['url'] = $url_prefix . $record_nodes->item($item)->textContent;
+            }
+
         }
+
+        echo "<pre>";
+        var_dump($ret);
+        echo "</pre>";
 
         return $ret;
     }
