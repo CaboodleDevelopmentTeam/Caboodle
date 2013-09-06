@@ -32,8 +32,6 @@ class caboodle_proquest_periodicals extends caboodle_api {
     private $xusername = '';
     private $xpassword = '';
 
-
-
     /**
      * __construct
      *
@@ -66,6 +64,7 @@ class caboodle_proquest_periodicals extends caboodle_api {
             $xmldata = $this->parse_data($xmldata);
 
         } else {
+//            var_dump($this->lasterror);
             return '';
         }
 
