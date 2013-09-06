@@ -208,4 +208,24 @@ abstract class caboodle_api implements caboodle_api_interface {
         return $query;
     }
 
+    /**
+     * implements_configuration informs if API has any configuration options (@TODO)
+     * return true if yes and override get_configuration
+     * return false if no
+     *
+     * @return boolean
+     */
+    public static function implements_configuration() {
+        return false;
+    }
+    
+    /**
+     * Configuration implementation, all options as in settings.php (@TODO)
+     * 
+     * @return boolean
+     */
+    public static function get_configuration() {
+        return false;
+    }
+
 } // abstract
