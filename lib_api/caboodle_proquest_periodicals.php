@@ -64,12 +64,8 @@ class caboodle_proquest_periodicals extends caboodle_api {
             $xmldata = $this->parse_data($xmldata);
 
         } else {
-//            var_dump($this->lasterror);
             return '';
         }
-
-//        $xmldata = file_get_contents(dirname(__FILE__) . '/sample.xml');
-//        $xmldata = $this->parse_data($xmldata);
 
         return $xmldata;
     }
@@ -114,10 +110,6 @@ class caboodle_proquest_periodicals extends caboodle_api {
             }
 
         }
-
-//        echo "<pre>";
-//        var_dump($ret);
-//        echo "</pre>";
 
         return $ret;
     }

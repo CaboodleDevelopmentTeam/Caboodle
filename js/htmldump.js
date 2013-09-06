@@ -8,6 +8,8 @@
 var htmlDump = function(courseid, html_list) {
     var xmlhttp;
 
+    // @TODO implement loading bar/indicator
+
     if (window.XMLHttpRequest) {
         // code for IE7+, Firefox, Chrome, Opera, Safari
         xmlhttp = new XMLHttpRequest();
