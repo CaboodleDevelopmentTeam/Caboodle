@@ -284,9 +284,20 @@ class block_caboodle extends block_base {
             $shell_results = shell_exec($exec);
 
             $shell_results = preg_split("/\n/", $shell_results, -1, PREG_SPLIT_NO_EMPTY);
-            
+
+            // empty results array
+            $results = array();
+
             foreach ($shell_results as $r => $result_chunk) {
-                $results = json_decode($result_chunk, true);
+
+                // decode results
+                $decoded_results = json_decode($result_chunk, true);
+                // get keys
+                $keys = array_keys($decoded_results);
+                //echo "<pre>"; var_dump($decoded_results); echo "</pre>";
+
+                // make sure that it all be saved in one array without overwriting it (well unless keys are the same which shouldn't happen)
+                $results[$keys[0]] = $decoded_results[$keys[0]];
             }
 
             // @TODO checking if decoded results are ok
@@ -547,4 +558,25 @@ class block_caboodle extends block_base {
         } // if
         
     }
+
+    /**
+     * Specialization is being called just after init()
+     * We are using it for setting block title
+     * 
+     */
+    public function specialization() {
+
+        if (!empty($this->config->title)) {
+
+          $this->title = $this->config->title;
+
+        } else {
+
+          $this->config->title = get_string('pluginname', 'block_caboodle');
+
+        }
+
+    } // specialization
+
+
 }

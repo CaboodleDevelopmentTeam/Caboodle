@@ -44,6 +44,15 @@ class block_caboodle_edit_form extends block_edit_form {
         // disable form change check for "initial search"
         $mform->disable_form_change_checker();
 
+
+        // General block configuration
+        $mform->addElement('header', 'general', get_string('block_configuration', 'block_caboodle'));
+        // block title configuration
+        $mform->addElement('text', 'config_title', get_string('block_title', 'block_caboodle'));
+        $mform->setDefault('config_title', get_string('pluginname', 'block_caboodle'));
+        $mform->setType('config_title', PARAM_MULTILANG);
+
+        // resources header
         $mform->addElement('header', 'general', get_string('resources', 'block_caboodle'));
 
         $caboodle = new caboodle();
@@ -178,6 +187,8 @@ class block_caboodle_edit_form extends block_edit_form {
                     // if initial search string set and repo checked, perform search
                     if (optional_param('repo_'.$k, 0, PARAM_INT) == 1 && strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) > 0) {
                         $results = $this->caboodle_perform_search($k);
+                    } else {
+                        $results = '';
                     }
                     
                 }
