@@ -36,14 +36,14 @@ final class caboodle_cli {
     }
 
     public function run() {
+
+        if (!function_exists('pcntl_fork')) {
+            // no pcntl, run search one by one
             $this->run_nofork();
-//        if (!function_exists('pcntl_fork')) {
-//            // no pcntl, run search one by one
-//            $this->run_nofork();
-//        } else {
-//            // pcntl enabled, run in threads
-//            $this->run_fork();
-//        }
+        } else {
+            // pcntl enabled, run in threads
+            $this->run_fork();
+        }
 
         exit(0);
     } // run
