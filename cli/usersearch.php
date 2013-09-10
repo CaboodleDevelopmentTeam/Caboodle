@@ -27,7 +27,7 @@ final class caboodle_cli {
         $this->process_options($argv);
         
         if (strlen($this->search_str) == 0) {
-            exit(1);
+            return;
         }
         
         // get block saved options
@@ -112,8 +112,9 @@ final class caboodle_cli {
         $results = $api->search($search_str);
         
         if (empty($results) && !empty($api->lasterror)) {
-            $results[$resourceid]['title'] = get_string('usersearch_error', 'block_caboodle', $api->lasterror);
-            $results[$resourceid]['url'] = '#';
+            // a dirty workaround not to generate a link when showing an error
+            $results[$resourceid]['title'] = '</a><span style="color: red;">' . get_string('usersearch_error', 'block_caboodle', $api->lasterror) . '</span><a>';
+            $results[$resourceid]['url'] = '';
         }
 
         return $results;
