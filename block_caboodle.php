@@ -292,15 +292,17 @@ class block_caboodle extends block_base {
 
                 // decode results
                 $decoded_results = json_decode($result_chunk, true);
-                // get keys
-                $keys = array_keys($decoded_results);
-                //echo "<pre>"; var_dump($decoded_results); echo "</pre>";
 
-                // make sure that it all be saved in one array without overwriting it (well unless keys are the same which shouldn't happen)
-                $results[$keys[0]] = $decoded_results[$keys[0]];
-            }
+                if (!is_null($decoded_results)) {
+                    // get keys
+                    $keys = array_keys($decoded_results);
 
-            // @TODO checking if decoded results are ok
+                    // make sure that it all be saved in one array without overwriting it (well unless keys are the same which shouldn't happen)
+                    $results[$keys[0]] = $decoded_results[$keys[0]];
+                } // if
+
+            } // foreach
+
             $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
 
         } else {

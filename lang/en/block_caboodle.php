@@ -62,3 +62,4 @@ $string['nothing_found'] = 'Nothing found. Repository search could timed out. Pl
 $string['repository_disabled'] = 'Repository disabled or provided query is invalid';
 $string['html_dump'] = 'Add results to course';
 $string['plus_href'] = 'Add to course';
+$string['usersearch_error'] = 'An error occured while searching. Debug detials: {$a}';

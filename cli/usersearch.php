@@ -36,14 +36,14 @@ final class caboodle_cli {
     }
 
     public function run() {
-
-        if (!function_exists('pcntl_fork')) {
-            // no pcntl, run search one by one
             $this->run_nofork();
-        } else {
-            // pcntl enabled, run in threads
-            $this->run_fork();
-        }
+//        if (!function_exists('pcntl_fork')) {
+//            // no pcntl, run search one by one
+//            $this->run_nofork();
+//        } else {
+//            // pcntl enabled, run in threads
+//            $this->run_fork();
+//        }
 
         exit(0);
     } // run
@@ -83,13 +83,13 @@ final class caboodle_cli {
             if ($this->config->resource[$resourceid] == 1) {
 
                 $results[$resourceid] = $this->perform_search($resourceid, $this->search_str);
+                echo json_encode($results) . "\n";
+                unset($results);
 
             } // if
 
         } // foreach
 
-        // format result and output as JSON
-        echo json_encode($results) . "\n";
     }
 
     private function perform_search($resourceid, $search_str) {
@@ -112,8 +112,8 @@ final class caboodle_cli {
         $results = $api->search($search_str);
         
         if (empty($results) && !empty($api->lasterror)) {
-            echo "ERROR: " . $api->lasterror . "\n";
-            exit(1);
+            $results[$resourceid]['title'] = get_string('usersearch_error', 'block_caboodle', $api->lasterror);
+            $results[$resourceid]['url'] = '#';
         }
 
         return $results;
