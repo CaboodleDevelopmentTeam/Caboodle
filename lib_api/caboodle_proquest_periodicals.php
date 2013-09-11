@@ -72,7 +72,7 @@ class caboodle_proquest_periodicals extends caboodle_api {
 
     private function parse_data($xmldata) {
         // we'll add document ID at the end of this URL
-        $url_prefix = 'http://search.proquest/com/docview/';
+        $url_prefix = 'http://search.proquest.com/docview/';
         // empty output by default
         $ret = '';
 
