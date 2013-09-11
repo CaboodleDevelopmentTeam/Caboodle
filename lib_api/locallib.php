@@ -38,7 +38,7 @@ abstract class caboodle_api implements caboodle_api_interface {
     protected $_searchstr;
     protected $_searchdata;
     protected $_numresults;
-    protected $_transfer_timeout = 5000;    // 5000ms == 5 seconds
+    protected $_transfer_timeout = 10000;    // 5000ms == 5 seconds
 
     private $resourceid;
     private $instanceid;
