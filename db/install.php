@@ -13,22 +13,28 @@ function xmldb_block_caboodle_install() {
 
     // repository types:
     $caboodle_resource_types = array (
-                                'Default'                       => 'caboodle_default',      // class name
-                                'SRU interface'                 => 'caboodle_sru_interface', // class name
-                                'ProQuest periodicals (SRU)'    => 'caboodle_proquest_periodicals'
+                                //'Default'                       => 'caboodle_default',              // class name
+                                'SRU interface'                 => 'caboodle_sru_interface',        // class name
+                                'ProQuest periodicals (SRU)'    => 'caboodle_proquest_periodicals', // class name
+                                'Childlink'                     => 'caboodle_childlink'             // class name
                             );
 
     // default repositories:
     $caboodle_resources = array(
                             0 => array (
-                                'name' => "Jisc MediaHub (SRU interface)",
-                                'type' => 'caboodle_sru_interface',             // class name
-                                'url'  => "http://m2m.edina.ac.uk/sru/mediahub"
+                                'name'  => "Jisc MediaHub (SRU interface)",
+                                'type'  => 'caboodle_sru_interface',             // class name
+                                'url'   => "http://m2m.edina.ac.uk/sru/mediahub"
                             ),
                             1 => array (
-                                'name' => 'British Periodicals (ProQuest)',
-                                'type' => 'caboodle_proquest_periodicals',      // class name
-                                'url'  => 'http://fedsearch.proquest.com/search/sru/britishperiodicals'
+                                'name'  => 'British Periodicals (ProQuest)',
+                                'type'  => 'caboodle_proquest_periodicals',      // class name
+                                'url'   => 'http://fedsearch.proquest.com/search/sru/britishperiodicals'
+                            ),
+                            2 => array (
+                                'name'  => 'Childlink',
+                                'type'  => 'caboodle_childlink',
+                                'url'   => 'http://members.childlink.co.uk/opensearch/node'
                             )
                         );
 
