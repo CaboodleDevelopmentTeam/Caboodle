@@ -33,6 +33,12 @@ class caboodle_childlink extends caboodle_api {
         parent::__construct($resourceid, $instanceid, $numresults);
     }
 
+    /**
+     * Execute api-specific search
+     *
+     * @param type $query
+     * @return boolean
+     */
     protected function search_api($query) {
         $query = $this->clean_query_string($query);
 
@@ -49,6 +55,14 @@ class caboodle_childlink extends caboodle_api {
         return $xmldata;
     }
 
+    /**
+     * Parse XML to array and extracts only required data
+     *
+     * @param type $data
+     * @return array
+     */
+    private function parse_data($xmldata) {
 
+    }
 
 } // caboodle_childlink
