@@ -61,8 +61,36 @@ class caboodle_childlink extends caboodle_api {
      * @param type $data
      * @return array
      */
-    private function parse_data($xmldata) {
+    private function parse_data($data) {
 
+        $xml = new DOMDocument();
+        $xml->loadXML($data);
+        
+        $count = 0;
+        $ret = '';
+
+        $title_path = "//item/title";
+        $record_path = "//item/link";
+
+        // get DOMXPath instance
+        $finder = new DOMXPath($xml);
+        $record_nodes = $finder->query($record_path);
+        $title_nodes = $finder->query($title_path);
+
+        // we need to be sure that all records have title and length
+        if ($record_nodes->length == $title_nodes->length) {
+
+            // foreach item
+            for ($item = 0; $item < $record_nodes->length; $item++) {
+
+                $ret[$item]['title'] = $title_nodes->item($item)->textContent;
+                $ret[$item]['url'] = $url_prefix . $record_nodes->item($item)->textContent;
+
+            } // for
+
+        } // if
+
+        return $ret;
     }
 
 } // caboodle_childlink
