@@ -30,5 +30,23 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2013090500, 'caboodle');
     }
 
+    if ($oldversion < 2013091100) {
+
+        $new_resourcetype = new stdClass();
+        $new_resourcetype->typename = 'Childlink';
+        $new_resourcetype->typeclass = 'caboodle_childlink';
+
+        $newid = $DB->insert_record('caboodle_resource_types', $new_resourcetype);
+
+        $resource = new stdClass();
+        $resource->type = $newid;
+        $resource->name = 'Childlink';
+        $resource->url = 'http://members.childlink.co.uk/opensearch/node';
+
+        $newresourceid = $DB->insert_record('caboodle_resources', $resource);
+
+        upgrade_block_savepoint(true, 2013091100, 'caboodle');
+    }
+
     return true;
 }
