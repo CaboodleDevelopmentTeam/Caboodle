@@ -84,7 +84,7 @@ class caboodle_childlink extends caboodle_api {
             for ($item = 0; $item < $record_nodes->length; $item++) {
 
                 $ret[$item]['title'] = $title_nodes->item($item)->textContent;
-                $ret[$item]['url'] = $url_prefix . $record_nodes->item($item)->textContent;
+                $ret[$item]['url'] = $record_nodes->item($item)->textContent;
 
             } // for
 
