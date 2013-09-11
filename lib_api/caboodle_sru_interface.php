@@ -84,9 +84,6 @@ class caboodle_sru_interface extends caboodle_api {
 
         foreach ($xml->getElementsByTagNameNS($mhubNS, 'record') as $element) {
 
-//            mtrace('Title: ' . $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent);
-//            mtrace('URL: ' . $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent);
-
             $ret[$count]['title'] = $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent;
             $ret[$count]['url'] = $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent;
 
