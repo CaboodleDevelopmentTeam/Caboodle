@@ -30,7 +30,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2013090500, 'caboodle');
     }
 
-    if ($oldversion < 2013091105) {
+    if ($oldversion < 2013091200) {
 
         $new_resourcetype = new stdClass();
         $new_resourcetype->typename = 'Childlink';
@@ -45,7 +45,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
 
         $newresourceid = $DB->insert_record('caboodle_resources', $resource);
 
-        upgrade_block_savepoint(true, 2013091105, 'caboodle');
+        upgrade_block_savepoint(true, 2013091200, 'caboodle');
     }
 
     return true;
