@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/caboodle/db" VERSION="20130516" COMMENT="XMLDB file for Caboodle"
+<XMLDB PATH="blocks/caboodle/db" VERSION="20130917" COMMENT="XMLDB file for Caboodle"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -8,7 +8,8 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Primary key." NEXT="type"/>
         <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Type of resource" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="Resource" SEQUENCE="false" COMMENT="Resource name" PREVIOUS="type" NEXT="url"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="Resource" SEQUENCE="false" COMMENT="Resource name" PREVIOUS="type" NEXT="repository_url"/>
+        <FIELD NAME="repository_url" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="Resource url to be linked in header" PREVIOUS="name" NEXT="url"/>
         <FIELD NAME="url" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Resource URL" PREVIOUS="name"/>
       </FIELDS>
       <KEYS>

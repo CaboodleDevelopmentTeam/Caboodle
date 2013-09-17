@@ -22,19 +22,22 @@ function xmldb_block_caboodle_install() {
     // default repositories:
     $caboodle_resources = array(
                             0 => array (
-                                'name'  => "Jisc MediaHub (SRU interface)",
-                                'type'  => 'caboodle_sru_interface',             // class name
-                                'url'   => "http://m2m.edina.ac.uk/sru/mediahub"
+                                'name'              => "Jisc MediaHub (SRU interface)",
+                                'type'              => 'caboodle_sru_interface',             // class name
+                                'url'               => "http://m2m.edina.ac.uk/sru/mediahub",
+                                'repository_url'    => "http://jiscmediahub.ac.uk/"
                             ),
                             1 => array (
                                 'name'  => 'British Periodicals (ProQuest)',
                                 'type'  => 'caboodle_proquest_periodicals',      // class name
-                                'url'   => 'http://fedsearch.proquest.com/search/sru/britishperiodicals'
+                                'url'   => 'http://fedsearch.proquest.com/search/sru/britishperiodicals',
+                                'repository_url'    => "http://www.proquest.co.uk/"
                             ),
                             2 => array (
                                 'name'  => 'Childlink',
                                 'type'  => 'caboodle_childlink',
-                                'url'   => 'http://members.childlink.co.uk/opensearch/node'
+                                'url'   => 'http://members.childlink.co.uk/opensearch/node',
+                                'repository_url'    => "http://www.childlink.co.uk/"
                             )
                         );
 
@@ -54,6 +57,7 @@ function xmldb_block_caboodle_install() {
         $record = new stdClass();
         $record->name = $repo_data['name'];
         $record->url = $repo_data['url'];
+        $record->repository_url = $repo_data['repository_url'];
 
         // get type
         if ($type = $DB->get_record('caboodle_resource_types', array('typeclass' => $repo_data['type']))) {

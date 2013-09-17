@@ -12,6 +12,8 @@
 function xmldb_block_caboodle_upgrade($oldversion) {
     global $CFG, $DB;
 
+    $dbman = $DB->get_manager();
+
     if ($oldversion < 2013090500) {
 
         $new_resourcetype = new stdClass();
@@ -46,6 +48,46 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         $newresourceid = $DB->insert_record('caboodle_resources', $resource);
 
         upgrade_block_savepoint(true, 2013091200, 'caboodle');
+    }
+
+    if ($oldversion < 2013091701) {
+
+        $table = new xmldb_table('caboodle_resources');
+        $field = new xmldb_field('repository_url');
+
+        $field->set_attributes(XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '', 'name');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // add URLs to all predefined repositories
+        $records = $DB->get_records('caboodle_resources');
+        
+        foreach ($records as $rid => $record) {
+            //        $resource->repository_url = 'http://jiscmediahub.ac.uk/';
+            //        $resource->repository_url = 'http://www.proquest.co.uk/';
+            //        $resource->repository_url = 'http://www.childlink.co.uk/';
+
+            // determine order by order of adding repositories to db
+            switch ($record->id) {
+                case 1:
+                    $record->repository_url = 'http://jiscmediahub.ac.uk/';
+                    break;
+                case 2:
+                    $record->repository_url = 'http://www.proquest.co.uk/';
+                    break;
+                case 3:
+                    $record->repository_url = 'http://www.childlink.co.uk/';
+                    break;
+                default:
+                    $record->repository_url = '';
+            }
+            
+            $DB->update_record('caboodle_resources', $record);
+        }
+
+        upgrade_block_savepoint(true, 2013091701, 'caboodle');
     }
 
     return true;
