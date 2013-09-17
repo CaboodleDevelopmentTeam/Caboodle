@@ -99,7 +99,16 @@ class block_caboodle extends block_base {
 
             foreach ($resources as $resourceid => $resource) {
                 if ($this->config->resource[$resourceid] == 1) {
-                    $caboodle_results .= "<h4>" . $resource->name . "</h4>";
+
+                    if (!empty($resource->repository_url)) {
+
+                        $resource_name = '<a href="' . $resource->repository_url . '" target="_blank">' . $resource->name . '</a>';
+
+                    } else {
+                        $resource_name = $resource->name;
+                    }
+
+                    $caboodle_results .= "<h4>" . $resource_name . "</h4>";
 
                     $results = $caboodle->get_results($resourceid, $this->instance->id);
 
