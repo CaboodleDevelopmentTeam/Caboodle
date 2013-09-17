@@ -13,6 +13,8 @@ var buttonUrl = function() {
     // another script
     var initialsearch = document.getElementById("id_config_search");
 
+    var blockname = getBlockName();
+
     var checked_repos = getAllCheckedRepos();
     
     var student_search_option = getStudentSearchOption();
@@ -21,7 +23,13 @@ var buttonUrl = function() {
     
     var blacklist = getBlackilstItems();
 
-    return escape(initialsearch.value) + checked_repos + student_search_option + number_of_display_items + blacklist;
+    return escape(initialsearch.value) + blockname + checked_repos + student_search_option + number_of_display_items + blacklist;
+}
+
+var getBlockName = function() {
+    var blockname = document.getElementById('id_config_title').value;
+
+    return '&newblockname=' + escape(blockname);
 }
 
 var getAllCheckedRepos = function() {
