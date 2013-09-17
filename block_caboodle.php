@@ -108,7 +108,7 @@ class block_caboodle extends block_base {
                         $resource_name = $resource->name;
                     }
 
-                    $caboodle_results .= "<h4>" . $resource_name . "</h4>";
+                    $caboodle_results .= "<h4>" . $resource_name.  "</h4>";
 
                     $results = $caboodle->get_results($resourceid, $this->instance->id);
 
