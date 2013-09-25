@@ -27,15 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__) . '/locallib.php');
 
-class caboodle_sru_interface extends caboodle_api {
+class caboodle_childlink extends caboodle_api {
 
-    /**
-     * __construct
-     *
-     * @param type $resourceid
-     * @param type $instanceid
-     * @param type $numresults
-     */
     public function __construct($resourceid, $instanceid, $numresults = 20) {
         parent::__construct($resourceid, $instanceid, $numresults);
     }
@@ -47,12 +40,9 @@ class caboodle_sru_interface extends caboodle_api {
      * @return boolean
      */
     protected function search_api($query) {
-
         $query = $this->clean_query_string($query);
 
-        $url = $this->url . '?version=1.1&operation=searchRetrieve&query=' .
-                $query . '&maximumRecords=' . $this->_numresults;
-
+        $url = $this->url . '/' . $query;
 
         if ($xmldata = $this->exec_curl($url)) {
 
@@ -75,22 +65,32 @@ class caboodle_sru_interface extends caboodle_api {
 
         $xml = new DOMDocument();
         $xml->loadXML($data);
-
-        $mhubNS = "http://m2m.edina.ac.uk/ns/mediahub";
-        $dcNS = "http://purl.org/dc/elements/1.1/";
-
+        
         $count = 0;
         $ret = '';
 
-        foreach ($xml->getElementsByTagNameNS($mhubNS, 'record') as $element) {
+        $title_path = "//item/title";
+        $record_path = "//item/link";
 
-            $ret[$count]['title'] = $xml->getElementsByTagNameNS($dcNS, 'title')->item($count)->textContent;
-            $ret[$count]['url'] = $xml->getElementsByTagNameNS($mhubNS, 'link-to-mediahub')->item($count)->textContent;
+        // get DOMXPath instance
+        $finder = new DOMXPath($xml);
+        $record_nodes = $finder->query($record_path);
+        $title_nodes = $finder->query($title_path);
 
-            $count++;
-        }
+        // we need to be sure that all records have title and length
+        if ($record_nodes->length == $title_nodes->length) {
+
+            // foreach item
+            for ($item = 0; $item < $record_nodes->length; $item++) {
+
+                $ret[$item]['title'] = $title_nodes->item($item)->textContent;
+                $ret[$item]['url'] = $record_nodes->item($item)->textContent;
+
+            } // for
+
+        } // if
 
         return $ret;
     }
 
-} // caboodle_sru_interface
+} // caboodle_childlink
