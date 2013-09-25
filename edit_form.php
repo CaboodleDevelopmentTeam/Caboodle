@@ -274,6 +274,14 @@ class block_caboodle_edit_form extends block_edit_form {
         parent::definition_after_data();
         
         $mform =& $this->_form;
+
+        $blockname = optional_param('newblockname', NULL, PARAM_RAW);
+
+        if (!is_null($blockname)) {
+            $config_blockname =& $mform->getElement('config_title');
+            $config_blockname->_attributes['value'] = optional_param('newblockname', NULL, PARAM_RAW);
+        }
+
         $search_term = optional_param('config_search', NULL, PARAM_RAW);
         $blacklist = urldecode(optional_param('blacklisted', '', PARAM_RAW));
         $search_id = required_param('bui_editid', PARAM_INT);
