@@ -177,7 +177,16 @@ class block_caboodle_edit_form extends block_edit_form {
 
             // if resource enabled, display it:
             if ($this->block->config->resource[$k] == 1 || optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
-                $mform->addElement('html', '<div class="caboodle_results_settings"><h2>'.$repository->name."</h2>");
+
+                if (!empty($repository->repository_url)) {
+
+                    $repository_name = '<a href="' . $repository->repository_url . '" target="_blank">' . $repository->name . '</a>';
+
+                } else {
+                    $repository_name = $repository->name;
+                }
+
+                $mform->addElement('html', '<div class="caboodle_results_settings"><h2>' . $repository_name . "</h2>");
 
                 // if initial search not set, retrieve saved results
                 if (! isset($_GET['caboodle_initialsearch'])) {
