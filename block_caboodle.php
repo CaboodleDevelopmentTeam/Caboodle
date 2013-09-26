@@ -244,7 +244,6 @@ class block_caboodle extends block_base {
      */
     public function get_user_search() {
         global $DB;
-        
         $text = '';
 
         // return nothing if id is not match for this block or there is no saved user search
@@ -286,7 +285,7 @@ class block_caboodle extends block_base {
             // $php = shell_exec('which php');
             // just exec php and let the system worry about it
             $php = 'php';
-            //$php = '/opt/php/bin/php -c /storage/vhosts/demo2.enovation.ie/conf/php.ini';
+            //$php = '/opt/php/bin/php -c /opt/conf/php.ini';
             $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
                     ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
             
@@ -317,12 +316,14 @@ class block_caboodle extends block_base {
         } else {
             $results = $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'];
         }
-
         // foreach resources!
         foreach ($resources as $resid => $resource) {
-        
-            $text .= "<h4>" . $resource->name . "</h4>";
-            $text .= '<ul class="caboodle_results">';
+            
+            //if this specific resource is activated in the settings
+            if ($this->config->resource[$resid] == 1){
+                $text .= "<h4>" . $resource->name . "</h4>";
+                $text .= '<ul class="caboodle_results">';
+            }
 
             if (!empty($results[$resid])) {
 
@@ -336,7 +337,9 @@ class block_caboodle extends block_base {
 
             } else {
                 // no results
-                $text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                if ($this->config->resource[$resid] == 1){
+                    $text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
+                }
             }
 
             $text .= "</ul>";
