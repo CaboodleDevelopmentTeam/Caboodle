@@ -68,27 +68,30 @@ class caboodle_ebsco extends caboodle_api {
 
     private function parse_data($xmldata) {
         // we'll add document ID at the end of this URL
-        $url_prefix = 'http://search.proquest.com/docview/';
+        $url_prefix = 'http://support.ebscohost.com/';
         // empty output by default
         $ret = '';
 
         $xml = new DOMDocument();
         $xml->loadXML($xmldata);
 
-        $recordNS = "http://www.loc.gov/MARC21/slim";
+        $recordNS = "http://epnet.com/webservices/SearchService/Response/2007/07/";
 
         // set filters including namespace we register below
-        $title_path = "//record:record/record:datafield[@tag='245']/record:subfield[@code='a']";
-        $record_path = "//record:record/record:datafield[@tag='035']/record:subfield[@code='a']";
+        $title_path = "//SearchResults:SearchResults";
+        ///header/controlInfo/artinfo/tig/atl
+        $record_path = "//records:records/record:datafield[@tag='035']/record:subfield[@code='a']";
 
         // get DOMXPath instance
         $finder = new DOMXPath($xml);
-        // set name space we're interested in
-        $finder->registerNameSpace('record', $recordNS);
+        
+        $finder->registerNameSpace('SearchResults', $recordNS);
 
         // find all nodes
         $record_nodes = $finder->query($record_path);
         $title_nodes = $finder->query($title_path);
+        echo "<pre>:" .var_dump($title_nodes). "</pre>"; 
+        
 
         // we need to be sure that all records have title and length
         if ($record_nodes->length == $title_nodes->length) {

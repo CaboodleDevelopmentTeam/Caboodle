@@ -16,7 +16,8 @@ function xmldb_block_caboodle_install() {
                                 //'Default'                       => 'caboodle_default',              // class name
                                 'SRU interface'                 => 'caboodle_sru_interface',        // class name
                                 'ProQuest periodicals (SRU)'    => 'caboodle_proquest_periodicals', // class name
-                                'Childlink'                     => 'caboodle_childlink'             // class name
+                                'Childlink'                     => 'caboodle_childlink',            // class name
+                                'Ebsco'                     => 'caboodle_ebsco'             // class name
                             );
 
     // default repositories:
