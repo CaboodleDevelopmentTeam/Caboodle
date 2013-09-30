@@ -38,6 +38,12 @@ function xmldb_block_caboodle_install() {
                                 'type'  => 'caboodle_childlink',
                                 'url'   => 'http://members.childlink.co.uk/opensearch/node',
                                 'repository_url'    => "http://www.childlink.co.uk/"
+                            ),
+                            3 => array (
+                                'name'  => 'Ebsco',
+                                'type'  => 'caboodle_ebsco',
+                                'url'   => 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?',
+                                'repository_url'    => "http://support.ebscohost.com/"
                             )
                         );
 

@@ -91,7 +91,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2013091701, 'caboodle');
     }
     
-    if ($oldversion < 2013092600) {
+    if ($oldversion < 2013093000) {
 
         $new_resourcetype = new stdClass();
         $new_resourcetype->typename = 'ebsco';
@@ -103,11 +103,11 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         $resource->type = $newid;
         $resource->name = 'Ebsco';
         $resource->url = 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?';
-        $record->repository_url = 'http://support.ebscohost.com/';
+        $resource->repository_url = 'http://support.ebscohost.com/';
 
         $newresourceid = $DB->insert_record('caboodle_resources', $resource);
 
-        upgrade_block_savepoint(true, 2013092600, 'caboodle');
+        upgrade_block_savepoint(true, 2013093000, 'caboodle');
     }
 
     return true;
