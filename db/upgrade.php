@@ -96,6 +96,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         $new_resourcetype = new stdClass();
         $new_resourcetype->typename = 'ebsco';
         $new_resourcetype->typeclass = 'caboodle_ebsco';
+        $record->repository_url = 'http://support.ebscohost.com/';
 
         $newid = $DB->insert_record('caboodle_resource_types', $new_resourcetype);
 
@@ -107,7 +108,6 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         $newresourceid = $DB->insert_record('caboodle_resources', $resource);
 
         upgrade_block_savepoint(true, 2013092600, 'caboodle');
-        $record->repository_url = 'http://support.ebscohost.com/';
     }
 
     return true;
