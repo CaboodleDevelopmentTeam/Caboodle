@@ -49,6 +49,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2013091200, 'caboodle');
     }
+    
 
     if ($oldversion < 2013091701) {
 
@@ -88,6 +89,25 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         }
 
         upgrade_block_savepoint(true, 2013091701, 'caboodle');
+    }
+    
+    if ($oldversion < 2013092600) {
+
+        $new_resourcetype = new stdClass();
+        $new_resourcetype->typename = 'ebsco';
+        $new_resourcetype->typeclass = 'caboodle_ebsco';
+
+        $newid = $DB->insert_record('caboodle_resource_types', $new_resourcetype);
+
+        $resource = new stdClass();
+        $resource->type = $newid;
+        $resource->name = 'Ebsco';
+        $resource->url = 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?';
+
+        $newresourceid = $DB->insert_record('caboodle_resources', $resource);
+
+        upgrade_block_savepoint(true, 2013092600, 'caboodle');
+        $record->repository_url = 'http://support.ebscohost.com/';
     }
 
     return true;
