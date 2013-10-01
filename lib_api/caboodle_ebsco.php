@@ -33,7 +33,11 @@ require_once(dirname(__FILE__) . '/locallib.php');
  */
 class caboodle_ebsco extends caboodle_api {
     
-
+    private $pwd = 'ebs4218';
+    private $authType = '';
+    private $db = 'bwh';
+    private $ipprof = '';
+    private $prof = 's6123750.main.eitws';
     
     
     public function __construct($resourceid, $instanceid, $numresults = 20) {
@@ -82,7 +86,7 @@ class caboodle_ebsco extends caboodle_api {
         // find all nodes
         $record_nodes = $finder->query($record_path);
         $title_nodes = $finder->query($title_path);
-        echo "<pre>:" .var_dump($title_nodes). "</pre>"; 
+        //echo "<pre>:" .var_dump($title_nodes). "</pre>"; 
         
 
         // we need to be sure that all records have title and length
