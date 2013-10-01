@@ -61,7 +61,6 @@ class caboodle_ebsco extends caboodle_api {
 
     private function parse_data($xmldata) {
         
-        $url_prefix = 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?';
         // empty output by default
         $ret = '';
 
@@ -82,7 +81,7 @@ class caboodle_ebsco extends caboodle_api {
         // find all nodes
         $record_nodes = $finder->query($record_path);
         $title_nodes = $finder->query($title_path);
-        echo "<pre>:" .var_dump($title_nodes). "</pre>"; 
+        //echo "<pre>"; var_dump($record_nodes->item(0)->textContent); echo "</pre>";
         
 
         // we need to be sure that all records have title and length
