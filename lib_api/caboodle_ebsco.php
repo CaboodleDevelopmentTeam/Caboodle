@@ -32,14 +32,8 @@ require_once(dirname(__FILE__) . '/locallib.php');
  * It may be extended to use real API in the future
  */
 class caboodle_ebsco extends caboodle_api {
-
-    private $xusername = '';
-    private $xpassword = '';
     
-    private $pwd = '';
-    private $authType = '';
-    private $ipprof = '';
-    private $prof = '';
+
     
     
     public function __construct($resourceid, $instanceid, $numresults = 20) {
@@ -50,11 +44,10 @@ class caboodle_ebsco extends caboodle_api {
 
         $query = $this->clean_query_string($query);
 
-        $url = $this->url . '?operation=searchRetrieve&version=1.2&' .
-                'x-username=' . $this->xusername . '&x-password=' . $this->xpassword .
-                '&maximumRecords=' . $this->_numresults . '&query=title=' .
-                $query;
+        $url = $this->url . 'prof=' . $this->prof . '&pwd=' . $this->pwd . '&query=' .
+                $query . '&db=' . $this->db ;
 
+        //var_dump($url);
         if ($xmldata = $this->exec_curl($url)) {
 
             $xmldata = $this->parse_data($xmldata);
@@ -67,8 +60,8 @@ class caboodle_ebsco extends caboodle_api {
     }
 
     private function parse_data($xmldata) {
-        // we'll add document ID at the end of this URL
-        $url_prefix = 'http://support.ebscohost.com/';
+        
+        $url_prefix = 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?';
         // empty output by default
         $ret = '';
 
@@ -78,14 +71,13 @@ class caboodle_ebsco extends caboodle_api {
         $recordNS = "http://epnet.com/webservices/SearchService/Response/2007/07/";
 
         // set filters including namespace we register below
-        $title_path = "//SearchResults:SearchResults";
-        ///header/controlInfo/artinfo/tig/atl
-        $record_path = "//records:records/record:datafield[@tag='035']/record:subfield[@code='a']";
+        $title_path = "//rec/header/controlInfo/artinfo/tig/atl";
+        $record_path = "//rec/plink";
 
         // get DOMXPath instance
         $finder = new DOMXPath($xml);
         
-        $finder->registerNameSpace('SearchResults', $recordNS);
+        $finder->registerNameSpace('rec', $recordNS);
 
         // find all nodes
         $record_nodes = $finder->query($record_path);
@@ -95,16 +87,10 @@ class caboodle_ebsco extends caboodle_api {
 
         // we need to be sure that all records have title and length
         if ($record_nodes->length == $title_nodes->length) {
-
             // foreach item
             for ($item = 0; $item < $record_nodes->length; $item++) {
-//                echo "<pre>";
-//                var_dump($record_nodes->item($item)->textContent);
-//                var_dump($title_nodes->item($item)->textContent);
-//                echo "</pre>";
-
                 $ret[$item]['title'] = $title_nodes->item($item)->textContent;
-                $ret[$item]['url'] = $url_prefix . $record_nodes->item($item)->textContent;
+                $ret[$item]['url'] = $record_nodes->item($item)->textContent;
             }
 
         }
