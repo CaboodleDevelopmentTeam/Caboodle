@@ -33,11 +33,11 @@ require_once(dirname(__FILE__) . '/locallib.php');
  */
 class caboodle_ebsco extends caboodle_api {
     
-    private $pwd = 'ebs4218';
+    private $pwd = '';
     private $authType = '';
-    private $db = 'bwh';
+    private $db = '';
     private $ipprof = '';
-    private $prof = 's6123750.main.eitws';
+    private $prof = '';
     
     
     public function __construct($resourceid, $instanceid, $numresults = 20) {
