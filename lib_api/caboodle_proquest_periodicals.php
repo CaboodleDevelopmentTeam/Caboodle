@@ -29,6 +29,7 @@ require_once(dirname(__FILE__) . '/locallib.php');
 
 class caboodle_proquest_periodicals extends caboodle_api {
 
+    
     private $xusername = '';
     private $xpassword = '';
 

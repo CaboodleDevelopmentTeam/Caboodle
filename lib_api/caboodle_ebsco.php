@@ -34,9 +34,7 @@ require_once(dirname(__FILE__) . '/locallib.php');
 class caboodle_ebsco extends caboodle_api {
     
     private $pwd = '';
-    private $authType = '';
     private $db = '';
-    private $ipprof = '';
     private $prof = '';
     
     

@@ -117,7 +117,7 @@ class block_caboodle extends block_base {
                         $results = $this->perform_search($resourceid, true, $search_str);
                     }
 
-                    $caboodle_results .= '<ul class="caboodle_results">';
+                    
 
                     if (!empty($results)) {
                         // get search string saved in DB
@@ -130,10 +130,10 @@ class block_caboodle extends block_base {
                             $blacklist = $caboodle->trim_array_elements($this->get_blacklist());
                             $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
                             $count = 0;
-
+                            
+                            $caboodle_results .= '<ul class="caboodle_results">';
                             // display list of elements
                             foreach ($results as $rid => $rdata) {
-
                                 if (!in_array($rdata['url'], $blacklist) && $count < $this->config->search_items_displayed) {
 
                                     $href = '<a href="' . $rdata['url']  .'" target="_blank">' . $rdata['title'] . '</a>';
@@ -157,8 +157,7 @@ class block_caboodle extends block_base {
                                 } // if
 
                             } // foreach
-
-                            $caboodle_results .= "</ul>";
+                            $caboodle_results .= "</ul>"; //class="caboodle_results"
 
                         } else {
 
@@ -323,32 +322,30 @@ class block_caboodle extends block_base {
             if ($this->config->resource[$resid] == 1){
                 $text .= "<h4>" . $resource->name . "</h4>";
                 $text .= '<ul class="caboodle_results">';
-            }
+                
+                if (!empty($results[$resid])) {
 
-            if (!empty($results[$resid])) {
+                    $count = 0;
 
-                $count = 0;
+                    foreach($results[$resid] as $r => $result) {
 
-                foreach($results[$resid] as $r => $result) {
-
-                    // display only configured amount of items
-                    if ($count < $this->config->search_items_displayed) {
-                        $text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
-                        $text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
-                        $text .= "</li>";
-                    }
                     
-                    $count++;
-                } // foreach
+                        // display only configured amount of items
+                        if ($count < $this->config->search_items_displayed) {
+                            $text .= '<li class="caboodle_results_item" style="margin: 3px 0;">';
+                            $text .= '<a href="' . $result['url']  .'" target="_blank">' . $result['title'] . '</a>';
+                            $text .= "</li>";
+                        }
+                    
+                        $count++;
+                    } // foreach
 
-            } else {
-                // no results
-                if ($this->config->resource[$resid] == 1){
+                } else {
+                    // no results
                     $text .=  '<li>'. get_string('nothing_found', 'block_caboodle') . '</li>';
                 }
+                $text .= "</ul>";
             }
-
-            $text .= "</ul>";
         } // foreach
 
         return $text;
