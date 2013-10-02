@@ -47,7 +47,7 @@ class caboodle_ebsco extends caboodle_api {
         $query = $this->clean_query_string($query);
 
         $url = $this->url . 'prof=' . $this->prof . '&pwd=' . $this->pwd . '&query=' .
-                $query . '&db=' . $this->db ;
+                $query . '&db=' . $this->db . '&numrec=' . $this->_numresults ;
 
         //var_dump($url);
         if ($xmldata = $this->exec_curl($url)) {

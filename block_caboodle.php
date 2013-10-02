@@ -320,7 +320,9 @@ class block_caboodle extends block_base {
             
             //if this specific resource is activated in the settings
             if ($this->config->resource[$resid] == 1){
+                $text .= "<a href=" . $resource->repository_url . " target='_blank' >";
                 $text .= "<h4>" . $resource->name . "</h4>";
+                $text .= "</a>";
                 $text .= '<ul class="caboodle_results">';
                 
                 if (!empty($results[$resid])) {
