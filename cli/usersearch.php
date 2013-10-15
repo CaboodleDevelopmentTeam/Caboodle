@@ -49,15 +49,21 @@ final class caboodle_cli {
     } // run
 
     private function run_fork() {
+        global $DB;
         $resources = $this->get_resources();
 
         foreach ($resources as $resourceid => $resource) {
 
             if ($this->config->resource[$resourceid] == 1) {
+                
+                $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
+                        WHERE r.type = rt.id
+                        AND r.id = ". $resourceid;
+                $resource_data = $DB->get_record_sql($sql);
                 $pid[$resourceid] = pcntl_fork();
 
                 if (!$pid[$resourceid]) {
-                    $results[$resourceid] = $this->perform_search($resourceid, $this->search_str);
+                    $results[$resourceid] = $this->perform_search($resource_data, $resourceid, $this->search_str);
                     // format result and output as JSON
                     echo json_encode($results) . "\n";
                     die();
@@ -81,8 +87,12 @@ final class caboodle_cli {
         foreach ($resources as $resourceid => $resource) {
 
             if ($this->config->resource[$resourceid] == 1) {
+                $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
+                        WHERE r.type = rt.id
+                        AND r.id = ". $resourceid;
+                $resource_data = $DB->get_record_sql($sql);
 
-                $results[$resourceid] = $this->perform_search($resourceid, $this->search_str);
+                $results[$resourceid] = $this->perform_search($resource_data, $resourceid, $this->search_str);
                 echo json_encode($results) . "\n";
                 unset($results);
 
@@ -92,15 +102,11 @@ final class caboodle_cli {
 
     }
 
-    private function perform_search($resourceid, $search_str) {
+    private function perform_search($resource_data, $resourceid, $search_str) {
         global $DB;
 
         $numresults = $this->numsearch;
 
-        $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
-                 WHERE r.type = rt.id
-                 AND r.id = ". $resourceid;
-        $resource_data = $DB->get_record_sql($sql);
 
         $api_class_file = dirname(__FILE__) . '/../lib_api/' .$resource_data->typeclass . ".php";
         $api_class = $resource_data->typeclass;
