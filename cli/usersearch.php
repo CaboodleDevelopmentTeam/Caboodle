@@ -82,6 +82,7 @@ final class caboodle_cli {
     }
 
     private function run_nofork() {
+        global $DB;
         $resources = $this->get_resources();
 
         foreach ($resources as $resourceid => $resource) {
