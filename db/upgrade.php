@@ -103,7 +103,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         $resource->type = $newid;
         $resource->name = 'Ebsco';
         $resource->url = 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?';
-        $resource->repository_url = 'http://support.ebscohost.com/';
+        $resource->repository_url = 'http://search.ebscohost.com/';
 
         $newresourceid = $DB->insert_record('caboodle_resources', $resource);
 

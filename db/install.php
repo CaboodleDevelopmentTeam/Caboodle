@@ -44,7 +44,7 @@ function xmldb_block_caboodle_install() {
                                 'name'  => 'Ebsco',
                                 'type'  => 'caboodle_ebsco',
                                 'url'   => 'http://eit.ebscohost.com/Services/SearchService.asmx/Search?',
-                                'repository_url'    => "http://support.ebscohost.com/"
+                                'repository_url'    => "http://search.ebscohost.com/"
                             )
                         );
 
