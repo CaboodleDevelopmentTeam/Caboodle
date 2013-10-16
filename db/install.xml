@@ -10,7 +10,7 @@
         <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Type of resource" PREVIOUS="id" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="Resource" SEQUENCE="false" COMMENT="Resource name" PREVIOUS="type" NEXT="repository_url"/>
         <FIELD NAME="repository_url" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="Resource url to be linked in header" PREVIOUS="name" NEXT="url"/>
-        <FIELD NAME="url" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Resource URL" PREVIOUS="name"/>
+        <FIELD NAME="url" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Resource URL" PREVIOUS="repository_url"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
