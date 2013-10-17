@@ -38,8 +38,8 @@ class caboodle_ebsco extends caboodle_api {
     private $prof = '';
     
     
-    public function __construct($resourceid, $instanceid, $numresults = 20) {
-        parent::__construct($resourceid, $instanceid, $numresults);
+    public function __construct($resourceid, $instanceid, $numresults = 20, $resourceresourceid, $tresultsresourceid) {
+        parent::__construct($resourceid, $instanceid, $numresults, $resourceresourceid, $tresultsresourceid);
     }
 
     protected function search_api($query) {

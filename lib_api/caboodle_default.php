@@ -33,8 +33,8 @@ require_once(dirname(__FILE__) . '/locallib.php');
  */
 class caboodle_default extends caboodle_api {
 
-    public function __construct($resourceid, $instanceid, $numresults = 20) {
-        parent::__construct($resourceid, $instanceid, $numresults);
+    public function __construct($resourceid, $instanceid, $numresults = 20,$resourceresourceid, $tresultsresourceid) {
+        parent::__construct($resourceid, $instanceid, $numresults, $resourceresourceid, $tresultsresourceid);
     }
 
     /**

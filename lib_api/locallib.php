@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 interface caboodle_api_interface {
     public function search($query);         // execute search and return N results
+
 }
 
 abstract class caboodle_api implements caboodle_api_interface {
@@ -51,20 +52,20 @@ abstract class caboodle_api implements caboodle_api_interface {
      * @param int  $instanceid - id of block instance from blocks table
      * @param int  $numresults - maximum number of results to save, defaults 20
      */
-    public function __construct($resourceid, $instanceid, $numresults = 20) {
+    public function __construct($resourceid, $instanceid, $numresults = 20, $resourceresourceid, $tresultsresourceid) {
         global $DB;
-
         $this->resourceid = $resourceid;
         $this->instanceid = $instanceid;
 
-        $resource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
+        //$resource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
+        $resource = $resourceresourceid;
 
         $this->name = $resource->name;
         $this->url = $resource->url;
         $this->_numresults = $numresults;
 
-        if ($search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
-
+        //if ($search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
+        if ($search_data = $tresultsresourceid) {
             $this->_searchid = $search_data->id;
             $this->_searchstr = $search_data->searchstr;
             $this->_searchdata = $this->decode_results($search_data->results);
@@ -85,7 +86,6 @@ abstract class caboodle_api implements caboodle_api_interface {
      * @return array
      */
     public function search($query) {
-
         // check if anything changed
         if (strcmp($this->_searchstr, $query) != 0) {
             $this->_searchstr = $query;

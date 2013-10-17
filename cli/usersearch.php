@@ -51,25 +51,31 @@ final class caboodle_cli {
     private function run_fork() {
         global $DB;
         $resources = $this->get_resources();
-
         foreach ($resources as $resourceid => $resource) {
-
+            $tresource[$resourceid] = $DB->get_record('caboodle_resources', array('id' => $resourceid));
+            $tresults[$resourceid]= $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $this->blockid));
             if ($this->config->resource[$resourceid] == 1) {
-                
                 $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
                         WHERE r.type = rt.id
                         AND r.id = ". $resourceid;
-                $resource_data = $DB->get_record_sql($sql);
-                $pid[$resourceid] = pcntl_fork();
-
-                if (!$pid[$resourceid]) {
-                    $results[$resourceid] = $this->perform_search($resource_data, $resourceid, $this->search_str);
-                    // format result and output as JSON
-                    echo json_encode($results) . "\n";
-                    die();
-                }
-
+                $resource_data[$resourceid] = $DB->get_record_sql($sql);
+                
             }
+        }
+
+        foreach ($resources as $resourceid => $resource) {
+                    if ($this->config->resource[$resourceid] == 1) {
+
+                        $pid[$resourceid] = pcntl_fork();
+
+                        if (!$pid[$resourceid]) {
+                            $results[$resourceid] = $this->perform_search($resource_data[$resourceid], $resourceid, $this->search_str, $tresource[$resourceid], $tresults[$resourceid]);
+                            // format result and output as JSON
+                            echo json_encode($results) . "\n";
+                            die();
+                        }
+
+                    }
 
         }
 
@@ -86,24 +92,22 @@ final class caboodle_cli {
         $resources = $this->get_resources();
 
         foreach ($resources as $resourceid => $resource) {
-
+            $tresource[$resourceid] = $DB->get_record('caboodle_resources', array('id' => $resourceid));
+            $tresults[$resourceid]= $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $this->blockid));
             if ($this->config->resource[$resourceid] == 1) {
                 $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
                         WHERE r.type = rt.id
                         AND r.id = ". $resourceid;
-                $resource_data = $DB->get_record_sql($sql);
-
-                $results[$resourceid] = $this->perform_search($resource_data, $resourceid, $this->search_str);
+                $resource_data[$resourceid] = $DB->get_record_sql($sql);
+                $results[$resourceid] = $this->perform_search($resource_data[$resourceid], $resourceid, $this->search_str, $tresource[$resourceid], $tresults[$resourceid]);
                 echo json_encode($results) . "\n";
                 unset($results);
-
-            } // if
-
-        } // foreach
+            }
+        }
 
     }
 
-    private function perform_search($resource_data, $resourceid, $search_str) {
+    private function perform_search($resource_data, $resourceid, $search_str, $resourceresourceid, $tresultsresourceid) {
         global $DB;
 
         $numresults = $this->numsearch;
@@ -114,7 +118,7 @@ final class caboodle_cli {
 
         require_once($api_class_file);
 
-        $api = new $api_class($resourceid, $this->blockid, $numresults);
+        $api = new $api_class($resourceid, $this->blockid, $numresults, $resourceresourceid, $tresultsresourceid);
 
         $results = $api->search($search_str);
         

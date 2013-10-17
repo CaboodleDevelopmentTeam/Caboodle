@@ -36,8 +36,8 @@ class caboodle_sru_interface extends caboodle_api {
      * @param type $instanceid
      * @param type $numresults
      */
-    public function __construct($resourceid, $instanceid, $numresults = 20) {
-        parent::__construct($resourceid, $instanceid, $numresults);
+    public function __construct($resourceid, $instanceid, $numresults = 20, $resourceresourceid, $tresultsresourceid) {
+        parent::__construct($resourceid, $instanceid, $numresults, $resourceresourceid, $tresultsresourceid);
     }
 
     /**
