@@ -284,7 +284,7 @@ class block_caboodle extends block_base {
             // $php = shell_exec('which php');
             // just exec php and let the system worry about it
             $php = 'php';
-            $php = '/opt/php/bin/php -c /opt/conf/php.ini';
+            //$php = '/opt/php/bin/php -c /opt/conf/php.ini';
             $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
                     ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
             
