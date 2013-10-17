@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/blocks/caboodle/lib.php');
 class block_caboodle_edit_form extends block_edit_form {
 
     protected function specific_definition($mform) {
-        global $OUTPUT, $PAGE, $CFG;
+        global $OUTPUT, $PAGE, $CFG, $DB;
 
         // an "X" before blacklisted urls
         $cross = $OUTPUT->pix_icon('i/cross_red_small','blacklist');
@@ -173,7 +173,10 @@ class block_caboodle_edit_form extends block_edit_form {
 
         $caboodle = new caboodle();
 
-        foreach ($repositories as $k => $repository) {
+        foreach ($repositories as $k => $repository) {            
+            
+            $tresource[$k] = $DB->get_record('caboodle_resources', array('id' => $k));
+            $tresults[$k]= $DB->get_record('caboodle_search_results', array('resourceid' => $k, 'instance' => $this->blockid));
 
             // if resource enabled, display it:
             if ($this->block->config->resource[$k] == 1 || optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
@@ -195,7 +198,7 @@ class block_caboodle_edit_form extends block_edit_form {
                 } else {
                     // if initial search string set and repo checked, perform search
                     if (optional_param('repo_'.$k, 0, PARAM_INT) == 1 && strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) > 0) {
-                        $results = $this->caboodle_perform_search($k);
+                        $results = $this->caboodle_perform_search($k, $tresource[$k], $tresults[$k]);
                     } else {
                         $results = '';
                     }
@@ -253,7 +256,7 @@ class block_caboodle_edit_form extends block_edit_form {
      * @param int $resourceid
      * @return array
      */
-    private function caboodle_perform_search($resourceid) {
+    private function caboodle_perform_search($resourceid, $resourceresourceid, $tresultsresourceid) {
         global $DB;
 
         $search_str = optional_param('caboodle_initialsearch', false, PARAM_RAW);
@@ -265,12 +268,16 @@ class block_caboodle_edit_form extends block_edit_form {
 
         $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
         $api_class = $resource_data->typeclass;
+        $numresults = get_config('caboodle', 'numresults');
 
         // we don't need to check if file exists and/or is readable, below line will raise an error anyway
         // but the check can be added in the future to fail gracefully
         require_once($api_class_file);
+        
+        
+        $api = new $api_class($resourceid, $this->blockid, $numresults, $resourceresourceid, $tresultsresourceid);
 
-        $api = new $api_class($resourceid, $this->block->instance->id);
+        //$api = new $api_class($resourceid, $this->block->instance->id);
 
         $results = $api->search($search_str);
 

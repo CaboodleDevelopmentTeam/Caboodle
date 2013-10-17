@@ -284,7 +284,7 @@ class block_caboodle extends block_base {
             // $php = shell_exec('which php');
             // just exec php and let the system worry about it
             $php = 'php';
-            //$php = '/opt/php/bin/php -c /opt/conf/php.ini';
+            $php = '/opt/php/bin/php -c /opt/conf/php.ini';
             $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
                     ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
             
@@ -407,7 +407,8 @@ class block_caboodle extends block_base {
                  WHERE r.type = rt.id
                  AND r.id = ". $resourceid;
         $resource_data = $DB->get_record_sql($sql);
-
+        $tresource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
+        $tresults= $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $this->blockid));
         $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
         $api_class = $resource_data->typeclass;
 
@@ -415,7 +416,7 @@ class block_caboodle extends block_base {
         // but the check can be added in the future to fail gracefully
         require_once($api_class_file);
 
-        $api = new $api_class($resourceid, $this->instance->id, $numresults);
+        $api = new $api_class($resourceid, $this->instance->id, $numresults, $tresource, $tresults);
 
         $results = $api->search($search_str);
 
@@ -478,6 +479,9 @@ class block_caboodle extends block_base {
 
         foreach ($instances as $instanceid => $instance) {
             foreach ($instance->configdata->resource as $resourceid => $resource_enabled) {
+                
+                $tresource[$k] = $DB->get_record('caboodle_resources', array('id' => $k));
+                $tresults[$k]= $DB->get_record('caboodle_search_results', array('resourceid' => $k, 'instance' => $this->blockid));
 
                 mtrace("Processing resource $resourceid for instance $instanceid ...");
                 // resource needs to be enabled
@@ -501,7 +505,7 @@ class block_caboodle extends block_base {
                             mtrace("\tExecuting API class: " . $resdata->typeclass);
                             require_once($api_class_file);
 
-                            $api = new $api_class($resourceid, $instanceid, $numresults);
+                            $api = new $api_class($resourceid, $instanceid, $numresults, $tresource[$k], $tresults[$k]);
 
                             if (!$caboodle->is_expired($resourceid, $instanceid, $removeafter)) {
 
