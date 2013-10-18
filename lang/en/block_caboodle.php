@@ -30,10 +30,31 @@ $string['pluginname'] = 'Caboodle';
 $string['block_configuration'] = "Caboodle block configuration";
 $string['block_title'] = "Block title";
 $string['label_results'] = 'Amount of search results to save';
-$string['desc_results'] = 'Search results being saved in block instance cache per resource';
+$string['desc_results'] = 'Search results being saved in block instance cache per resource (This will not affect Childlink which is set to 10 results)';
 $string['label_removecache'] = 'Clear cache after (seconds):';
 $string['desc_removecache'] = 'This setting determines how often results cache will be purged and new search performed. Don\'t set it to less than 1h since it can cause high load on your server.
     Default value: 12h = 43200 seconds';
+
+$string['label_phppath'] = 'PHP filepath:';
+$string['desc_phppath'] = 'This setting determines the filepath to php on the server. The Default is set to "php":';
+$string['label_timeout'] = 'Transfer timeout:';
+$string['desc_timeout'] = 'This setting determines the connection and transfer timeout length. Default value: 10 seconds = 10000';
+
+$string['ebscoheaderconfig'] = 'Ebsco Repository Section:';
+$string['ebscodescconfig'] = 'These settings determine the credentials for retrieving information from the ebsco repository:';
+$string['label_ebscodb'] = 'Ebsco repository database:';
+$string['desc_ebscodb'] = 'This setting determines the database that is used in the ebsco repository:';
+$string['label_ebscopwd'] = 'Ebsco repository password:';
+$string['desc_ebscopwd'] = 'This setting determines the password that is used in the ebsco repository:';
+$string['label_ebscoprof'] = 'Ebsco repository profile:';
+$string['desc_ebscoprof'] = 'This setting determines the profile that is used in the ebsco repository:';
+
+$string['proquest_headerconfig'] = 'British Periodicals (ProQuest) Repository Section:';
+$string['proquest_descconfig'] = 'These settings determine the credentials for retrieving information from the British Periodicals (ProQuest) repository:';
+$string['label_proquestusername'] = 'British Periodicals (ProQuest) repository username:';
+$string['desc_proquestusername'] = 'This setting determines the username that is used in the British Periodicals (ProQuest) repository:';
+$string['label_proquestpwd'] = 'British Periodicals (ProQuest) repository password:';
+$string['desc_proquestpwd'] = 'This setting determines the password that is used in the British Periodicals (ProQuest) repository:';
 // End of configuration section strings
 
 $string['caboodle:addinstance'] = 'Add a caboodle block';

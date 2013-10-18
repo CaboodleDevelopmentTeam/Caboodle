@@ -42,6 +42,8 @@ class caboodle_proquest_periodicals extends caboodle_api {
      */
     public function __construct($resourceid, $instanceid, $numresults = 20, $resourceresourceid, $tresultsresourceid) {
         parent::__construct($resourceid, $instanceid, $numresults, $resourceresourceid, $tresultsresourceid);
+        $this->xpassword = get_config('caboodle', 'proquest_pwd');
+        $this->xusername = get_config('caboodle', 'proquest_username');
     }
 
 

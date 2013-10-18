@@ -39,7 +39,7 @@ abstract class caboodle_api implements caboodle_api_interface {
     protected $_searchstr;
     protected $_searchdata;
     protected $_numresults;
-    protected $_transfer_timeout = 10000;    // 5000ms == 5 seconds
+    protected $_transfer_timeout;    // 5000ms == 5 seconds
 
     private $resourceid;
     private $instanceid;
@@ -54,15 +54,17 @@ abstract class caboodle_api implements caboodle_api_interface {
      */
     public function __construct($resourceid, $instanceid, $numresults = 20, $resourceresourceid, $tresultsresourceid) {
         global $DB;
+        
+        $this->_numresults = get_config('caboodle', 'numresults');
         $this->resourceid = $resourceid;
         $this->instanceid = $instanceid;
+        $this->_transfer_timeout = get_config('caboodle', 'timeout');
 
         //$resource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
         $resource = $resourceresourceid;
 
         $this->name = $resource->name;
         $this->url = $resource->url;
-        $this->_numresults = $numresults;
 
         //if ($search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
         if ($tresultsresourceid) {

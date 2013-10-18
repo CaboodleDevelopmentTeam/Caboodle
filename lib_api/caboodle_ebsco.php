@@ -40,16 +40,22 @@ class caboodle_ebsco extends caboodle_api {
     
     public function __construct($resourceid, $instanceid, $numresults = 20, $resourceresourceid, $tresultsresourceid) {
         parent::__construct($resourceid, $instanceid, $numresults, $resourceresourceid, $tresultsresourceid);
+        $this->db = get_config('caboodle', 'ebscodb');
+        $this->pwd = get_config('caboodle', 'ebscopwd');
+        $this->prof = get_config('caboodle', 'ebscoprof');
     }
 
     protected function search_api($query) {
 
         $query = $this->clean_query_string($query);
-
+        //split the input at linebreaks
+        $databases = preg_split("/\n/", $this->db, -1, PREG_SPLIT_NO_EMPTY);
         $url = $this->url . 'prof=' . $this->prof . '&pwd=' . $this->pwd . '&query=' .
-                $query . '&db=' . $this->db . '&numrec=' . $this->_numresults ;
-
-        //var_dump($url);
+                $query . '&numrec=' . $this->_numresults ;
+        
+        foreach ($databases as $element){
+            $url .= '&db=' . urlencode(trim($element));
+        }
         if ($xmldata = $this->exec_curl($url)) {
 
             $xmldata = $this->parse_data($xmldata);
