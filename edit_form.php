@@ -175,8 +175,6 @@ class block_caboodle_edit_form extends block_edit_form {
 
         foreach ($repositories as $k => $repository) {            
             
-            $tresource[$k] = $DB->get_record('caboodle_resources', array('id' => $k));
-            $tresults[$k]= $DB->get_record('caboodle_search_results', array('resourceid' => $k, 'instance' => $this->blockid));
 
             // if resource enabled, display it:
             if ($this->block->config->resource[$k] == 1 || optional_param('caboodle_initialsearch', false, PARAM_RAW)) {
@@ -198,7 +196,7 @@ class block_caboodle_edit_form extends block_edit_form {
                 } else {
                     // if initial search string set and repo checked, perform search
                     if (optional_param('repo_'.$k, 0, PARAM_INT) == 1 && strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) > 0) {
-                        $results = $this->caboodle_perform_search($k, $tresource[$k], $tresults[$k]);
+                        $results = $this->caboodle_perform_search($k);
                     } else {
                         $results = '';
                     }
@@ -256,9 +254,10 @@ class block_caboodle_edit_form extends block_edit_form {
      * @param int $resourceid
      * @return array
      */
-    private function caboodle_perform_search($resourceid, $resourceresourceid, $tresultsresourceid) {
+    private function caboodle_perform_search($resourceid) {
         global $DB;
 
+            
         $search_str = optional_param('caboodle_initialsearch', false, PARAM_RAW);
 
         $sql = "SELECT r.name, rt.typeclass FROM {caboodle_resources} r, {caboodle_resource_types} rt
@@ -274,13 +273,15 @@ class block_caboodle_edit_form extends block_edit_form {
         // but the check can be added in the future to fail gracefully
         require_once($api_class_file);
         
+        $tresource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
         
-        $api = new $api_class($resourceid, $this->blockid, $numresults, $resourceresourceid, $tresultsresourceid);
+        $tresults= $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $this->block->instance->id));
+        
+        $api = new $api_class($resourceid, $this->block->instance->id, $numresults, $tresource, $tresults);
 
         //$api = new $api_class($resourceid, $this->block->instance->id);
 
         $results = $api->search($search_str);
-
         return $results;
     } // caboodle_perform_search
     

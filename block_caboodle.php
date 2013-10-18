@@ -408,7 +408,7 @@ class block_caboodle extends block_base {
                  AND r.id = ". $resourceid;
         $resource_data = $DB->get_record_sql($sql);
         $tresource = $DB->get_record('caboodle_resources', array('id' => $resourceid));
-        $tresults= $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $this->blockid));
+        $tresults= $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $this->instance->id));
         $api_class_file = dirname(__FILE__) . '/lib_api/' .$resource_data->typeclass . ".php";
         $api_class = $resource_data->typeclass;
 

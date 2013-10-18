@@ -65,10 +65,10 @@ abstract class caboodle_api implements caboodle_api_interface {
         $this->_numresults = $numresults;
 
         //if ($search_data = $DB->get_record('caboodle_search_results', array('resourceid' => $resourceid, 'instance' => $instanceid))) {
-        if ($search_data = $tresultsresourceid) {
-            $this->_searchid = $search_data->id;
-            $this->_searchstr = $search_data->searchstr;
-            $this->_searchdata = $this->decode_results($search_data->results);
+        if ($tresultsresourceid) {
+            $this->_searchid = $tresultsresourceid->id;
+            $this->_searchstr = $tresultsresourceid->searchstr;
+            $this->_searchdata = $this->decode_results($tresultsresourceid->results);
 
         } else {
 
