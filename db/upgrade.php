@@ -91,7 +91,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2013091701, 'caboodle');
     }
     
-    if ($oldversion < 2013101505) {
+    if ($oldversion < 2013101800) {
 
         $new_resourcetype = new stdClass();
         $new_resourcetype->typename = 'ebsco';
@@ -115,7 +115,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
 
         $newresourceid = $DB->insert_record('caboodle_resources', $resource);
 
-        upgrade_block_savepoint(true, 2013101505, 'caboodle');
+        upgrade_block_savepoint(true, 2013101800, 'caboodle');
     }
 
     return true;
