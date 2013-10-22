@@ -92,7 +92,7 @@ function xmldb_block_caboodle_upgrade($oldversion) {
     }
     
     if ($oldversion < 2013093000) {
-
+        //Adding ebsco repository to the database
         $new_resourcetype = new stdClass();
         $new_resourcetype->typename = 'ebsco';
         $new_resourcetype->typeclass = 'caboodle_ebsco';
