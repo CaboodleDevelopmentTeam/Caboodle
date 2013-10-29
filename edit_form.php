@@ -34,6 +34,7 @@ class block_caboodle_edit_form extends block_edit_form {
 
         // an "X" before blacklisted urls
         $cross = $OUTPUT->pix_icon('i/cross_red_small', get_string('blacklist_image', 'block_caboodle'));
+        $excluded_cross = $OUTPUT->pix_icon('i/cross_red_small', get_string('unblacklist_image', 'block_caboodle'));
 
         // get js with Base64 encode/deocde class
         $PAGE->requires->js('/blocks/caboodle/js/base64-encode.js');
@@ -153,7 +154,7 @@ class block_caboodle_edit_form extends block_edit_form {
                 $url = explode('::', $url);
                 
                 // TODO: data validation
-                $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $cross . '&nbsp;';
+                $blacklist_ul .= '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' . $excluded_cross . '&nbsp;';
                 $blacklist_ul .= '<a href="' . $url[1]  .'" target="_blank">' . $url[0] .'</a> (' . $url[1] . ')';
                 $blacklist_ul .= '</li>';
             }
