@@ -33,7 +33,7 @@ class block_caboodle_edit_form extends block_edit_form {
         global $OUTPUT, $PAGE, $CFG, $DB;
 
         // an "X" before blacklisted urls
-        $cross = $OUTPUT->pix_icon('i/cross_red_small','blacklist');
+        $cross = $OUTPUT->pix_icon('i/cross_red_small', get_string('blacklist_image', 'block_caboodle'));
 
         // get js with Base64 encode/deocde class
         $PAGE->requires->js('/blocks/caboodle/js/base64-encode.js');
@@ -173,6 +173,10 @@ class block_caboodle_edit_form extends block_edit_form {
 
         $caboodle = new caboodle();
 
+        
+        // get urls from prevously retrieved blacklist
+        $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
+        
         foreach ($repositories as $k => $repository) {            
             
 
@@ -195,7 +199,7 @@ class block_caboodle_edit_form extends block_edit_form {
                     $results = $caboodle->get_results($k, $this->block->instance->id);
                 } else {
                     // if initial search string set and repo checked, perform search
-                    if (optional_param('repo_'.$k, 0, PARAM_INT) == 1 && strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) > 0) {
+                    if (optional_param('repo_'.$k, 0, PARAM_INT) == 1 && strlen(optional_param('caboodle_initialsearch', '', PARAM_RAW)) > 0) {   
                         $results = $this->caboodle_perform_search($k);
                     } else {
                         $results = '';
@@ -203,13 +207,10 @@ class block_caboodle_edit_form extends block_edit_form {
                     
                 }
 
-                // get urls from prevously retrieved blacklist
-                $blacklist = $caboodle->get_urls_from_blacklist($blacklist);
 
                 if (!empty($results)) {
 
                     $mform->addElement('html', '<ul class="caboodle_blacklister" id="repo_'.$k.'" style="list-style-type: none;">');
-                    
                     
                     foreach($results as $result_id => $result_data) {
 

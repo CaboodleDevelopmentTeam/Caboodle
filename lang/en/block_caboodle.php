@@ -48,6 +48,7 @@ $string['student_search_help'] = 'If student search is enabled, students are all
 $string['search_items_displayed'] = 'Number of search items displayed';
 $string['search_items_displayed_help'] = 'Number of search items displayed in block';
 $string['blacklist'] = 'Exclude list';
+$string['blacklist_image'] = 'Exclude';
 $string['blacklist_help'] = 'Click on "X" on the left of the excluded URL to remove it from list';
 $string['blacklist_empty'] = 'Exclude list is empty';
 $string['search_results'] = 'Search results';
