@@ -426,7 +426,7 @@ class block_caboodle extends block_base {
         
         // if a new search conducted - delete all items from blacklist (aka exclude list)
         if($criteria_changed) {
-            $this->caboodle_clear_blacklist($this->instance->id);
+            //$this->caboodle_clear_blacklist($this->instance->id);
         }
 
         return $results;

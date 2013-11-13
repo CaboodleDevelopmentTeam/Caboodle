@@ -32,7 +32,7 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             var resource = e.currentTarget.ancestor().ancestor().getAttribute('id');
             // new url in blacklisted list
             //var cross_url = document.URL;
-            var cross = '<img alt="blacklist" class="smallicon" title="blacklist" src="' + M.cfg.wwwroot + '/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
+            var cross = '<img alt="Unexclude" class="smallicon" title="Unexclude" src="' + M.cfg.wwwroot + '/theme/image.php/standard/core/1369325419/i/cross_red_small" />';
             var formatted_url = '<li class="caboodle_blacklisted_item" style="margin: 3px 0;">' + cross + ' <a href="' + url + '" target="_blank">' + title + '</a> (' + url + ')</li>';
             // textarea id="id_config_blacklist"
             var textarea = Y.one('textarea#id_config_blacklist');
@@ -83,14 +83,13 @@ YUI.add('moodle-block_caboodle-blacklister', function(Y) {
             var arraytext_length = arraytext.length;
 
             // foreach array element and re-set its content filtering out clicked url
-            for (var i = 0; i < arraytext_length; i++ ) {
+             for (var i = 0; i < arraytext_length; i++ ) {
 
                 var the_text = arraytext[i].split('::');
                 var arraytext_title = the_text[0];
                 var arraytext_url = the_text[1];
                 var arraytext_resource = the_text[2];
-
-                if (url[0].toLowerCase() !== arraytext_url.toLowerCase()) {
+                if (url[0].toLowerCase() !== unescape(arraytext_url.toLowerCase().replace(/&amp;/g, '&'))) {
                     // re-add to text box if not matched
                     text = text + arraytext[i] + '\n';
                 } else {
