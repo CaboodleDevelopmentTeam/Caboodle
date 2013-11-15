@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // get local lib
 require_once($CFG->dirroot . '/blocks/caboodle/lib.php');
-
+global $CFG;
 
 class block_caboodle extends block_base {
 
@@ -242,9 +242,13 @@ class block_caboodle extends block_base {
      *
      */
     public function get_user_search() {
-        global $DB;
+        global $CFG;
         $text = '';
 
+        
+        $advanced_search = get_config('caboodle', 'advancedsearch');;
+        
+        
         // return nothing if id is not match for this block or there is no saved user search
         if ((isset($_GET['caboodle_block_id']) && optional_param('caboodle_block_id', 0, PARAM_INT) != (int)$this->instance->id)
                 && !isset($_SESSION['caboodle_usersearch_result'][$this->instance->id]['search'])) {
@@ -288,27 +292,37 @@ class block_caboodle extends block_base {
             $exec = $php . ' ' . dirname(__FILE__) . '/cli/usersearch.php ' . $this->instance->id .
                     ' ' . $this->config->search_items_displayed . ' "' . $search_str . '"';
             
-            $shell_results = shell_exec($exec);
-
-            $shell_results = preg_split("/\n/", $shell_results, -1, PREG_SPLIT_NO_EMPTY);
-
-            // empty results array
+            
+             // empty results array
             $results = array();
 
-            foreach ($shell_results as $r => $result_chunk) {
+            if($advanced_search){
+                $shell_results = shell_exec($exec);
 
-                // decode results
-                $decoded_results = json_decode($result_chunk, true);
+                $shell_results = preg_split("/\n/", $shell_results, -1, PREG_SPLIT_NO_EMPTY);
 
-                if (!is_null($decoded_results)) {
-                    // get keys
-                    $keys = array_keys($decoded_results);
 
-                    // make sure that it all be saved in one array without overwriting it (well unless keys are the same which shouldn't happen)
-                    $results[$keys[0]] = $decoded_results[$keys[0]];
-                } // if
+                foreach ($shell_results as $r => $result_chunk) {
 
-            } // foreach
+                    // decode results
+                    $decoded_results = json_decode($result_chunk, true);
+
+                    if (!is_null($decoded_results)) {
+                        // get keys
+                        $keys = array_keys($decoded_results);
+
+                        // make sure that it all be saved in one array without overwriting it (well unless keys are the same which shouldn't happen)
+                        $results[$keys[0]] = $decoded_results[$keys[0]];
+                    } // if
+                } // foreach
+                
+            }else{
+                foreach($resources as $resid => $resource){
+                    if ($this->config->resource[$resid] == 1) {
+                        $results[$resid] = $this->perform_search($resid, true, $search_str);
+                    }
+                }
+            }
 
             $_SESSION['caboodle_usersearch_result'][$this->instance->id]['results'] = $results;
 

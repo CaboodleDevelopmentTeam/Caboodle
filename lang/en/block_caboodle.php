@@ -34,6 +34,8 @@ $string['desc_results'] = 'Search results being saved in block instance cache pe
 $string['label_removecache'] = 'Clear cache after (seconds):';
 $string['desc_removecache'] = 'This setting determines how often results cache will be purged and new search performed. Don\'t set it to less than 1h since it can cause high load on your server.
     Default value: 12h = 43200 seconds';
+$string['label_advancedsearch'] = 'Turn on advanced search';
+$string['desc_advancedsearch'] = 'Advanced search requires the function "shell_exec()" to be usable in PHP.';
 // End of configuration section strings
 
 $string['caboodle:addinstance'] = 'Add a caboodle block';

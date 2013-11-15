@@ -35,3 +35,9 @@ $settings->add(new admin_setting_configtext('caboodle/removeafter',
                                             43200, // default vaule 43200 seconds = 12h
                                             PARAM_INT
                                             ));
+
+$settings->add(new admin_setting_configcheckbox('caboodle/advancedsearch',
+                                            get_string('label_advancedsearch', 'block_caboodle'),
+                                            get_string('desc_advancedsearch', 'block_caboodle'),
+                                            '0' // default value no
+                                            ));
